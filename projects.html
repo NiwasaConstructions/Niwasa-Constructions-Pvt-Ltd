@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects | Niwasa Constructions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        :root { --primary: #003366; --accent: #F2A900; --text: #333; --light: #f8f9fa; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        a { text-decoration: none; } ul { list-style: none; }
+        
+        .top-bar { background: var(--primary); color: #fff; padding: 10px 5%; display: flex; justify-content: space-between; font-size: 0.85rem; }
+        nav { background: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; } .logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 20px; } .nav-links a { color: var(--text); font-weight: 500; text-transform: uppercase; font-size: 0.9rem; } .nav-links a.active { color: var(--accent); }
+        
+        .page-head { background: linear-gradient(rgba(0,51,102,0.8), rgba(0,51,102,0.8)), url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600') center/cover; padding: 100px 20px; text-align: center; color: #fff; }
+        .page-head h1 { font-size: 3rem; text-transform: uppercase; }
+        
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; padding: 80px 5%; background: var(--light); }
+        .proj-card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.3s; cursor: pointer; }
+        .proj-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .proj-card img { width: 100%; height: 280px; object-fit: cover; }
+        .proj-info { padding: 25px; text-align: center; border-bottom: 4px solid var(--accent); }
+        .proj-info h3 { color: var(--primary); font-size: 1.3rem; margin-bottom: 10px; }
+        .proj-info p { color: #777; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        footer { background: var(--primary); color: #ccc; padding: 60px 5% 20px; }
+        .foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
+        .foot-grid h3 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; } .foot-grid a { color: #ccc; display: block; margin-bottom: 10px; }
+
+        /* --- LIGHTBOX GALLERY CSS --- */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; flex-direction: column; }
+        .modal-content { max-width: 90%; max-height: 80vh; object-fit: contain; border-radius: 4px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease; }
+        @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .close-btn { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; transition: 0.3s; z-index: 2001;}
+        .close-btn:hover { color: var(--accent); }
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); color: white; font-size: 35px; cursor: pointer; user-select: none; transition: 0.3s; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 5px; z-index: 2001;}
+        .nav-btn:hover { background: var(--accent); }
+        .prev-btn { left: 20px; } .next-btn { right: 20px; }
+    </style>
+</head>
+<body>
+    <div class="top-bar"><div><i class="fas fa-envelope"></i> info@niwasaconstructions.com</div><div><i class="fas fa-phone"></i> +94 71 123 4567</div></div>
+    <nav>
+        <a href="index.html" class="logo">Niwasa <span>Constructions</span></a>
+        <div class="nav-links">
+            <a href="index.html">Home</a><a href="about.html">About Us</a><a href="services.html">Services</a><a href="projects.html" class="active">Projects</a><a href="contact.html">Contact Us</a>
+        </div>
+    </nav>
+
+    <div class="page-head">
+        <h1>Our Completed Projects</h1>
+    </div>
+
+    <div class="projects-grid">
+        <div class="proj-card" onclick="openGallery('proj1')">
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800">
+            <div class="proj-info"><h3>Kundasale, Kandy</h3><p>Residential</p></div>
+        </div>
+        <div class="proj-card" onclick="openGallery('proj2')">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800">
+            <div class="proj-info"><h3>Kumbiyangoda Road, Matale</h3><p>Commercial</p></div>
+        </div>
+        <div class="proj-card" onclick="openGallery('proj3')">
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800">
+            <div class="proj-info"><h3>Puttalam Road, Wariyapola</h3><p>Renovation</p></div>
+        </div>
+        <div class="proj-card" onclick="openGallery('proj4')">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800">
+            <div class="proj-info"><h3>Kotuwegedara Road, Matale</h3><p>Residential</p></div>
+        </div>
+        <div class="proj-card" onclick="openGallery('proj5')">
+            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800">
+            <div class="proj-info"><h3>Renovation Garden Ariwatta</h3><p>Landscaping</p></div>
+        </div>
+        <div class="proj-card" onclick="openGallery('proj6')">
+            <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800">
+            <div class="proj-info"><h3>Gohagoda Road Katugastota</h3><p>Commercial</p></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="foot-grid">
+            <div><h3>Niwasa Constructions</h3><p>Leading construction company in Sri Lanka.</p></div>
+            <div><h3>Our Services</h3><a href="services.html">Residential</a><a href="services.html">Commercial</a></div>
+            <div><h3>Office Address</h3><p>info@niwasaconstructions.com</p><p>+94 71 123 4567</p></div>
+        </div>
+        <div style="text-align: center; font-size: 0.9rem;">2026 &copy; All Rights Reserved | Niwasa Constructions</div>
+    </footer>
+
+    <div id="galleryModal" class="modal">
+        <span class="close-btn" onclick="closeGallery()">&times;</span>
+        <img class="modal-content" id="modalImage">
+        <a class="nav-btn prev-btn" onclick="changeImage(-1)">&#10094;</a>
+        <a class="nav-btn next-btn" onclick="changeImage(1)">&#10095;</a>
+    </div>
+
+    <script>
+        // Dictionary containing arrays of images for each project
+        const projectImages = {
+            'proj1': [
+                'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1000',
+                'https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?w=1000',
+                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000'
+            ],
+            'proj2': [
+                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000',
+                'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1000'
+            ],
+            'proj3': [
+                'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1000',
+                'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1000'
+            ],
+            'proj4': [
+                'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1000',
+                'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1000'
+            ],
+            'proj5': [
+                'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1000',
+                'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1000'
+            ],
+            'proj6': [
+                'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1000',
+                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000'
+            ]
+        };
+
+        let currentGallery = [];
+        let currentIndex = 0;
+
+        function openGallery(projectId) {
+            currentGallery = projectImages[projectId];
+            currentIndex = 0; 
+            document.getElementById('modalImage').src = currentGallery[currentIndex];
+            document.getElementById('galleryModal').style.display = 'flex';
+        }
+
+        function closeGallery() {
+            document.getElementById('galleryModal').style.display = 'none';
+        }
+
+        function changeImage(step) {
+            currentIndex += step;
+            if (currentIndex < 0) currentIndex = currentGallery.length - 1;
+            if (currentIndex >= currentGallery.length) currentIndex = 0;
+            document.getElementById('modalImage').src = currentGallery[currentIndex];
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Niwasa Constructions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap');:root{--bg:#fff;--txt:#222;--nav:#0A192F;--gold:#D4AF37;--gray:#f4f4f5;}*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}h1,h2,h3,h4,.logo{font-family:'Playfair Display',serif;}a{text-decoration:none;}ul{list-style:none;}html{scroll-behavior:smooth;}#loader{position:fixed;inset:0;background:var(--nav);z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;transition:0.5s;}.house-loader{width:60px;height:60px;border-bottom:4px solid var(--gold);position:relative;animation:bld 2s infinite;}.house-loader::before{content:'';position:absolute;bottom:0;left:15px;width:30px;height:35px;background:var(--gold);animation:gw 2s infinite;}.house-loader::after{content:'';position:absolute;bottom:35px;left:-10px;border-left:40px solid transparent;border-right:40px solid transparent;border-bottom:35px solid var(--gold);animation:rf 2s infinite;}@keyframes bld{0%,100%{border-color:transparent;}50%{border-color:var(--gold);}}@keyframes gw{0%,100%{height:0;}50%{height:35px;}}@keyframes rf{0%,100%{transform:translateY(-20px);opacity:0;}50%{transform:translateY(0);opacity:1;}}.load-txt{color:var(--gold);margin-top:30px;letter-spacing:3px;text-transform:uppercase;animation:pulse 1.5s infinite;font-family:'Playfair Display',serif;}@keyframes pulse{50%{opacity:0.5;}}nav{background:var(--nav);padding:20px 5%;display:flex;justify-content:space-between;align-items:center;position:fixed;width:100%;top:0;z-index:1000;box-shadow:0 4px 10px rgba(0,0,0,0.3);}.logo{color:var(--gold);font-size:1.8rem;}.logo span{color:#fff;}.nav-links{display:flex;gap:25px;}.nav-links a{color:#fff;text-transform:uppercase;font-size:0.9rem;transition:0.3s;font-weight:600;}.nav-links a:hover,.nav-links a.active{color:var(--gold);}.menu-btn{display:none;color:var(--gold);font-size:1.8rem;cursor:pointer;}.page-header{height:45vh;background:linear-gradient(rgba(10,25,47,0.9),rgba(10,25,47,0.9)),url('https://images.unsplash.com/photo-1516156008625-3a9d045f11d2?w=1600') center/cover;display:flex;align-items:center;justify-content:center;color:var(--gold);margin-top:70px;text-align:center;}.page-header h1{font-size:3.5rem;}.btn{padding:15px 35px;background:var(--gold);color:var(--nav);font-weight:600;border-radius:4px;display:inline-block;transition:0.3s;border:2px solid var(--gold);}.btn:hover{background:transparent;color:var(--gold);}.section{padding:100px 5%;}.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px;}.info-box{background:var(--nav);color:#fff;padding:40px;border-radius:8px;}.info-box h3{color:var(--gold);margin-bottom:20px;}.info-box p{margin-bottom:20px;display:flex;align-items:center;}.info-box i{color:var(--gold);margin-right:15px;font-size:1.2rem;}form input,form textarea{width:100%;padding:15px;margin-bottom:20px;border:1px solid #ddd;background:var(--gray);border-radius:4px;}form input:focus,form textarea:focus{outline:none;border-color:var(--gold);}footer{background:var(--nav);color:#fff;padding:60px 5% 20px;}.foot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:40px;margin-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:40px;}.foot-grid h4{color:var(--gold);margin-bottom:20px;font-size:1.5rem;}.foot-grid a{color:#ccc;display:block;margin-bottom:10px;transition:0.3s;}.foot-grid a:hover{color:var(--gold);}.text-center-sm{text-align:center;color:#888;font-size:0.9rem;}.reveal{opacity:0;transform:translateY(50px);transition:all 0.8s ease;}.reveal.active{opacity:1;transform:translateY(0);}@media(max-width:768px){.menu-btn{display:block;}.nav-links{position:fixed;top:70px;right:-100%;flex-direction:column;background:var(--nav);width:100%;height:calc(100vh - 70px);align-items:center;justify-content:center;transition:0.4s;}.nav-links.show{right:0;}.contact-wrap{grid-template-columns:1fr;}}
+    </style>
+</head>
+<body>
+    <div id="loader"><div class="house-loader"></div><div class="load-txt">Constructing</div></div>
+
+    <nav>
+        <a href="index.html" class="logo">Niwasa <span>Constructions</span></a>
+        <div class="menu-btn"><i class="fas fa-bars"></i></div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="services.html">Services</a>
+            <a href="projects.html">Projects</a>
+            <a href="contact.html" class="active">Contact Us</a>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1 class="reveal">Get In Touch</h1>
+    </div>
+
+    <section class="section reveal">
+        <div class="contact-wrap">
+            <div class="info-box">
+                <h3>Contact Information</h3>
+                <p style="color:#ccc; margin-bottom:40px;">Ready to build your dream space? Reach out for consultations or quotations.</p>
+                <p><i class="fas fa-map-marker-alt"></i> Colombo, Western Province, Sri Lanka</p>
+                <p><i class="fas fa-phone-alt"></i> +94 77 123 4567</p>
+                <p><i class="fas fa-envelope"></i> info@niwasaconstructions.com</p>
+            </div>
+            <div>
+                <form action="#">
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <input type="text" placeholder="Subject">
+                    <textarea rows="5" placeholder="Your Message" required></textarea>
+                    <button type="submit" class="btn" style="width:100%; border:none;">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="foot-grid">
+            <div><h4>Niwasa Constructions</h4><p>Building your future with luxury and confidence.</p></div>
+            <div><h4>Quick Links</h4><a href="about.html">About Us</a><a href="services.html">Services</a></div>
+            <div><h4>Contact Info</h4><p><i class="fas fa-phone" style="color:var(--gold);"></i> +94 77 123 4567</p></div>
+        </div>
+        <p class="text-center-sm">&copy; 2026 Niwasa Constructions. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("loader");window.addEventListener("load",()=>{setTimeout(()=>{e.style.opacity="0",setTimeout(()=>e.style.display="none",500)},2e3)});const t=document.querySelector(".menu-btn"),n=document.querySelector(".nav-links");t&&t.addEventListener("click",()=>{n.classList.toggle("show"),t.innerHTML=n.classList.contains("show")?'<i class="fas fa-times"></i>':'<i class="fas fa-bars"></i>'});const o=document.querySelectorAll(".reveal"),s=()=>{o.forEach(e=>{e.getBoundingClientRect().top<window.innerHeight-100&&e.classList.add("active")})};window.addEventListener("scroll",s),s()});
+    </script>
+</body>
+</html>
