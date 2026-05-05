@@ -7,99 +7,87 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        :root { --primary: #003366; --accent: #F2A900; --text: #333; --light: #f8f9fa; --gray: #e9ecef; }
+        
+        /* --- UPDATED COLORS: BLUE & RED --- */
+        :root { 
+            --primary: #003366; /* Deep Corporate Blue */
+            --accent: #D32F2F;  /* Construction Red */
+            --text: #333; 
+            --light: #f8f9fa; 
+            --gray: #e9ecef; 
+        }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         a { text-decoration: none; } ul { list-style: none; } html { scroll-behavior: smooth; }
         
-        /* --- MODERN TYPING LOADER STYLES --- */
+        /* --- PREMIUM BLUEPRINT LOADER --- */
         #loader {
             position: fixed;
             inset: 0;
-            background: var(--primary);
+            background: var(--primary); /* Blue Background */
             z-index: 10000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            transition: opacity 0.6s ease-in-out, visibility 0.6s;
         }
 
-        .loader-content {
-            text-align: center;
+        .svg-house {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 30px;
+            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
         }
 
-        .loading-text {
-            font-size: 2.5rem;
-            font-weight: 700;
+        .svg-house path {
+            stroke: var(--accent); /* Red Outline */
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: transparent;
+            stroke-dasharray: 400;
+            stroke-dashoffset: 400;
+            animation: drawHouse 2.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes drawHouse {
+            0% { stroke-dashoffset: 400; fill: rgba(211, 47, 47, 0); }
+            50% { stroke-dashoffset: 0; fill: rgba(211, 47, 47, 0); }
+            100% { stroke-dashoffset: 0; fill: rgba(211, 47, 47, 1); } /* Fills with Red */
+        }
+
+        .loader-text {
             color: #fff;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            overflow: hidden; /* Ensures the content is not revealed until the animation */
-            border-right: .15em solid var(--accent); /* The typwriter cursor */
-            white-space: nowrap; /* Keeps the content on a single line */
-            margin: 0 auto; /* Gives that scrolling effect as the typing happens */
-            animation: 
-                typing 2s steps(40, end),
-                blink-caret .75s step-end infinite;
-            max-width: fit-content;
-        }
-
-        .loading-text span {
-            color: var(--accent);
-        }
-
-        .progress-container {
-            width: 250px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-            margin-top: 20px;
-            overflow: hidden;
             position: relative;
         }
 
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background: var(--accent);
-            border-radius: 2px;
-            animation: progress-animation 2s ease-in-out forwards;
+        .loader-text span {
+            color: var(--accent);
+            font-weight: 700;
         }
 
-        /* Typing animation */
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
-        }
-
-        /* The typewriter cursor effect */
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: var(--accent); }
-        }
-
-        /* Progress bar animation */
-        @keyframes progress-animation {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-
-        /* Class to hide loader */
+        /* Class to hide loader cleanly */
         .loader-hidden {
             opacity: 0;
             visibility: hidden;
         }
 
-        /* --- REST OF YOUR CSS --- */
+        /* --- REST OF THE CSS --- */
         .top-bar { background: var(--primary); color: #fff; padding: 10px 5%; display: flex; justify-content: space-between; font-size: 0.85rem; }
         nav { background: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; } .logo span { color: var(--accent); }
         .nav-links { display: flex; gap: 20px; } .nav-links a { color: var(--text); font-weight: 500; text-transform: uppercase; font-size: 0.9rem; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
         .quote-btn { background: var(--accent); color: #fff; padding: 8px 20px; border-radius: 4px; font-weight: 600; }
+        .quote-btn:hover { background: #b72020; color: #fff; }
         .menu-btn { display: none; font-size: 1.5rem; color: var(--primary); cursor: pointer; }
         
-        .hero { height: 80vh; background: linear-gradient(rgba(0,51,102,0.6), rgba(0,51,102,0.6)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; }
+        .hero { height: 80vh; background: linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; }
         .hero h1 { font-size: 4rem; margin-bottom: 10px; } .hero p { font-size: 1.2rem; font-weight: 300; max-width: 800px; margin-bottom: 30px; }
         
         .quick-services { display: flex; justify-content: center; flex-wrap: wrap; margin-top: -50px; position: relative; z-index: 10; padding: 0 5%; gap: 20px; }
@@ -131,8 +119,6 @@
             .top-bar { flex-direction: column; text-align: center; gap: 10px; } .menu-btn { display: block; }
             .nav-links { position: fixed; top: 110px; left: -100%; width: 100%; height: 100vh; background: #fff; flex-direction: column; align-items: center; padding-top: 50px; transition: 0.4s; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
             .nav-links.active { left: 0; } .welcome-wrap { flex-direction: column; } .hero h1 { font-size: 2.5rem; }
-            .loading-text { font-size: 1.5rem; } /* Smaller text on mobile */
-            .progress-container { width: 180px; }
         }
 
         /* --- LIGHTBOX GALLERY CSS --- */
@@ -147,14 +133,11 @@
     </style>
 </head>
 <body>
-    <!-- --- MODERN TYPING LOADER HTML --- -->
     <div id="loader">
-        <div class="loader-content">
-            <div class="loading-text">Niwasa <span>Constructions</span></div>
-            <div class="progress-container">
-                <div class="progress-bar"></div>
-            </div>
-        </div>
+        <svg class="svg-house" viewBox="0 0 100 100">
+            <path d="M10 50 L50 10 L90 50 M20 42 L20 90 L80 90 L80 42 M40 90 L40 60 L60 60 L60 90" />
+        </svg>
+        <div class="loader-text">Building <span>Dreams...</span></div>
     </div>
 
     <div class="top-bar">
@@ -237,20 +220,15 @@
     </div>
 
     <script>
-        // Updated Loader & Menu Logic
         document.addEventListener("DOMContentLoaded", () => {
             const loader = document.getElementById("loader");
             
-            // Hide loader after page is fully loaded and animation finishes
+            // Allow animation to play fully before hiding (2.5 seconds matching animation duration)
             window.addEventListener("load", () => {
-                // We add a class to trigger the CSS transition (0.5s)
                 setTimeout(() => {
                     loader.classList.add("loader-hidden");
-                    // Completely remove from display after transition
-                    setTimeout(() => {
-                        loader.style.display = "none";
-                    }, 500); 
-                }, 2200); // Wait for typing (2s) and a little extra
+                    setTimeout(() => { loader.style.display = "none"; }, 600); 
+                }, 2000); 
             });
 
             const menuBtn = document.querySelector(".menu-btn"), navLinks = document.querySelector(".nav-links");
@@ -292,7 +270,7 @@
 
         function openGallery(projectId) {
             currentGallery = projectImages[projectId];
-            currentIndex = 0; // Start at first image
+            currentIndex = 0;
             document.getElementById('modalImage').src = currentGallery[currentIndex];
             document.getElementById('galleryModal').style.display = 'flex';
         }
@@ -303,7 +281,6 @@
 
         function changeImage(step) {
             currentIndex += step;
-            // Loop back to start/end if you go past the edges
             if (currentIndex < 0) currentIndex = currentGallery.length - 1;
             if (currentIndex >= currentGallery.length) currentIndex = 0;
             document.getElementById('modalImage').src = currentGallery[currentIndex];
