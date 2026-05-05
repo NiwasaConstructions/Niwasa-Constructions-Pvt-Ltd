@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Niwasa Constructions | Your Dream Home</title>
+    <title>Niwasa Constructions | Design & Build</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
-        /* --- UPDATED COLORS: BLUE & RED --- */
+        /* --- LOGO COLORS APPLIED TO WEBSITE --- */
         :root { 
-            --primary: #003366; /* Deep Corporate Blue */
-            --accent: #D32F2F;  /* Construction Red */
+            --primary: #1E4E8C; /* Logo Dark Blue */
+            --accent: #E85D22;  /* Logo Orange/Red */
             --text: #333; 
             --light: #f8f9fa; 
             --gray: #e9ecef; 
@@ -20,74 +20,105 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         a { text-decoration: none; } ul { list-style: none; } html { scroll-behavior: smooth; }
         
-        /* --- PREMIUM BLUEPRINT LOADER --- */
+        /* --- PREMIUM LOGO ANIMATION LOADER --- */
         #loader {
             position: fixed;
             inset: 0;
-            background: var(--primary); /* Blue Background */
+            background: #000000; /* Black background to match your logo JPG */
             z-index: 10000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.6s ease-in-out, visibility 0.6s;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s;
         }
 
-        .svg-house {
-            width: 120px;
-            height: 120px;
-            margin-bottom: 30px;
-            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
+        .logo-wrapper {
+            position: relative;
+            width: 280px; /* Adjust this size if needed */
+            margin-bottom: 40px;
+            animation: pulseLogo 2.5s infinite alternate ease-in-out;
+            overflow: hidden; /* Keeps the shimmer inside the logo area */
         }
 
-        .svg-house path {
-            stroke: var(--accent); /* Red Outline */
-            stroke-width: 4;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            fill: transparent;
-            stroke-dasharray: 400;
-            stroke-dashoffset: 400;
-            animation: drawHouse 2.5s ease-in-out infinite alternate;
+        .logo-wrapper img {
+            width: 100%;
+            display: block;
         }
 
-        @keyframes drawHouse {
-            0% { stroke-dashoffset: 400; fill: rgba(211, 47, 47, 0); }
-            50% { stroke-dashoffset: 0; fill: rgba(211, 47, 47, 0); }
-            100% { stroke-dashoffset: 0; fill: rgba(211, 47, 47, 1); } /* Fills with Red */
+        /* The shiny sweeping effect over the logo */
+        .logo-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0));
+            transform: skewX(-25deg);
+            animation: shimmerSweep 3s infinite;
+        }
+
+        /* Glow and pulse effect */
+        @keyframes pulseLogo {
+            0% { transform: scale(0.95); filter: drop-shadow(0 0 15px rgba(30, 78, 140, 0.4)); }
+            100% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(232, 93, 34, 0.6)); }
+        }
+
+        @keyframes shimmerSweep {
+            0% { left: -150%; }
+            50%, 100% { left: 200%; }
         }
 
         .loader-text {
             color: #fff;
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            font-weight: 500;
+            font-size: 1rem;
+            letter-spacing: 5px;
+            font-weight: 300;
             text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .loading-line {
+            width: 200px;
+            height: 2px;
+            background: #222; /* Dark grey track */
+            border-radius: 5px;
             position: relative;
+            overflow: hidden;
         }
 
-        .loader-text span {
-            color: var(--accent);
-            font-weight: 700;
+        /* Gradient loading bar using your logo colors */
+        .loading-line::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; height: 100%; width: 50%;
+            background: linear-gradient(90deg, var(--primary), var(--accent)); 
+            border-radius: 5px;
+            animation: loadingBar 2s infinite ease-in-out alternate;
         }
 
-        /* Class to hide loader cleanly */
+        @keyframes loadingBar {
+            0% { width: 0%; transform: translateX(0); }
+            100% { width: 100%; transform: translateX(200px); }
+        }
+
         .loader-hidden {
             opacity: 0;
             visibility: hidden;
         }
 
-        /* --- REST OF THE CSS --- */
+        /* --- REST OF YOUR CSS --- */
         .top-bar { background: var(--primary); color: #fff; padding: 10px 5%; display: flex; justify-content: space-between; font-size: 0.85rem; }
         nav { background: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; } .logo span { color: var(--accent); }
         .nav-links { display: flex; gap: 20px; } .nav-links a { color: var(--text); font-weight: 500; text-transform: uppercase; font-size: 0.9rem; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
         .quote-btn { background: var(--accent); color: #fff; padding: 8px 20px; border-radius: 4px; font-weight: 600; }
-        .quote-btn:hover { background: #b72020; color: #fff; }
+        .quote-btn:hover { background: #cf4f1a; color: #fff; }
         .menu-btn { display: none; font-size: 1.5rem; color: var(--primary); cursor: pointer; }
         
-        .hero { height: 80vh; background: linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; }
+        .hero { height: 80vh; background: linear-gradient(rgba(30, 78, 140, 0.7), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; }
         .hero h1 { font-size: 4rem; margin-bottom: 10px; } .hero p { font-size: 1.2rem; font-weight: 300; max-width: 800px; margin-bottom: 30px; }
         
         .quick-services { display: flex; justify-content: center; flex-wrap: wrap; margin-top: -50px; position: relative; z-index: 10; padding: 0 5%; gap: 20px; }
@@ -108,10 +139,7 @@
         .project-card img { width: 100%; height: 250px; object-fit: cover; }
         .project-info { padding: 20px; text-align: center; } .project-info h3 { font-size: 1.2rem; color: var(--primary); }
         
-        .review-box { background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; max-width: 800px; margin: 0 auto; border-top: 4px solid var(--accent); }
-        .review-box p { font-style: italic; color: #666; margin-bottom: 20px; line-height: 1.8; } .review-box h4 { color: var(--primary); }
-        
-        footer { background: var(--primary); color: #ccc; padding: 60px 5% 20px; }
+        footer { background: #111; color: #ccc; padding: 60px 5% 20px; border-top: 4px solid var(--accent); }
         .foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
         .foot-grid h3 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; } .foot-grid a { color: #ccc; display: block; margin-bottom: 10px; transition: 0.3s; } .foot-grid a:hover { color: var(--accent); }
         
@@ -133,11 +161,13 @@
     </style>
 </head>
 <body>
+
     <div id="loader">
-        <svg class="svg-house" viewBox="0 0 100 100">
-            <path d="M10 50 L50 10 L90 50 M20 42 L20 90 L80 90 L80 42 M40 90 L40 60 L60 60 L60 90" />
-        </svg>
-        <div class="loader-text">Building <span>Dreams...</span></div>
+        <div class="logo-wrapper">
+            <img src="Old Logo.jpg" alt="Aththanayaka Niwasa Logo">
+        </div>
+        <div class="loader-text">Initializing</div>
+        <div class="loading-line"></div>
     </div>
 
     <div class="top-bar">
@@ -170,7 +200,7 @@
         <div class="welcome-wrap">
             <div class="welcome-text">
                 <h2>Welcome To Niwasa Construction</h2>
-                <p><strong>NIWASA CONSTRUCTIONS (PVT) LTD</strong> is a leading and fast-growing construction company in Sri Lanka. We are engaged in both commercial and residential construction with a mission of "Bringing your dreamed living space into the real".</p>
+                <p><strong>ATHTHANAYAKA NIWASA CONSTRUCTIONS (PVT) LTD</strong> is a leading and fast-growing construction company in Sri Lanka. We are engaged in both commercial and residential construction with a mission of "Bringing your dreamed living space into the real".</p>
                 <p>Our Services include Construction, Project Management, Architectural Designing, Interior Designing, Structural Designing, BOQ, Estimation, and council approvals.</p>
                 <h3 style="color: var(--accent); margin-top: 20px;">Build Your Dream Home With Us</h3>
                 <p>We ensure to give the best quality service for your expenditure. Embrace cutting-edge advancements like 3D printing, modular construction, and smart building technologies to revolutionize design efficiency.</p>
@@ -205,9 +235,9 @@
 
     <footer>
         <div class="foot-grid">
-            <div><h3>Niwasa Constructions</h3><p>Niwasa Constructions (Pvt) ltd is a leading construction company in Sri Lanka. We have completed successful projects.</p></div>
+            <div><h3>Aththanayaka Niwasa</h3><p>Design & Build Company. We are a leading construction company in Sri Lanka. We have completed successful projects.</p></div>
             <div><h3>Our Services</h3><a href="services.html">Residential Construction</a><a href="services.html">Commercial Construction</a></div>
-            <div><h3>Office Address</h3><p>info@niwasaconstructions.com</p><p>+94 71 123 4567</p></div>
+            <div><h3>Office Address</h3><p>info@niwasaconstructions.com</p><p>+94 77 856 8527</p></div>
         </div>
         <div style="text-align: center; font-size: 0.9rem;">2026 &copy; All Rights Reserved | Niwasa Constructions</div>
     </footer>
@@ -227,7 +257,7 @@
             window.addEventListener("load", () => {
                 setTimeout(() => {
                     loader.classList.add("loader-hidden");
-                    setTimeout(() => { loader.style.display = "none"; }, 600); 
+                    setTimeout(() => { loader.style.display = "none"; }, 800); 
                 }, 2000); 
             });
 
