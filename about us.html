@@ -51,7 +51,7 @@
         /* --- PAGE HEADER --- */
         .page-header { 
             height: 50vh; 
-            background: linear-gradient(rgba(0, 30, 60, 0.85), rgba(0, 10, 20, 0.9)), url('https://images.unsplash.com/photo-1541888086425-d81bb19240f5?w=1600') center/cover; 
+            background: linear-gradient(rgba(0, 30, 60, 0.85), rgba(0, 10, 20, 0.9)), url('https://images.unsplash.com/photo-1541888086225-f674ce89228e?w=1600') center/cover; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; border-bottom: 4px solid var(--accent); 
         }
         
@@ -59,7 +59,7 @@
         .page-header h1 span { background: var(--accent); color: #fff; padding: 5px 20px; border-radius: 6px; display: inline-block; box-shadow: 0 10px 20px rgba(204, 0, 0, 0.3); }
         .page-header p { font-size: 1.2rem; font-weight: 300; max-width: 600px; color: #eee; margin-top: 15px; }
 
-        /* --- NEW: STATS SECTION --- */
+        /* --- STATS SECTION --- */
         .stats-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; padding: 40px 5%; background: var(--primary); color: #fff; border-bottom: 4px solid var(--accent); }
         .stat-box { text-align: center; padding: 15px 30px; border-right: 1px solid rgba(255,255,255,0.2); }
         .stat-box:last-child { border-right: none; }
@@ -67,7 +67,31 @@
         .stat-box h3 { font-size: 2.2rem; font-weight: 700; margin-bottom: 5px; }
         .stat-box p { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: #ccc; }
 
-        /* --- ABOUT SECTIONS --- */
+        /* --- LEADERSHIP SECTION (Luxury Card) --- RELOCATED ABOVE OVERVIEW --- */
+        .leadership-bg { background: linear-gradient(135deg, var(--dark-bg), var(--primary)); padding: 80px 5%; border-bottom: 4px solid var(--accent); }
+        .leader-card { max-width: 1000px; margin: 0 auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 50px; border-radius: 15px; display: grid; grid-template-columns: 1fr 2fr; gap: 50px; align-items: center; backdrop-filter: blur(10px); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        
+        .leader-img { text-align: center; display: flex; justify-content: center; align-items: center;}
+        /* FIXED: Photo 1:1 Size, Square with Object Fit Cover */
+        .leader-img img { 
+            width: 100%; 
+            max-width: 250px; /* Reduced max-width looks better with square */
+            height: auto; 
+            aspect-ratio: 1 / 1; /* Force 1:1 ratio */
+            object-fit: cover; /* Center crop image within container */
+            border-radius: 15px; /* Square with slightly rounded corners */
+            border: 5px solid var(--accent); 
+            padding: 5px; 
+            background: #fff; 
+            box-shadow: 0 15px 30px rgba(204,0,0,0.2); 
+        }
+        
+        .leader-text { color: #fff; }
+        .leader-text h2 { font-size: 2.2rem; color: var(--accent); margin-bottom: 5px; text-transform: uppercase; font-weight: 700; }
+        .leader-text h4 { font-size: 1.2rem; color: #ccc; margin-bottom: 25px; font-weight: 400; text-transform: uppercase; letter-spacing: 1px; }
+        .leader-text p { font-size: 1.1rem; line-height: 1.8; color: #eee; border-left: 4px solid var(--accent); padding-left: 20px; font-style: italic; }
+
+        /* --- ABOUT OVERVIEW SECTION --- */
         .section { padding: 80px 5%; max-width: 1300px; margin: 0 auto; }
         .content-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
         
@@ -82,18 +106,6 @@
         .img-content { position: relative; }
         .img-content img { width: 100%; border-radius: 10px; box-shadow: 0 20px 40px rgba(0,51,102,0.2); border: 2px solid var(--primary); }
         .img-content::after { content: ''; position: absolute; bottom: -20px; right: -20px; width: 150px; height: 150px; border: 4px solid var(--accent); border-radius: 10px; z-index: -1; }
-
-        /* --- LEADERSHIP SECTION (Luxury Card) --- */
-        .leadership-bg { background: linear-gradient(135deg, var(--dark-bg), var(--primary)); padding: 100px 5%; margin-top: 50px; border-top: 4px solid var(--accent); border-bottom: 4px solid var(--accent); }
-        .leader-card { max-width: 1000px; margin: 0 auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 50px; border-radius: 15px; display: grid; grid-template-columns: 1fr 2fr; gap: 50px; align-items: center; backdrop-filter: blur(10px); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
-        
-        .leader-img { text-align: center; }
-        .leader-img img { width: 100%; max-width: 300px; border-radius: 50%; border: 5px solid var(--accent); padding: 5px; background: #fff; box-shadow: 0 15px 30px rgba(204,0,0,0.2); }
-        
-        .leader-text { color: #fff; }
-        .leader-text h2 { font-size: 2.2rem; color: var(--accent); margin-bottom: 5px; text-transform: uppercase; font-weight: 700; }
-        .leader-text h4 { font-size: 1.2rem; color: #ccc; margin-bottom: 25px; font-weight: 400; text-transform: uppercase; letter-spacing: 1px; }
-        .leader-text p { font-size: 1.1rem; line-height: 1.8; color: #eee; border-left: 4px solid var(--accent); padding-left: 20px; font-style: italic; }
 
         .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease; }
         .reveal.active { opacity: 1; transform: translateY(0); }
@@ -110,7 +122,7 @@
         @media(max-width: 991px) {
             .content-wrap { grid-template-columns: 1fr; }
             .img-content { order: -1; margin-bottom: 30px; }
-            .leader-card { grid-template-columns: 1fr; text-align: center; }
+            .leader-card { grid-template-columns: 1fr; text-align: center; gap: 30px; padding: 30px;}
             .leader-text p { border-left: none; border-top: 4px solid var(--accent); padding-left: 0; padding-top: 20px; }
         }
         @media(max-width: 768px) {
@@ -120,7 +132,7 @@
             .nav-links { position: fixed; top: 110px; left: -100%; width: 100%; height: 100vh; background: var(--primary); flex-direction: column; align-items: center; padding-top: 50px; transition: 0.4s; z-index: 999; }
             .nav-links.active { left: 0; }
             .page-header h1 { font-size: 2.5rem; }
-            .stat-box { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.2); width: 100%; padding: 20px 0; }
+            .stat-box { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); width: 100%; padding: 20px 0; }
             .stat-box:last-child { border-bottom: none; }
         }
     </style>
@@ -184,6 +196,19 @@
         </div>
     </div>
 
+    <section class="leadership-bg">
+        <div class="leader-card reveal">
+            <div class="leader-img">
+                <img src="https://res.cloudinary.com/dzkpfnwbl/image/upload/v1778496214/68448006_2256956841068257_2858141190337855488_n_shkizc.jpg" alt="Janaka Bandara Aththanayaka">
+            </div>
+            <div class="leader-text">
+                <h2>Janaka Bandara Aththanayaka</h2>
+                <h4>Managing Director / Founder</h4>
+                <p>"Under the visionary leadership of Mr. Aththanayaka, Niwasa Constructions has grown into a trusted name in Kandy. Recognized with a 5-star rating for professional craftsmanship, our mission is to remain a trusted partner in turning your architectural dreams into enduring realities, ensuring a perfect blend of luxury, safety, and Vastu Vidya."</p>
+            </div>
+        </div>
+    </section>
+
     <section class="section">
         <div class="content-wrap reveal">
             <div class="text-content">
@@ -201,19 +226,6 @@
             
             <div class="img-content">
                 <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800" alt="Construction Excellence">
-            </div>
-        </div>
-    </section>
-
-    <section class="leadership-bg">
-        <div class="leader-card reveal">
-            <div class="leader-img">
-                <img src="https://res.cloudinary.com/dzkpfnwbl/image/upload/v1778496214/68448006_2256956841068257_2858141190337855488_n_shkizc.jpg" alt="Janaka Bandara Aththanayaka">
-            </div>
-            <div class="leader-text">
-                <h2>Janaka Bandara Aththanayaka</h2>
-                <h4>Managing Director / Founder</h4>
-                <p>"Under the visionary leadership of Mr. Aththanayaka, Niwasa Constructions has grown into a trusted name in Kandy. Recognized with a 5-star rating for professional craftsmanship, our mission is to remain a trusted partner in turning your architectural dreams into enduring realities, ensuring a perfect blend of luxury, safety, and Vastu Vidya."</p>
             </div>
         </div>
     </section>
