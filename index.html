@@ -22,93 +22,20 @@
         
         /* --- PREMIUM LOGO ANIMATION LOADER --- */
         #loader {
-            position: fixed;
-            inset: 0;
-            background: #000000; /* Black background to match your logo JPG */
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.8s ease-in-out, visibility 0.8s;
+            position: fixed; inset: 0; background: #000000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease-in-out, visibility 0.8s;
         }
+        .logo-wrapper { position: relative; width: 280px; margin-bottom: 40px; animation: pulseLogo 2.5s infinite alternate ease-in-out; overflow: hidden; }
+        .logo-wrapper img { width: 100%; display: block; }
+        .logo-wrapper::after { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0)); transform: skewX(-25deg); animation: shimmerSweep 3s infinite; }
+        @keyframes pulseLogo { 0% { transform: scale(0.95); filter: drop-shadow(0 0 15px rgba(30, 78, 140, 0.4)); } 100% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(232, 93, 34, 0.6)); } }
+        @keyframes shimmerSweep { 0% { left: -150%; } 50%, 100% { left: 200%; } }
+        .loader-text { color: #fff; font-size: 1rem; letter-spacing: 5px; font-weight: 300; text-transform: uppercase; margin-bottom: 15px; }
+        .loading-line { width: 200px; height: 2px; background: #222; border-radius: 5px; position: relative; overflow: hidden; }
+        .loading-line::before { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 5px; animation: loadingBar 2s infinite ease-in-out alternate; }
+        @keyframes loadingBar { 0% { width: 0%; transform: translateX(0); } 100% { width: 100%; transform: translateX(200px); } }
+        .loader-hidden { opacity: 0; visibility: hidden; }
 
-        .logo-wrapper {
-            position: relative;
-            width: 280px; /* Adjust this size if needed */
-            margin-bottom: 40px;
-            animation: pulseLogo 2.5s infinite alternate ease-in-out;
-            overflow: hidden; /* Keeps the shimmer inside the logo area */
-        }
-
-        .logo-wrapper img {
-            width: 100%;
-            display: block;
-        }
-
-        /* The shiny sweeping effect over the logo */
-        .logo-wrapper::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -150%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0));
-            transform: skewX(-25deg);
-            animation: shimmerSweep 3s infinite;
-        }
-
-        /* Glow and pulse effect */
-        @keyframes pulseLogo {
-            0% { transform: scale(0.95); filter: drop-shadow(0 0 15px rgba(30, 78, 140, 0.4)); }
-            100% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(232, 93, 34, 0.6)); }
-        }
-
-        @keyframes shimmerSweep {
-            0% { left: -150%; }
-            50%, 100% { left: 200%; }
-        }
-
-        .loader-text {
-            color: #fff;
-            font-size: 1rem;
-            letter-spacing: 5px;
-            font-weight: 300;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-        }
-
-        .loading-line {
-            width: 200px;
-            height: 2px;
-            background: #222; /* Dark grey track */
-            border-radius: 5px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Gradient loading bar using your logo colors */
-        .loading-line::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; height: 100%; width: 50%;
-            background: linear-gradient(90deg, var(--primary), var(--accent)); 
-            border-radius: 5px;
-            animation: loadingBar 2s infinite ease-in-out alternate;
-        }
-
-        @keyframes loadingBar {
-            0% { width: 0%; transform: translateX(0); }
-            100% { width: 100%; transform: translateX(200px); }
-        }
-
-        .loader-hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        /* --- REST OF YOUR CSS --- */
+        /* --- NAVIGATION & HEADER --- */
         .top-bar { background: var(--primary); color: #fff; padding: 10px 5%; display: flex; justify-content: space-between; font-size: 0.85rem; }
         nav { background: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; } .logo span { color: var(--accent); }
@@ -119,9 +46,22 @@
         .menu-btn { display: none; font-size: 1.5rem; color: var(--primary); cursor: pointer; }
         
         .hero { height: 80vh; background: linear-gradient(rgba(30, 78, 140, 0.7), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; }
-        .hero h1 { font-size: 4rem; margin-bottom: 10px; } .hero p { font-size: 1.2rem; font-weight: 300; max-width: 800px; margin-bottom: 30px; }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 10px; line-height: 1.2; } .hero p { font-size: 1.2rem; font-weight: 300; max-width: 800px; margin-bottom: 30px; }
         
-        .quick-services { display: flex; justify-content: center; flex-wrap: wrap; margin-top: -50px; position: relative; z-index: 10; padding: 0 5%; gap: 20px; }
+        /* --- DYNAMIC SERVICES TICKER --- */
+        .services-ticker { background: #111; color: #fff; padding: 40px 5%; border-bottom: 4px solid var(--accent); text-align: center; }
+        .ticker-title { color: var(--accent); font-size: 1.8rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
+        .ticker-container { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
+        
+        .ticker-side { flex: 1; min-width: 300px; position: relative; height: 80px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 20px; overflow: hidden; }
+        .ticker-side.right { border-left: 4px solid var(--primary); }
+        .ticker-side.left { border-right: 4px solid var(--accent); }
+
+        .service-point { position: absolute; width: 100%; text-align: center; font-size: 1.1rem; line-height: 1.5; opacity: 0; transform: translateY(30px); transition: all 0.6s ease-in-out; padding: 0 15px; }
+        .service-point.active { opacity: 1; transform: translateY(0); }
+        
+        /* --- SERVICES & CONTENT --- */
+        .quick-services { display: flex; justify-content: center; flex-wrap: wrap; margin-top: -30px; position: relative; z-index: 10; padding: 0 5%; gap: 20px; }
         .q-box { background: #fff; padding: 30px 20px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; flex: 1; min-width: 200px; border-bottom: 4px solid var(--accent); transition: 0.3s; }
         .q-box:hover { transform: translateY(-10px); } .q-box i { font-size: 2.5rem; color: var(--primary); margin-bottom: 15px; } .q-box h4 { font-size: 1.1rem; color: var(--text); }
         
@@ -130,8 +70,17 @@
         .welcome-text { flex: 1; } .welcome-text h2 { font-size: 2.2rem; color: var(--primary); margin-bottom: 20px; } .welcome-text p { color: #555; margin-bottom: 15px; line-height: 1.7; }
         .welcome-img { flex: 1; } .welcome-img img { width: 100%; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
         
+        /* --- WHY CHOOSE US --- */
         .bg-light { background: var(--light); }
-        .sec-title { text-align: center; font-size: 2.5rem; color: var(--primary); margin-bottom: 40px; text-transform: uppercase; } .sec-title span { color: var(--accent); }
+        .sec-title { text-align: center; font-size: 2.5rem; color: var(--primary); margin-bottom: 40px; text-transform: uppercase; font-weight: 700; } .sec-title span { color: var(--accent); }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .feature-card { text-align: center; padding: 30px; background: #fff; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid var(--gray); }
+        .feature-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .feature-card i { font-size: 3rem; color: var(--accent); margin-bottom: 20px; }
+        .feature-card h3 { color: var(--primary); margin-bottom: 15px; font-size: 1.3rem; }
+        .feature-card p { color: #666; font-size: 0.95rem; line-height: 1.6; }
+
+        /* --- PROJECTS GALLERY --- */
         .projects-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 20px; padding-bottom: 20px; }
         .projects-slider::-webkit-scrollbar { height: 8px; } .projects-slider::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
         .project-card { min-width: 350px; scroll-snap-align: start; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; }
@@ -139,14 +88,20 @@
         .project-card img { width: 100%; height: 250px; object-fit: cover; }
         .project-info { padding: 20px; text-align: center; } .project-info h3 { font-size: 1.2rem; color: var(--primary); }
         
+        /* --- FOOTER & FLOATING WHATSAPP --- */
         footer { background: #111; color: #ccc; padding: 60px 5% 20px; border-top: 4px solid var(--accent); }
         .foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
         .foot-grid h3 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; } .foot-grid a { color: #ccc; display: block; margin-bottom: 10px; transition: 0.3s; } .foot-grid a:hover { color: var(--accent); }
+        .email-button { display: inline-block; background: var(--primary); color: #fff; padding: 5px 15px; border-radius: 3px; margin: 5px 0 15px 0; font-size: 0.85rem;}
         
+        .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 40px; right: 40px; background-color: #25d366; color: #FFF; border-radius: 50px; text-align: center; font-size: 30px; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); z-index: 100; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #128C7E; color: #fff; }
+
         @media(max-width: 768px) {
             .top-bar { flex-direction: column; text-align: center; gap: 10px; } .menu-btn { display: block; }
             .nav-links { position: fixed; top: 110px; left: -100%; width: 100%; height: 100vh; background: #fff; flex-direction: column; align-items: center; padding-top: 50px; transition: 0.4s; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
-            .nav-links.active { left: 0; } .welcome-wrap { flex-direction: column; } .hero h1 { font-size: 2.5rem; }
+            .nav-links.active { left: 0; } .welcome-wrap { flex-direction: column; } .hero h1 { font-size: 2.2rem; }
+            .ticker-container { flex-direction: column; gap: 10px; } .ticker-side.left { border-right: none; border-bottom: 4px solid var(--accent); }
         }
 
         /* --- LIGHTBOX GALLERY CSS --- */
@@ -184,18 +139,59 @@
     </nav>
 
     <div class="hero">
-        
         <h1>ඔබගේ නිවාස සිහිනය සැබෑකරන විශ්වාසවන්ත සහකරු</h1>
         <p>At Niwasa Constructions, we transform your dreams into reality. From concept to completion, our expert team delivers high-quality construction solutions tailored to your vision.</p>
         <a href="projects.html" class="quote-btn" style="padding: 15px 30px; font-size: 1.1rem;">Build Your Future</a>
     </div>
 
-    <div class="quick-services">
+    <div class="services-ticker">
+        <h2 class="ticker-title">අපගේ සේවාවන් | Our Services</h2>
+        <div class="ticker-container">
+            
+            <div class="ticker-side left">
+                <div class="service-point sin active">✅ වරලත් වාස්තු විද්‍යාඥයෙකු අතින් නිමවෙන වාස්තු විද්‍යාත්මක නිවාස සැලසුම්</div>
+                <div class="service-point sin">✅ බැංකු ණය සඳහා අවශ්‍ය BOQ ඇස්තමේන්තු සැකසීම</div>
+                <div class="service-point sin">✅ වසර ගණනාවක අත්දැකීම් ඇති ඉංජිනේරු මගපෙන්වීම</div>
+                <div class="service-point sin">✅ නිවාස හා ගොඩනැගිලි ඉදිකිරීමේ සම්පූර්ණ වගකීම</div>
+            </div>
+
+            <div class="ticker-side right">
+                <div class="service-point eng active">✅ Architectural house designs by chartered architects</div>
+                <div class="service-point eng">✅ BOQ estimates prepared for bank loans</div>
+                <div class="service-point eng">✅ Expert engineering guidance with years of experience</div>
+                <div class="service-point eng">✅ Complete responsibility for housing and building construction</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="quick-services" style="margin-top: 40px;">
         <div class="q-box"><i class="fas fa-ruler-combined"></i><h4>වාස්තු විද්‍යාත්මක<br>නිවාස සැලසුම්</h4></div>
         <div class="q-box"><i class="fas fa-file-invoice"></i><h4>ඇස්තමේන්තු සැකසීම<br>BOQ</h4></div>
         <div class="q-box"><i class="fas fa-helmet-safety"></i><h4>අත්දැකීම් බහුල<br>ඉංජිනේරු අධීක්ෂණය</h4></div>
         <div class="q-box"><i class="fas fa-building"></i><h4>නිවාස හා ගොඩනැගිලි<br>ඉදිකිරීම</h4></div>
     </div>
+
+    <section class="section bg-light">
+        <h2 class="sec-title">අපිව තෝරාගන්නේ <span>ඇයි?</span></h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-handshake"></i>
+                <h3>විශ්වාසනීය සේවය</h3>
+                <p>අපගේ පාරිභෝගිකයින්ගේ විශ්වාසය දිනාගනිමින්, ගිවිසුම්ගත වූ පරිදි ඉහළම ප්‍රමිතියෙන් යුතු අමුද්‍රව්‍ය භාවිතා කරමින් ඉදිකිරීම් සිදුකරයි.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-clock"></i>
+                <h3>නියමිත වෙලාවට නිමකිරීම</h3>
+                <p>ඔබගේ කාලයේ වටිනාකම අප දන්නෙමු. එමනිසා නියමිත දින වකවානු වලට පෙර ඔබගේ සිහින නිවස ඔබට භාර දීමට අප බැඳී සිටින්නෙමු.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-tags"></i>
+                <h3>සාධාරණ මිල ගණන්</h3>
+                <p>සැඟවුණු ගාස්තු කිසිවක් නොමැතිව, ඔබගේ අයවැයට සරිලන පරිදි සහ බැංකු ණය පහසුකම් ලබාගැනීමට හැකිවන පරිදි ඇස්තමේන්තු සකසා දීම.</p>
+            </div>
+        </div>
+    </section>
 
     <section class="section">
         <div class="welcome-wrap">
@@ -246,6 +242,10 @@
         <div style="text-align: center; font-size: 0.9rem;">2026 &copy; All Rights Reserved | Niwasa Constructions (Pvt) Ltd</div>
     </footer>
 
+    <a href="https://wa.me/94778568527" class="whatsapp-float" target="_blank" title="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
     <div id="galleryModal" class="modal">
         <span class="close-btn" onclick="closeGallery()">&times;</span>
         <img class="modal-content" id="modalImage">
@@ -257,7 +257,6 @@
         document.addEventListener("DOMContentLoaded", () => {
             const loader = document.getElementById("loader");
             
-            // Allow animation to play fully before hiding (2.5 seconds matching animation duration)
             window.addEventListener("load", () => {
                 setTimeout(() => {
                     loader.classList.add("loader-hidden");
@@ -267,9 +266,27 @@
 
             const menuBtn = document.querySelector(".menu-btn"), navLinks = document.querySelector(".nav-links");
             menuBtn.addEventListener("click", () => { navLinks.classList.toggle("active"); });
+
+            // --- NEW: TICKER ANIMATION SCRIPT ---
+            const sinPoints = document.querySelectorAll('.service-point.sin');
+            const engPoints = document.querySelectorAll('.service-point.eng');
+            let tIndex = 0;
+
+            setInterval(() => {
+                // Remove active class from current points
+                sinPoints[tIndex].classList.remove('active');
+                engPoints[tIndex].classList.remove('active');
+                
+                // Move to next point
+                tIndex = (tIndex + 1) % sinPoints.length;
+                
+                // Add active class to new points
+                sinPoints[tIndex].classList.add('active');
+                engPoints[tIndex].classList.add('active');
+            }, 3500); // changes every 3.5 seconds
         });
 
-        // --- GALLERY LOGIC ---
+        // --- GALLERY LOGIC (FULL IMAGES RESTORED) ---
         const projectImages = {
             'Weligalla': [
                 'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453733/Weligalla%20Project/Front1_njgakv.jpg',
@@ -309,9 +326,7 @@
             document.getElementById('galleryModal').style.display = 'flex';
         }
 
-        function closeGallery() {
-            document.getElementById('galleryModal').style.display = 'none';
-        }
+        function closeGallery() { document.getElementById('galleryModal').style.display = 'none'; }
 
         function changeImage(step) {
             currentIndex += step;
