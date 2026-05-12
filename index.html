@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Niwasa Constructions | Design & Build</title>
+    <title>Niwasa Constructions | Luxury Design & Build</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
-        /* --- LOGO COLORS APPLIED TO WEBSITE --- */
+        /* --- BRAND COLORS --- */
         :root { 
             --primary: #1E4E8C; /* Logo Dark Blue */
             --accent: #E85D22;  /* Logo Orange/Red */
-            --text: #333; 
+            --text-dark: #111; 
+            --text-light: #fff; 
             --light: #f8f9fa; 
             --gray: #e9ecef; 
         }
@@ -35,46 +36,74 @@
         @keyframes loadingBar { 0% { width: 0%; transform: translateX(0); } 100% { width: 100%; transform: translateX(200px); } }
         .loader-hidden { opacity: 0; visibility: hidden; }
 
-        /* --- NAVIGATION & HEADER --- */
+        /* --- TOP BAR --- */
         .top-bar { background: var(--primary); color: #fff; padding: 10px 5%; display: flex; justify-content: space-between; font-size: 0.85rem; }
-        nav { background: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; } .logo span { color: var(--accent); }
-        .nav-links { display: flex; gap: 20px; } .nav-links a { color: var(--text); font-weight: 500; text-transform: uppercase; font-size: 0.9rem; transition: 0.3s; }
-        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
-        .quote-btn { background: var(--accent); color: #fff; padding: 8px 20px; border-radius: 4px; font-weight: 600; }
-        .quote-btn:hover { background: #cf4f1a; color: #fff; }
-        .menu-btn { display: none; font-size: 1.5rem; color: var(--primary); cursor: pointer; }
+        .top-bar div { display: flex; align-items: center; gap: 15px; }
         
-        .hero { height: 80vh; background: linear-gradient(rgba(30, 78, 140, 0.7), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; }
-        .hero h1 { font-size: 3.5rem; margin-bottom: 10px; line-height: 1.2; } .hero p { font-size: 1.2rem; font-weight: 300; max-width: 800px; margin-bottom: 30px; }
+        /* --- NAVIGATION --- */
+        nav { 
+            background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        .logo { display: flex; align-items: center; gap: 15px; font-size: 1.6rem; font-weight: 700; color: #fff; text-transform: uppercase; } 
+        .logo img { height: 60px; }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 20px; } .nav-links a { color: #fff; font-weight: 500; text-transform: uppercase; font-size: 0.9rem; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .quote-btn { background: var(--accent); color: #fff; padding: 8px 20px; border-radius: 4px; font-weight: 600; border: none; cursor: pointer;}
+        .quote-btn:hover { background: #cf4f1a; color: #fff; }
+        .menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; }
+        
+        /* --- NEW: LUXURY HERO SECTION WITH ANIMATIONS --- */
+        .hero { 
+            height: 80vh; 
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600') center/cover; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; overflow: hidden;
+        }
+        
+        /* Initial Hidden States for Animation */
+        .hero h1, .hero p, .hero .luxury-btn {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        .hero h1 { font-size: 5rem; font-weight: 700; margin-bottom: 20px; line-height: 1.1; text-transform: uppercase; } 
+        .hero h1 span.highlight { color: var(--accent); }
+        .hero p { font-size: 1.2rem; font-weight: 300; max-width: 900px; margin-bottom: 40px; color: #ccc; }
+        .hero .luxury-btn { padding: 18px 45px; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; background: transparent; border: 2px solid #fff; color: #fff; transition: 0.3s, transform 1s ease-out; }
+        .hero .luxury-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+        /* Animation Trigger Classes */
+        .hero.hero-loaded h1 { opacity: 1; transform: translateY(0); }
+        .hero.hero-loaded p { opacity: 1; transform: translateY(0); transition-delay: 0.3s; }
+        .hero.hero-loaded .luxury-btn { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
         
         /* --- DYNAMIC SERVICES TICKER --- */
         .services-ticker { background: #111; color: #fff; padding: 40px 5%; border-bottom: 4px solid var(--accent); text-align: center; }
         .ticker-title { color: var(--accent); font-size: 1.8rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
         .ticker-container { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
-        
         .ticker-side { flex: 1; min-width: 300px; position: relative; height: 80px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 20px; overflow: hidden; }
         .ticker-side.right { border-left: 4px solid var(--primary); }
         .ticker-side.left { border-right: 4px solid var(--accent); }
-
         .service-point { position: absolute; width: 100%; text-align: center; font-size: 1.1rem; line-height: 1.5; opacity: 0; transform: translateY(30px); transition: all 0.6s ease-in-out; padding: 0 15px; }
         .service-point.active { opacity: 1; transform: translateY(0); }
         
-        /* --- SERVICES & CONTENT --- */
+        /* --- QUICK SERVICES --- */
         .quick-services { display: flex; justify-content: center; flex-wrap: wrap; margin-top: -30px; position: relative; z-index: 10; padding: 0 5%; gap: 20px; }
-        .q-box { background: #fff; padding: 30px 20px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; flex: 1; min-width: 200px; border-bottom: 4px solid var(--accent); transition: 0.3s; }
-        .q-box:hover { transform: translateY(-10px); } .q-box i { font-size: 2.5rem; color: var(--primary); margin-bottom: 15px; } .q-box h4 { font-size: 1.1rem; color: var(--text); }
+        .q-box { background: #fff; padding: 30px 20px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; flex: 1; min-width: 200px; border-bottom: 4px solid var(--accent); transition: 0.3s; color: var(--text-dark); }
+        .q-box:hover { transform: translateY(-10px); } .q-box i { font-size: 2.5rem; color: var(--primary); margin-bottom: 15px; } .q-box h4 { font-size: 1.1rem; }
         
+        /* --- GENERAL SECTIONS --- */
         .section { padding: 80px 5%; }
         .welcome-wrap { display: flex; gap: 50px; align-items: center; }
-        .welcome-text { flex: 1; } .welcome-text h2 { font-size: 2.2rem; color: var(--primary); margin-bottom: 20px; } .welcome-text p { color: #555; margin-bottom: 15px; line-height: 1.7; }
+        .welcome-text { flex: 1; color: var(--text-dark); } .welcome-text h2 { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; } .welcome-text p { color: #555; margin-bottom: 15px; line-height: 1.7; }
         .welcome-img { flex: 1; } .welcome-img img { width: 100%; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
         
         /* --- WHY CHOOSE US --- */
         .bg-light { background: var(--light); }
-        .sec-title { text-align: center; font-size: 2.5rem; color: var(--primary); margin-bottom: 40px; text-transform: uppercase; font-weight: 700; } .sec-title span { color: var(--accent); }
+        .sec-title { text-align: center; font-size: 2.8rem; color: var(--primary); margin-bottom: 40px; text-transform: uppercase; font-weight: 700; } .sec-title span { color: var(--accent); }
         .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
-        .feature-card { text-align: center; padding: 30px; background: #fff; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid var(--gray); }
+        .feature-card { text-align: center; padding: 30px; background: #fff; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid var(--gray); color: var(--text-dark); }
         .feature-card:hover { border-color: var(--primary); transform: translateY(-5px); }
         .feature-card i { font-size: 3rem; color: var(--accent); margin-bottom: 20px; }
         .feature-card h3 { color: var(--primary); margin-bottom: 15px; font-size: 1.3rem; }
@@ -86,10 +115,10 @@
         .project-card { min-width: 350px; scroll-snap-align: start; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; }
         .project-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .project-card img { width: 100%; height: 250px; object-fit: cover; }
-        .project-info { padding: 20px; text-align: center; } .project-info h3 { font-size: 1.2rem; color: var(--primary); }
+        .project-info { padding: 20px; text-align: center; color: var(--text-dark); } .project-info h3 { font-size: 1.2rem; color: var(--primary); }
         
-        /* --- FOOTER & FLOATING WHATSAPP --- */
-        footer { background: #111; color: #ccc; padding: 60px 5% 20px; border-top: 4px solid var(--accent); }
+        /* --- FOOTER & WHATSAPP --- */
+        footer { background: #000; color: #ccc; padding: 60px 5% 20px; border-top: 4px solid var(--accent); }
         .foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
         .foot-grid h3 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; } .foot-grid a { color: #ccc; display: block; margin-bottom: 10px; transition: 0.3s; } .foot-grid a:hover { color: var(--accent); }
         .email-button { display: inline-block; background: var(--primary); color: #fff; padding: 5px 15px; border-radius: 3px; margin: 5px 0 15px 0; font-size: 0.85rem;}
@@ -97,20 +126,23 @@
         .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 40px; right: 40px; background-color: #25d366; color: #FFF; border-radius: 50px; text-align: center; font-size: 30px; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); z-index: 100; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
         .whatsapp-float:hover { transform: scale(1.1); background-color: #128C7E; color: #fff; }
 
+        @media(max-width: 991px) { .hero h1 { font-size: 3.5rem; } }
         @media(max-width: 768px) {
             .top-bar { flex-direction: column; text-align: center; gap: 10px; } .menu-btn { display: block; }
             .nav-links { position: fixed; top: 110px; left: -100%; width: 100%; height: 100vh; background: #fff; flex-direction: column; align-items: center; padding-top: 50px; transition: 0.4s; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
-            .nav-links.active { left: 0; } .welcome-wrap { flex-direction: column; } .hero h1 { font-size: 2.2rem; }
+            .nav-links.active { left: 0; } .nav-links a { color: var(--text-dark); }
+            .welcome-wrap { flex-direction: column; } 
+            .hero h1 { font-size: 2.2rem; }
             .ticker-container { flex-direction: column; gap: 10px; } .ticker-side.left { border-right: none; border-bottom: 4px solid var(--accent); }
         }
 
-        /* --- LIGHTBOX GALLERY CSS --- */
+        /* --- GALLERY MODAL --- */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; flex-direction: column; }
         .modal-content { max-width: 90%; max-height: 80vh; object-fit: contain; border-radius: 4px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease; }
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .close-btn { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; transition: 0.3s; z-index: 2001;}
+        .close-btn { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 2001;}
         .close-btn:hover { color: var(--accent); }
-        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); color: white; font-size: 35px; cursor: pointer; user-select: none; transition: 0.3s; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 5px; z-index: 2001;}
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); color: white; font-size: 35px; cursor: pointer; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 5px; z-index: 2001;}
         .nav-btn:hover { background: var(--accent); }
         .prev-btn { left: 20px; } .next-btn { right: 20px; }
     </style>
@@ -119,7 +151,7 @@
 
     <div id="loader">
         <div class="logo-wrapper">
-            <img src="dss.png" alt="Aththanayaka Niwasa Logo">
+            <img src="dss.png" alt="Niwasa Constructions Logo">
         </div>
         <div class="loader-text">Welcome to නිවස Construction</div>
         <div class="loading-line"></div>
@@ -131,7 +163,10 @@
     </div>
 
     <nav>
-        <a href="index.html" class="logo">නිවස <span>Constructions (Pvt) Ltd</span></a>
+        <a href="index.html" class="logo">
+            <img src="dss.png" alt="Niwasa Logo">
+            නිවස <span>Constructions</span>
+        </a>
         <div class="menu-btn"><i class="fas fa-bars"></i></div>
         <div class="nav-links">
             <a href="index.html" class="active">Home</a><a href="about us.html">About Us</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="contact us.html">Contact Us</a><a href="contact us" class="quote-btn">Get a Quote</a>
@@ -139,29 +174,26 @@
     </nav>
 
     <div class="hero">
-        <h1>ඔබගේ නිවාස සිහිනය සැබෑකරන විශ්වාසවන්ත සහකරු</h1>
-        <p>At Niwasa Constructions, we transform your dreams into reality. From concept to completion, our expert team delivers high-quality construction solutions tailored to your vision.</p>
-        <a href="projects.html" class="quote-btn" style="padding: 15px 30px; font-size: 1.1rem;">Build Your Future</a>
+        <h1>ඔබගේ නිවාස සිහිනය සැබෑකරන<br><span class="highlight">විශ්වාසවන්ත සහකරු</span></h1>
+        <p>At Niwasa Constructions, we transform your dreams into reality. From concept to completion, our expert team delivers high-quality construction solutions tailored to your vision with unprecedented luxury.</p>
+        <a href="projects.html" class="quote-btn luxury-btn">Build Your Future</a>
     </div>
 
     <div class="services-ticker">
         <h2 class="ticker-title">අපගේ සේවාවන් | Our Services</h2>
         <div class="ticker-container">
-            
             <div class="ticker-side left">
                 <div class="service-point sin active">✅ වරලත් වාස්තු විද්‍යාඥයෙකු අතින් නිමවෙන වාස්තු විද්‍යාත්මක නිවාස සැලසුම්</div>
                 <div class="service-point sin">✅ බැංකු ණය සඳහා අවශ්‍ය BOQ ඇස්තමේන්තු සැකසීම</div>
                 <div class="service-point sin">✅ වසර ගණනාවක අත්දැකීම් ඇති ඉංජිනේරු මගපෙන්වීම</div>
                 <div class="service-point sin">✅ නිවාස හා ගොඩනැගිලි ඉදිකිරීමේ සම්පූර්ණ වගකීම</div>
             </div>
-
             <div class="ticker-side right">
                 <div class="service-point eng active">✅ Architectural house designs by chartered architects</div>
                 <div class="service-point eng">✅ BOQ estimates prepared for bank loans</div>
                 <div class="service-point eng">✅ Expert engineering guidance with years of experience</div>
                 <div class="service-point eng">✅ Complete responsibility for housing and building construction</div>
             </div>
-
         </div>
     </div>
 
@@ -256,64 +288,49 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const loader = document.getElementById("loader");
+            const heroSection = document.querySelector(".hero");
             
             window.addEventListener("load", () => {
                 setTimeout(() => {
                     loader.classList.add("loader-hidden");
-                    setTimeout(() => { loader.style.display = "none"; }, 800); 
+                    setTimeout(() => { 
+                        loader.style.display = "none"; 
+                        // Trigger Hero Animation right after loader is hidden
+                        heroSection.classList.add("hero-loaded");
+                    }, 800); 
                 }, 2000); 
             });
 
             const menuBtn = document.querySelector(".menu-btn"), navLinks = document.querySelector(".nav-links");
             menuBtn.addEventListener("click", () => { navLinks.classList.toggle("active"); });
 
-            // --- NEW: TICKER ANIMATION SCRIPT ---
+            // --- TICKER ANIMATION ---
             const sinPoints = document.querySelectorAll('.service-point.sin');
             const engPoints = document.querySelectorAll('.service-point.eng');
             let tIndex = 0;
 
             setInterval(() => {
-                // Remove active class from current points
                 sinPoints[tIndex].classList.remove('active');
                 engPoints[tIndex].classList.remove('active');
                 
-                // Move to next point
                 tIndex = (tIndex + 1) % sinPoints.length;
                 
-                // Add active class to new points
                 sinPoints[tIndex].classList.add('active');
                 engPoints[tIndex].classList.add('active');
-            }, 3500); // changes every 3.5 seconds
+            }, 3500); 
         });
 
-        // --- GALLERY LOGIC (FULL IMAGES RESTORED) ---
+        // --- GALLERY LOGIC ---
         const projectImages = {
             'Weligalla': [
                 'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453733/Weligalla%20Project/Front1_njgakv.jpg',
                 'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453732/Weligalla%20Project/IN_13_aq2uux.jpg',
                 'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453733/Weligalla%20Project/In_12_aicfdg.jpg',
-                'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453733/Weligalla%20Project/iN_14_yzxawc.jpg',
-                'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453733/Weligalla%20Project/In_3_ypyate.jpg',
-                'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453733/Weligalla%20Project/In_4_zekv50.jpg',
-                'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453733/Weligalla%20Project/In_2_vsvacm.jpg',
-                'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453734/Weligalla%20Project/In_6_g3jxu3.jpg',
-                'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453734/Weligalla%20Project/In_9_ynidf0.jpg',
-                'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453735/Weligalla%20Project/Inside_1_pysndw.jpg',
-                'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453732/Weligalla%20Project/front_3_hapw8k.jpg',
-                'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453732/Weligalla%20Project/FRONT_2_wsmffy.jpg'
+                'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453733/Weligalla%20Project/iN_14_yzxawc.jpg'
             ],
-            'kumbiyangoda': [
-                'https://drive.google.com/file/d/1WnBECcg0dGsS_25OYk3hvYwdKDyHKzlE/view?usp=sharing',
-                'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1000'
-            ],
-            'puttalam': [
-                'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1000',
-                'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1000'
-            ],
-            'gelioya': [
-                'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1000',
-                'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1000'
-            ]
+            'kumbiyangoda': ['https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1000'],
+            'puttalam': ['https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1000'],
+            'gelioya': ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1000']
         };
 
         let currentGallery = [];
