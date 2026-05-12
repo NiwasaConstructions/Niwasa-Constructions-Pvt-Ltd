@@ -48,7 +48,7 @@
         .quote-btn:hover { background: #fff; color: var(--accent); }
         .menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; }
         
-        /* --- FIXED LUXURY HERO SECTION --- */
+        /* --- HERO SECTION --- */
         .hero { 
             height: 80vh; 
             background: linear-gradient(rgba(0, 30, 60, 0.85), rgba(0, 10, 20, 0.9)), url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600') center/cover; 
@@ -57,17 +57,8 @@
         .hero h1, .hero p, .hero .luxury-btn { opacity: 0; transform: translateY(40px); transition: opacity 1s ease-out, transform 1s ease-out; }
         
         .hero h1 { font-size: 4rem; font-weight: 700; margin-bottom: 20px; line-height: 1.2; text-transform: uppercase; } 
-        
-        /* FIXED: Red Highlight Badge (Instead of just red text) */
         .hero h1 span.highlight { 
-            background: var(--accent); 
-            color: #fff; 
-            padding: 5px 25px; 
-            display: inline-block; 
-            margin-top: 10px; 
-            border-radius: 6px; 
-            box-shadow: 0 10px 20px rgba(204, 0, 0, 0.3);
-            font-size: 3.5rem;
+            background: var(--accent); color: #fff; padding: 5px 25px; display: inline-block; margin-top: 10px; border-radius: 6px; box-shadow: 0 10px 20px rgba(204, 0, 0, 0.3); font-size: 3.5rem;
         }
         
         .hero p { font-size: 1.2rem; font-weight: 300; max-width: 900px; margin-bottom: 40px; color: #eee; line-height: 1.6; }
@@ -118,8 +109,24 @@
         .project-card img { width: 100%; height: 250px; object-fit: cover; }
         .project-info { padding: 20px; text-align: center; color: var(--text-dark); } .project-info h3 { font-size: 1.2rem; color: var(--primary); }
         
+        /* SEE MORE BUTTON */
+        .see-more-container { text-align: center; margin-top: 50px; }
+        .see-more-btn { display: inline-block; padding: 12px 35px; border: 2px solid var(--primary); color: var(--primary); font-size: 1.1rem; font-weight: 600; border-radius: 5px; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; }
+        .see-more-btn:hover { background: var(--primary); color: #fff; box-shadow: 0 5px 15px rgba(0,51,102,0.3); transform: translateY(-3px); }
+
+        /* --- CALL TO ACTION (CTA) --- */
+        .cta-section { background: var(--primary); color: #fff; padding: 60px 5%; text-align: center; border-top: 4px solid var(--accent); position: relative; overflow: hidden; }
+        .cta-section::before { content: ''; position: absolute; top: -50px; left: -50px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.05); }
+        .cta-section h2 { font-size: 2.5rem; margin-bottom: 15px; text-transform: uppercase; }
+        .cta-section p { font-size: 1.1rem; color: #ccc; margin-bottom: 30px; }
+        .cta-btn { display: inline-block; padding: 15px 40px; background: var(--accent); color: #fff; font-size: 1.1rem; font-weight: 600; border-radius: 5px; text-transform: uppercase; transition: 0.3s; box-shadow: 0 5px 15px rgba(204, 0, 0, 0.4); }
+        .cta-btn:hover { background: #fff; color: var(--accent); transform: translateY(-3px); }
+
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
         /* --- FOOTER --- */
-        footer { background: var(--dark-bg); color: #ccc; padding: 60px 5% 20px; border-top: 4px solid var(--accent); }
+        footer { background: var(--dark-bg); color: #ccc; padding: 60px 5% 20px; border-top: 1px solid rgba(255,255,255,0.1); }
         .foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
         .foot-grid h3 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; border-left: 3px solid var(--accent); padding-left: 10px; } .foot-grid a { color: #ccc; display: block; margin-bottom: 10px; transition: 0.3s; } .foot-grid a:hover { color: var(--accent); }
         .email-button { display: inline-block; background: var(--primary); color: #fff; padding: 8px 20px; border-radius: 4px; margin: 5px 0 15px 0; font-size: 0.9rem;} .email-button:hover { background: var(--accent); }
@@ -135,6 +142,7 @@
             .welcome-wrap { flex-direction: column; } 
             .hero h1 { font-size: 2.2rem; } .hero h1 span.highlight { font-size: 1.8rem; padding: 5px 15px; }
             .ticker-container { flex-direction: column; gap: 10px; } .ticker-side.left { border-right: none; border-bottom: 4px solid var(--accent); }
+            .cta-section h2 { font-size: 2rem; }
         }
 
         /* --- GALLERY MODAL --- */
@@ -178,7 +186,7 @@
         <a href="projects.html" class="quote-btn luxury-btn">Build Your Future</a>
     </div>
 
-    <div class="services-ticker">
+    <div class="services-ticker reveal">
         <h2 class="ticker-title">අපගේ සේවාවන් <span>|</span> Our Services</h2>
         <div class="ticker-container">
             <div class="ticker-side left">
@@ -196,7 +204,7 @@
         </div>
     </div>
 
-    <div class="quick-services" style="margin-top: 40px;">
+    <div class="quick-services reveal" style="margin-top: 40px;">
         <div class="q-box"><i class="fas fa-ruler-combined"></i><h4>වාස්තු විද්‍යාත්මක<br>නිවාස සැලසුම්</h4></div>
         <div class="q-box"><i class="fas fa-file-invoice"></i><h4>ඇස්තමේන්තු සැකසීම<br>BOQ</h4></div>
         <div class="q-box"><i class="fas fa-helmet-safety"></i><h4>අත්දැකීම් බහුල<br>ඉංජිනේරු අධීක්ෂණය</h4></div>
@@ -204,19 +212,19 @@
     </div>
 
     <section class="section bg-light">
-        <h2 class="sec-title">අපිව තෝරාගන්නේ <span>ඇයි?</span></h2>
+        <h2 class="sec-title reveal">අපිව තෝරාගන්නේ <span>ඇයි?</span></h2>
         <div class="features-grid">
-            <div class="feature-card">
+            <div class="feature-card reveal">
                 <i class="fas fa-handshake"></i>
                 <h3>විශ්වාසනීය සේවය</h3>
                 <p>අපගේ පාරිභෝගිකයින්ගේ විශ්වාසය දිනාගනිමින්, ගිවිසුම්ගත වූ පරිදි ඉහළම ප්‍රමිතියෙන් යුතු අමුද්‍රව්‍ය භාවිතා කරමින් ඉදිකිරීම් සිදුකරයි.</p>
             </div>
-            <div class="feature-card">
+            <div class="feature-card reveal">
                 <i class="fas fa-clock"></i>
                 <h3>නියමිත වෙලාවට නිමකිරීම</h3>
                 <p>ඔබගේ කාලයේ වටිනාකම අප දන්නෙමු. එමනිසා නියමිත දින වකවානු වලට පෙර ඔබගේ සිහින නිවස ඔබට භාර දීමට අප බැඳී සිටින්නෙමු.</p>
             </div>
-            <div class="feature-card">
+            <div class="feature-card reveal">
                 <i class="fas fa-tags"></i>
                 <h3>සාධාරණ මිල ගණන්</h3>
                 <p>සැඟවුණු ගාස්තු කිසිවක් නොමැතිව, ඔබගේ අයවැයට සරිලන පරිදි සහ බැංකු ණය පහසුකම් ලබාගැනීමට හැකිවන පරිදි ඇස්තමේන්තු සකසා දීම.</p>
@@ -226,22 +234,22 @@
 
     <section class="section">
         <div class="welcome-wrap">
-            <div class="welcome-text">
+            <div class="welcome-text reveal">
                 <h2>WELCOME TO NIWASA CONSTRUCTION</h2>
                 <p><strong>ATHTHANAYAKA NIWASA CONSTRUCTIONS (PVT) LTD</strong> is a leading and fast-growing construction company in Sri Lanka. We are engaged in both commercial and residential construction with a mission of "Bringing your dreamed living space into the real".</p>
                 <p>Our Services include Construction, Project Management, Architectural Designing, Interior Designing, Structural Designing, BOQ, Estimation, and council approvals.</p>
                 <h3 style="color: var(--accent); margin-top: 20px;">Build Your Dream Home With Us</h3>
                 <p>We ensure to give the best quality service for your expenditure. Embrace cutting-edge advancements like 3D printing, modular construction, and smart building technologies to revolutionize design efficiency.</p>
             </div>
-            <div class="welcome-img">
+            <div class="welcome-img reveal">
                 <img src="https://res.cloudinary.com/dzkpfnwbl/image/upload/v1778475771/New_Post_1_hox6rb.png" alt="Construction Work">
             </div>
         </div>
     </section>
 
     <section class="section bg-light">
-        <h2 class="sec-title">Our <span>Projects</span></h2>
-        <div class="projects-slider">
+        <h2 class="sec-title reveal">Our <span>Projects</span></h2>
+        <div class="projects-slider reveal">
             <div class="project-card" onclick="openGallery('Weligalla')">
                 <img src="https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453732/Weligalla%20Project/front_4_j59qta.jpg" alt="Project">
                 <div class="project-info"><h3>Weligalla, Kandy</h3></div>
@@ -259,6 +267,16 @@
                 <div class="project-info"><h3>Kandy Road, Gelioya</h3></div>
             </div>
         </div>
+        
+        <div class="see-more-container reveal">
+            <a href="projects.html" class="see-more-btn">See More Projects</a>
+        </div>
+    </section>
+
+    <section class="cta-section reveal">
+        <h2>ඔබේ නිවාස සිහිනයත් හැබෑ කරගමුද?</h2>
+        <p>Contact us today for a free consultation and personalized estimate for your project.</p>
+        <a href="contact us.html" class="cta-btn">Get in Touch Now</a>
     </section>
 
     <footer>
@@ -315,6 +333,20 @@
                 sinPoints[tIndex].classList.add('active');
                 engPoints[tIndex].classList.add('active');
             }, 3500); 
+
+            // Scroll Reveal Animation
+            const reveals = document.querySelectorAll(".reveal");
+            const revealOnScroll = () => {
+                reveals.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
+                    if (elementTop < windowHeight - 100) {
+                        element.classList.add("active");
+                    }
+                });
+            };
+            window.addEventListener("scroll", revealOnScroll);
+            revealOnScroll(); // Trigger once on load
         });
 
         const projectImages = {
