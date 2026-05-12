@@ -6,62 +6,153 @@
     <title>Contact Us | Niwasa Constructions</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap');
-        :root{--bg:#fff;--txt:#222;--nav:#0A192F;--gold:#D4AF37;--gray:#f4f4f5;}
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-        h1,h2,h3,h4,.logo{font-family:'Playfair Display',serif;}
-        a{text-decoration:none;}
-        ul{list-style:none;}
-        html{scroll-behavior:smooth;}
-        #loader{position:fixed;inset:0;background:var(--nav);z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;transition:0.5s;}
-        .house-loader{width:60px;height:60px;border-bottom:4px solid var(--gold);position:relative;animation:bld 2s infinite;}
-        .house-loader::before{content:'';position:absolute;bottom:0;left:15px;width:30px;height:35px;background:var(--gold);animation:gw 2s infinite;}
-        .house-loader::after{content:'';position:absolute;bottom:35px;left:-10px;border-left:40px solid transparent;border-right:40px solid transparent;border-bottom:35px solid var(--gold);animation:rf 2s infinite;}
-        @keyframes bld{0%,100%{border-color:transparent;}50%{border-color:var(--gold);}}
-        @keyframes gw{0%,100%{height:0;}50%{height:35px;}}
-        @keyframes rf{0%,100%{transform:translateY(-20px);opacity:0;}50%{transform:translateY(0);opacity:1;}}
-        .load-txt{color:var(--gold);margin-top:30px;letter-spacing:3px;text-transform:uppercase;animation:pulse 1.5s infinite;font-family:'Playfair Display',serif;}
-        @keyframes pulse{50%{opacity:0.5;}}
-        nav{background:var(--nav);padding:20px 5%;display:flex;justify-content:space-between;align-items:center;position:fixed;width:100%;top:0;z-index:1000;box-shadow:0 4px 10px rgba(0,0,0,0.3);}
-        .logo{color:var(--gold);font-size:1.8rem;}
-        .logo span{color:#fff;}
-        .nav-links{display:flex;gap:25px;}
-        .nav-links a{color:#fff;text-transform:uppercase;font-size:0.9rem;transition:0.3s;font-weight:600;}
-        .nav-links a:hover,.nav-links a.active{color:var(--gold);}
-        .menu-btn{display:none;color:var(--gold);font-size:1.8rem;cursor:pointer;}
-        .page-header{height:45vh;background:linear-gradient(rgba(10,25,47,0.9),rgba(10,25,47,0.9)),url('https://images.unsplash.com/photo-1516156008625-3a9d045f11d2?w=1600') center/cover;display:flex;align-items:center;justify-content:center;color:var(--gold);margin-top:70px;text-align:center;}
-        .page-header h1{font-size:3.5rem;}
-        .btn{padding:15px 35px;background:var(--gold);color:var(--nav);font-weight:600;border-radius:4px;display:inline-block;transition:0.3s;border:2px solid var(--gold);}
-        .btn:hover{background:transparent;color:var(--gold);}
-        .section{padding:100px 5%;}
-        .contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px;}
-        .info-box{background:var(--nav);color:#fff;padding:40px;border-radius:8px;}
-        .info-box h3{color:var(--gold);margin-bottom:20px;}
-        .info-box p{margin-bottom:20px;display:flex;align-items:center;}
-        .info-box i{color:var(--gold);margin-right:15px;font-size:1.2rem;}
-        form input,form textarea{width:100%;padding:15px;margin-bottom:20px;border:1px solid #ddd;background:var(--gray);border-radius:4px;}
-        form input:focus,form textarea:focus{outline:none;border-color:var(--gold);}
-        footer{background:var(--nav);color:#fff;padding:60px 5% 20px;}
-        .foot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:40px;margin-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:40px;}
-        .foot-grid h4{color:var(--gold);margin-bottom:20px;font-size:1.5rem;}
-        .foot-grid a{color:#ccc;display:block;margin-bottom:10px;transition:0.3s;}
-        .foot-grid a:hover{color:var(--gold);}
-        .text-center-sm{text-align:center;color:#888;font-size:0.9rem;}
-        .reveal{opacity:0;transform:translateY(50px);transition:all 0.8s ease;}
-        .reveal.active{opacity:1;transform:translateY(0);}
-        @media(max-width:768px){
-            .menu-btn{display:block;}
-            .nav-links{position:fixed;top:70px;right:-100%;flex-direction:column;background:var(--nav);width:100%;height:calc(100vh - 70px);align-items:center;justify-content:center;transition:0.4s;}
-            .nav-links.show{right:0;}
-            .contact-wrap{grid-template-columns:1fr;}
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        /* --- BRAND COLORS: STRICT BLUE & RED --- */
+        :root { 
+            --primary: #003366; /* Deep Navy Blue */
+            --accent: #CC0000;  /* Pure Solid Red */
+            --dark-bg: #00152b; /* Very Dark Blue for Top Bar */
+            --text-dark: #111; 
+            --text-light: #fff; 
+            --light: #f8f9fa; 
+            --gray: #e9ecef; 
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        a { text-decoration: none; } ul { list-style: none; } html { scroll-behavior: smooth; background: var(--light); }
+        
+        /* --- LOADER --- */
+        #loader { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease-in-out, visibility 0.8s; }
+        .logo-wrapper { position: relative; width: 280px; margin-bottom: 40px; animation: pulseLogo 2.5s infinite alternate ease-in-out; overflow: hidden; }
+        .logo-wrapper img { width: 100%; display: block; }
+        .logo-wrapper::after { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0)); transform: skewX(-25deg); animation: shimmerSweep 3s infinite; }
+        @keyframes pulseLogo { 0% { transform: scale(0.95); filter: drop-shadow(0 0 15px rgba(0, 51, 102, 0.6)); } 100% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(204, 0, 0, 0.6)); } }
+        @keyframes shimmerSweep { 0% { left: -150%; } 50%, 100% { left: 200%; } }
+        .loader-text { color: #fff; font-size: 1rem; letter-spacing: 5px; font-weight: 300; text-transform: uppercase; margin-bottom: 15px; }
+        .loading-line { width: 200px; height: 2px; background: #222; border-radius: 5px; position: relative; overflow: hidden; }
+        .loading-line::before { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 5px; animation: loadingBar 2s infinite ease-in-out alternate; }
+        @keyframes loadingBar { 0% { width: 0%; transform: translateX(0); } 100% { width: 100%; transform: translateX(200px); } }
+        .loader-hidden { opacity: 0; visibility: hidden; }
+
+        /* --- TOP BAR & NAV --- */
+        .top-bar { background: var(--dark-bg); color: #ccc; padding: 10px 5%; display: flex; justify-content: space-between; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .top-bar div { display: flex; align-items: center; gap: 15px; }
+        nav { background: var(--primary); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border-bottom: 3px solid var(--accent); }
+        .logo { display: flex; align-items: center; gap: 15px; font-size: 1.6rem; font-weight: 700; color: #fff; text-transform: uppercase; } 
+        .logo img { height: 60px; }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 20px; } .nav-links a { color: #fff; font-weight: 500; text-transform: uppercase; font-size: 0.9rem; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .quote-btn { background: var(--accent); color: #fff; padding: 8px 20px; border-radius: 4px; font-weight: 600; border: none; cursor: pointer;}
+        .quote-btn:hover { background: #fff; color: var(--accent); }
+        .menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; }
+        
+        /* --- PAGE HEADER --- */
+        .page-header { 
+            height: 50vh; 
+            background: linear-gradient(rgba(0, 30, 60, 0.85), rgba(0, 10, 20, 0.9)), url('https://images.unsplash.com/photo-1516156008625-3a9d045f11d2?w=1600') center/cover; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; border-bottom: 4px solid var(--accent); 
+        }
+        
+        /* Red Highlight Badge */
+        .page-header h1 { font-size: 4rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .page-header h1 span { 
+            background: var(--accent); color: #fff; padding: 5px 20px; border-radius: 6px; display: inline-block; box-shadow: 0 10px 20px rgba(204, 0, 0, 0.3);
+        }
+        .page-header p { font-size: 1.2rem; font-weight: 300; max-width: 600px; color: #eee; margin-top: 15px; }
+
+        /* --- CONTACT SECTION --- */
+        .section { padding: 80px 5%; max-width: 1300px; margin: 0 auto; }
+        
+        .contact-wrap { display: grid; grid-template-columns: 1fr 1.5fr; gap: 50px; background: #fff; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); overflow: hidden; }
+        
+        /* Left Info Box (Glassmorphism inspired) */
+        .info-box { 
+            background: linear-gradient(135deg, var(--primary), var(--dark-bg)); 
+            color: #fff; padding: 50px 40px; position: relative; overflow: hidden; 
+        }
+        .info-box::before { content: ''; position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+        .info-box::after { content: ''; position: absolute; bottom: -80px; left: -20px; width: 200px; height: 200px; background: rgba(204,0,0,0.2); border-radius: 50%; }
+        
+        .info-box h3 { font-size: 2rem; margin-bottom: 20px; position: relative; z-index: 2; }
+        .info-box p.subtitle { color: #ccc; margin-bottom: 40px; line-height: 1.6; position: relative; z-index: 2; font-weight: 300; }
+        
+        .contact-item { display: flex; align-items: flex-start; margin-bottom: 30px; position: relative; z-index: 2; }
+        .contact-item i { background: rgba(255,255,255,0.1); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--accent); font-size: 1.2rem; margin-right: 20px; border: 1px solid rgba(255,255,255,0.2); }
+        .contact-item div h4 { font-size: 1.1rem; margin-bottom: 5px; font-weight: 500; }
+        .contact-item div p { color: #ddd; font-size: 0.95rem; line-height: 1.5; }
+
+        /* Right Form Box */
+        .form-box { padding: 50px 40px; }
+        .form-box h3 { font-size: 1.8rem; color: var(--primary); margin-bottom: 30px; }
+        
+        .input-group { position: relative; margin-bottom: 30px; }
+        .input-group input, .input-group textarea { 
+            width: 100%; padding: 15px 20px; background: var(--light); border: 2px solid var(--gray); border-radius: 6px; 
+            font-size: 1rem; color: var(--text-dark); transition: 0.3s; font-family: 'Poppins', sans-serif;
+        }
+        .input-group input:focus, .input-group textarea:focus { border-color: var(--accent); background: #fff; outline: none; box-shadow: 0 5px 15px rgba(204,0,0,0.05); }
+        
+        .submit-btn { 
+            display: inline-block; width: 100%; padding: 18px; background: var(--primary); color: #fff; 
+            font-size: 1.1rem; font-weight: 600; border: none; border-radius: 6px; text-transform: uppercase; 
+            letter-spacing: 1px; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,51,102,0.3);
+        }
+        .submit-btn:hover { background: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(204,0,0,0.3); }
+        
+        .submit-btn i { margin-right: 10px; }
+
+        /* --- NEW: MAP SECTION --- */
+        .map-section { margin-top: 60px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); height: 450px; border: 4px solid #fff; }
+        .map-section iframe { width: 100%; height: 100%; border: none; }
+
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- FOOTER & WHATSAPP --- */
+        footer { background: var(--dark-bg); color: #ccc; padding: 60px 5% 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
+        .foot-grid h3 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; border-left: 3px solid var(--accent); padding-left: 10px; } .foot-grid a { color: #ccc; display: block; margin-bottom: 10px; transition: 0.3s; } .foot-grid a:hover { color: var(--accent); }
+        .email-button { display: inline-block; background: var(--primary); color: #fff; padding: 8px 20px; border-radius: 4px; margin: 5px 0 15px 0; font-size: 0.9rem;} .email-button:hover { background: var(--accent); }
+        
+        .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 40px; right: 40px; background-color: #25d366; color: #FFF; border-radius: 50px; text-align: center; font-size: 30px; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); z-index: 100; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #128C7E; }
+
+        @media(max-width: 991px) {
+            .contact-wrap { grid-template-columns: 1fr; }
+        }
+        @media(max-width: 768px) {
+            .top-bar { flex-direction: column; text-align: center; gap: 10px; }
+            nav { padding: 15px 5%; }
+            .menu-btn { display: block; }
+            .nav-links { position: fixed; top: 110px; left: -100%; width: 100%; height: 100vh; background: var(--primary); flex-direction: column; align-items: center; padding-top: 50px; transition: 0.4s; z-index: 999; }
+            .nav-links.active { left: 0; }
+            .page-header h1 { font-size: 2.5rem; }
+            .info-box, .form-box { padding: 30px 20px; }
         }
     </style>
 </head>
 <body>
-    <div id="loader"><div class="house-loader"></div><div class="load-txt">Constructing</div></div>
+
+    <div id="loader">
+        <div class="logo-wrapper">
+            <img src="dss.png" alt="Niwasa Constructions Logo">
+        </div>
+        <div class="loader-text">Loading Details</div>
+        <div class="loading-line"></div>
+    </div>
+
+    <div class="top-bar">
+        <div><i class="fas fa-envelope"></i> niwasaconstructions@gmail.com &nbsp;&nbsp;|&nbsp;&nbsp; <i class="fas fa-phone"></i> +94 77 856 8527</div>
+        <div><i class="fas fa-clock"></i> Mon - Sat: 8.00 AM - 5.00 PM</div>
+    </div>
 
     <nav>
-        <a href="index.html" class="logo">Niwasa <span>Constructions</span></a>
+        <a href="index.html" class="logo">
+            <img src="dss.png" alt="Niwasa Logo">
+            නිවස <span>Constructions</span>
+        </a>
         <div class="menu-btn"><i class="fas fa-bars"></i></div>
         <div class="nav-links">
             <a href="index.html">Home</a>
@@ -69,82 +160,152 @@
             <a href="services.html">Services</a>
             <a href="projects.html">Projects</a>
             <a href="contact us.html" class="active">Contact Us</a>
+            <a href="contact us.html" class="quote-btn">Get a Quote</a>
         </div>
     </nav>
 
     <div class="page-header">
-        <h1 class="reveal">Get In Touch</h1>
+        <h1 class="reveal">Get In <span>Touch</span></h1>
+        <p class="reveal">Ready to build your dream space? Reach out for consultations or quotations today.</p>
     </div>
 
-    <section class="section reveal">
-        <div class="contact-wrap">
+    <section class="section">
+        <div class="contact-wrap reveal">
+            
             <div class="info-box">
                 <h3>Contact Information</h3>
-                <p style="color:#ccc; margin-bottom:40px;">Ready to build your dream space? Reach out for consultations or quotations.</p>
-                <p><i class="fas fa-map-marker-alt"></i> Kandy, Central Province, Sri Lanka</p>
-                <p><i class="fas fa-phone-alt"></i> +94 77 856 8527</p>
-                <p><i class="fas fa-envelope"></i> niwasaconstructions@gmail.com</p>
+                <p class="subtitle">Fill out the form to send us a direct message on WhatsApp, or contact us using the details below.</p>
+                
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <h4>Our Office</h4>
+                        <p>No: 03, Bowala Lane,<br>Kandy, Sri Lanka</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <div>
+                        <h4>Call Us</h4>
+                        <p>+94 77 856 8527<br>+94 71 123 4567</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <h4>Email Us</h4>
+                        <p>web.niwasaconstructions@gmail.com</p>
+                    </div>
+                </div>
             </div>
-            <div>
+            
+            <div class="form-box">
+                <h3>Send Us a Message</h3>
                 <form id="contactForm">
-                    <input type="text" id="name" placeholder="Your Name" required>
-                    <input type="email" id="email" placeholder="Your Email" required>
-                    <input type="text" id="subject" placeholder="Subject">
-                    <textarea id="message" rows="5" placeholder="Your Message" required></textarea>
-                    <button type="submit" class="btn" style="width:100%; border:none;">Send Message</button>
+                    <div class="input-group">
+                        <input type="text" id="name" placeholder="Your Name" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="email" id="email" placeholder="Your Email Address" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="text" id="subject" placeholder="Inquiry Subject (e.g. House Design, BOQ)">
+                    </div>
+                    
+                    <div class="input-group">
+                        <textarea id="message" rows="5" placeholder="Tell us about your project requirements..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn"><i class="fab fa-whatsapp"></i> Send via WhatsApp</button>
                 </form>
             </div>
+        </div>
+
+        <div class="map-section reveal">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1978.859175205738!2d80.61178036209829!3d7.272855998946984!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae3676ee6c66c01%3A0x25302aa2be26e5c4!2sNiwasa%20Constructions%20Pvt%20Ltd.!5e0!3m2!1sen!2slk!4v1778567229234!5m2!1sen!2slk" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </section>
 
     <footer>
         <div class="foot-grid">
-            <div><h4>Niwasa Constructions</h4><p>Building your future with luxury and confidence.</p></div>
-            <div><h4>Quick Links</h4><a href="about us.html">About Us</a><a href="services.html">Services</a></div>
-            <div><h4>Contact Info</h4><p><i class="fas fa-phone" style="color:var(--gold);"></i> +94 77 856 8527</p></div>
+            <div><h3>Aththanayaka Niwasa</h3><p>Design & Build Company. We are a leading construction company in Sri Lanka. We have completed successful projects.</p></div>
+            <div><h3>Our Services</h3><a href="services.html">House Designs</a><a href="services.html">Construction</a><a href="services.html">Estimations</a></div>
+            <div><h3>Office Address</h3>
+                <p>No: 03, Bowala Lane, Kandy</p>
+                <p>web.niwasaconstructions@gmail.com</p><a href="mailto:web.niwasaconstructions@gmail.com" class="email-button">Send Email</a>
+                <p>+94 77 856 8527</p></div>
         </div>
-        <p class="text-center-sm">&copy; 2026 Niwasa Constructions. All Rights Reserved.</p>
+        <div style="text-align: center; font-size: 0.9rem; margin-top: 20px;">2026 &copy; All Rights Reserved | Niwasa Constructions (Pvt) Ltd</div>
     </footer>
 
+    <a href="https://wa.me/94778568527" class="whatsapp-float" target="_blank" title="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
     <script>
-        // Original page logic (loader, mobile menu, scroll reveal)
-        document.addEventListener("DOMContentLoaded",()=>{
-            const e=document.getElementById("loader");
-            window.addEventListener("load",()=>{setTimeout(()=>{e.style.opacity="0",setTimeout(()=>e.style.display="none",500)},2e3)});
-            const t=document.querySelector(".menu-btn"),n=document.querySelector(".nav-links");
-            t&&t.addEventListener("click",()=>{n.classList.toggle("show"),t.innerHTML=n.classList.contains("show")?'<i class="fas fa-times"></i>':'<i class="fas fa-bars"></i>'});
-            const o=document.querySelectorAll(".reveal"),s=()=>{o.forEach(e=>{e.getBoundingClientRect().top<window.innerHeight-100&&e.classList.add("active")})};
-            window.addEventListener("scroll",s),s()
-            
-            // New WhatsApp Form Submission Logic
+        document.addEventListener("DOMContentLoaded", () => {
+            // Loader
+            const loader = document.getElementById("loader");
+            window.addEventListener("load", () => {
+                setTimeout(() => {
+                    loader.classList.add("loader-hidden");
+                    setTimeout(() => { loader.style.display = "none"; }, 800); 
+                }, 1500); 
+            });
+
+            // Mobile Menu
+            const menuBtn = document.querySelector(".menu-btn"), navLinks = document.querySelector(".nav-links");
+            menuBtn.addEventListener("click", () => { 
+                navLinks.classList.toggle("active"); 
+                menuBtn.innerHTML = navLinks.classList.contains("active") ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+
+            // Scroll Reveal Animation
+            const reveals = document.querySelectorAll(".reveal");
+            const revealOnScroll = () => {
+                reveals.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
+                    if (elementTop < windowHeight - 100) {
+                        element.classList.add("active");
+                    }
+                });
+            };
+            window.addEventListener("scroll", revealOnScroll);
+            revealOnScroll(); 
+
+            // WhatsApp Form Integration
             document.getElementById('contactForm').addEventListener('submit', function(e) {
-                // Prevent the default form submission
                 e.preventDefault();
 
-                // Get the values from the form
+                // Get values
                 const name = document.getElementById('name').value;
                 const email = document.getElementById('email').value;
-                const subject = document.getElementById('subject').value;
+                const subject = document.getElementById('subject').value || 'No Subject';
                 const message = document.getElementById('message').value;
 
-                // Your WhatsApp Number (Country code + Number without the '+' sign)
+                // WhatsApp Number (94778568527)
                 const phoneNumber = "94778568527";
 
-                // Construct the message with the requested header
-                const whatsappText = `*New inquiry - Niwasa Constructions Web*\n\n` +
-                                     `*Name:* ${name}\n` +
-                                     `*Email:* ${email}\n` +
-                                     `*Subject:* ${subject}\n` +
-                                     `*Message:* ${message}`;
+                // Formatted Message using WhatsApp styling (*bold*, _italic_)
+                const whatsappText = `*🛑 New Inquiry - Niwasa Web 🛑*\n\n` +
+                                     `👤 *Name:* ${name}\n` +
+                                     `📧 *Email:* ${email}\n` +
+                                     `📌 *Subject:* ${subject}\n\n` +
+                                     `💬 *Message:*\n_${message}_`;
 
-                // Encode the text so it can safely be passed in a URL
+                // Encode and Open URL
                 const encodedText = encodeURIComponent(whatsappText);
-
-                // Create the WhatsApp API link
                 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
-
-                // Open WhatsApp in a new tab
+                
                 window.open(whatsappUrl, '_blank');
+                
+                // Optional: Clear form after sending
+                this.reset();
             });
         });
     </script>
