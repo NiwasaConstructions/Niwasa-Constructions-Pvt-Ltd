@@ -6,14 +6,145 @@
     <title>About Us | Niwasa Constructions</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap');:root{--bg:#fff;--txt:#222;--nav:#0A192F;--gold:#D4AF37;--gray:#f4f4f5;}*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}h1,h2,h3,h4,.logo{font-family:'Playfair Display',serif;}a{text-decoration:none;}ul{list-style:none;}html{scroll-behavior:smooth;}#loader{position:fixed;inset:0;background:var(--nav);z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;transition:0.5s;}.house-loader{width:60px;height:60px;border-bottom:4px solid var(--gold);position:relative;animation:bld 2s infinite;}.house-loader::before{content:'';position:absolute;bottom:0;left:15px;width:30px;height:35px;background:var(--gold);animation:gw 2s infinite;}.house-loader::after{content:'';position:absolute;bottom:35px;left:-10px;border-left:40px solid transparent;border-right:40px solid transparent;border-bottom:35px solid var(--gold);animation:rf 2s infinite;}@keyframes bld{0%,100%{border-color:transparent;}50%{border-color:var(--gold);}}@keyframes gw{0%,100%{height:0;}50%{height:35px;}}@keyframes rf{0%,100%{transform:translateY(-20px);opacity:0;}50%{transform:translateY(0);opacity:1;}}.load-txt{color:var(--gold);margin-top:30px;letter-spacing:3px;text-transform:uppercase;animation:pulse 1.5s infinite;font-family:'Playfair Display',serif;}@keyframes pulse{50%{opacity:0.5;}}nav{background:var(--nav);padding:20px 5%;display:flex;justify-content:space-between;align-items:center;position:fixed;width:100%;top:0;z-index:1000;box-shadow:0 4px 10px rgba(0,0,0,0.3);}.logo{color:var(--gold);font-size:1.8rem;}.logo span{color:#fff;}.nav-links{display:flex;gap:25px;}.nav-links a{color:#fff;text-transform:uppercase;font-size:0.9rem;transition:0.3s;font-weight:600;}.nav-links a:hover,.nav-links a.active{color:var(--gold);}.menu-btn{display:none;color:var(--gold);font-size:1.8rem;cursor:pointer;}.page-header{height:45vh;background:linear-gradient(rgba(10,25,47,0.9),rgba(10,25,47,0.9)),url('https://images.unsplash.com/photo-1541888086425-d81bb19240f5?w=1600') center/cover;display:flex;align-items:center;justify-content:center;color:var(--gold);margin-top:70px;text-align:center;}.page-header h1{font-size:3.5rem;}.section{padding:100px 5%;}.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px;}footer{background:var(--nav);color:#fff;padding:60px 5% 20px;}.foot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:40px;margin-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:40px;}.foot-grid h4{color:var(--gold);margin-bottom:20px;font-size:1.5rem;}.foot-grid a{color:#ccc;display:block;margin-bottom:10px;transition:0.3s;}.foot-grid a:hover{color:var(--gold);}.text-center-sm{text-align:center;color:#888;font-size:0.9rem;}.reveal{opacity:0;transform:translateY(50px);transition:all 0.8s ease;}.reveal.active{opacity:1;transform:translateY(0);}@media(max-width:768px){.menu-btn{display:block;}.nav-links{position:fixed;top:70px;right:-100%;flex-direction:column;background:var(--nav);width:100%;height:calc(100vh - 70px);align-items:center;justify-content:center;transition:0.4s;}.nav-links.show{right:0;}.contact-wrap{grid-template-columns:1fr;}}
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        /* --- BRAND COLORS: STRICT BLUE & RED --- */
+        :root { 
+            --primary: #003366; /* Deep Navy Blue */
+            --accent: #CC0000;  /* Pure Solid Red */
+            --dark-bg: #00152b; /* Very Dark Blue for Top Bar */
+            --text-dark: #111; 
+            --text-light: #fff; 
+            --light: #f8f9fa; 
+            --gray: #e9ecef; 
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        a { text-decoration: none; } ul { list-style: none; } html { scroll-behavior: smooth; background: var(--light); }
+        
+        /* --- LOADER --- */
+        #loader { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease-in-out, visibility 0.8s; }
+        .logo-wrapper { position: relative; width: 280px; margin-bottom: 40px; animation: pulseLogo 2.5s infinite alternate ease-in-out; overflow: hidden; }
+        .logo-wrapper img { width: 100%; display: block; }
+        .logo-wrapper::after { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0)); transform: skewX(-25deg); animation: shimmerSweep 3s infinite; }
+        @keyframes pulseLogo { 0% { transform: scale(0.95); filter: drop-shadow(0 0 15px rgba(0, 51, 102, 0.6)); } 100% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(204, 0, 0, 0.6)); } }
+        @keyframes shimmerSweep { 0% { left: -150%; } 50%, 100% { left: 200%; } }
+        .loader-text { color: #fff; font-size: 1rem; letter-spacing: 5px; font-weight: 300; text-transform: uppercase; margin-bottom: 15px; }
+        .loading-line { width: 200px; height: 2px; background: #222; border-radius: 5px; position: relative; overflow: hidden; }
+        .loading-line::before { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 5px; animation: loadingBar 2s infinite ease-in-out alternate; }
+        @keyframes loadingBar { 0% { width: 0%; transform: translateX(0); } 100% { width: 100%; transform: translateX(200px); } }
+        .loader-hidden { opacity: 0; visibility: hidden; }
+
+        /* --- TOP BAR & NAV --- */
+        .top-bar { background: var(--dark-bg); color: #ccc; padding: 10px 5%; display: flex; justify-content: space-between; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .top-bar div { display: flex; align-items: center; gap: 15px; }
+        nav { background: var(--primary); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border-bottom: 3px solid var(--accent); }
+        .logo { display: flex; align-items: center; gap: 15px; font-size: 1.6rem; font-weight: 700; color: #fff; text-transform: uppercase; } 
+        .logo img { height: 60px; }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 20px; } .nav-links a { color: #fff; font-weight: 500; text-transform: uppercase; font-size: 0.9rem; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .quote-btn { background: var(--accent); color: #fff; padding: 8px 20px; border-radius: 4px; font-weight: 600; border: none; cursor: pointer;}
+        .quote-btn:hover { background: #fff; color: var(--accent); }
+        .menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; }
+        
+        /* --- PAGE HEADER --- */
+        .page-header { 
+            height: 50vh; 
+            background: linear-gradient(rgba(0, 30, 60, 0.85), rgba(0, 10, 20, 0.9)), url('https://images.unsplash.com/photo-1541888086425-d81bb19240f5?w=1600') center/cover; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; border-bottom: 4px solid var(--accent); 
+        }
+        
+        .page-header h1 { font-size: 4rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .page-header h1 span { background: var(--accent); color: #fff; padding: 5px 20px; border-radius: 6px; display: inline-block; box-shadow: 0 10px 20px rgba(204, 0, 0, 0.3); }
+        .page-header p { font-size: 1.2rem; font-weight: 300; max-width: 600px; color: #eee; margin-top: 15px; }
+
+        /* --- NEW: STATS SECTION --- */
+        .stats-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; padding: 40px 5%; background: var(--primary); color: #fff; border-bottom: 4px solid var(--accent); }
+        .stat-box { text-align: center; padding: 15px 30px; border-right: 1px solid rgba(255,255,255,0.2); }
+        .stat-box:last-child { border-right: none; }
+        .stat-box i { font-size: 2.5rem; color: var(--accent); margin-bottom: 15px; }
+        .stat-box h3 { font-size: 2.2rem; font-weight: 700; margin-bottom: 5px; }
+        .stat-box p { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: #ccc; }
+
+        /* --- ABOUT SECTIONS --- */
+        .section { padding: 80px 5%; max-width: 1300px; margin: 0 auto; }
+        .content-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        
+        .sec-title { font-size: 2.5rem; color: var(--primary); margin-bottom: 25px; text-transform: uppercase; font-weight: 700; line-height: 1.2;}
+        .sec-title span { color: var(--accent); }
+        
+        .text-content p { color: #555; font-size: 1.05rem; line-height: 1.8; margin-bottom: 20px; }
+        .text-content ul { margin-top: 20px; }
+        .text-content ul li { font-size: 1.05rem; color: #444; margin-bottom: 15px; display: flex; align-items: flex-start; }
+        .text-content ul li i { color: var(--accent); margin-top: 5px; margin-right: 15px; font-size: 1.2rem; }
+
+        .img-content { position: relative; }
+        .img-content img { width: 100%; border-radius: 10px; box-shadow: 0 20px 40px rgba(0,51,102,0.2); border: 2px solid var(--primary); }
+        .img-content::after { content: ''; position: absolute; bottom: -20px; right: -20px; width: 150px; height: 150px; border: 4px solid var(--accent); border-radius: 10px; z-index: -1; }
+
+        /* --- LEADERSHIP SECTION (Luxury Card) --- */
+        .leadership-bg { background: linear-gradient(135deg, var(--dark-bg), var(--primary)); padding: 100px 5%; margin-top: 50px; border-top: 4px solid var(--accent); border-bottom: 4px solid var(--accent); }
+        .leader-card { max-width: 1000px; margin: 0 auto; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 50px; border-radius: 15px; display: grid; grid-template-columns: 1fr 2fr; gap: 50px; align-items: center; backdrop-filter: blur(10px); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        
+        .leader-img { text-align: center; }
+        .leader-img img { width: 100%; max-width: 300px; border-radius: 50%; border: 5px solid var(--accent); padding: 5px; background: #fff; box-shadow: 0 15px 30px rgba(204,0,0,0.2); }
+        
+        .leader-text { color: #fff; }
+        .leader-text h2 { font-size: 2.2rem; color: var(--accent); margin-bottom: 5px; text-transform: uppercase; font-weight: 700; }
+        .leader-text h4 { font-size: 1.2rem; color: #ccc; margin-bottom: 25px; font-weight: 400; text-transform: uppercase; letter-spacing: 1px; }
+        .leader-text p { font-size: 1.1rem; line-height: 1.8; color: #eee; border-left: 4px solid var(--accent); padding-left: 20px; font-style: italic; }
+
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- FOOTER & WHATSAPP --- */
+        footer { background: var(--dark-bg); color: #ccc; padding: 60px 5% 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
+        .foot-grid h3 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; border-left: 3px solid var(--accent); padding-left: 10px; } .foot-grid a { color: #ccc; display: block; margin-bottom: 10px; transition: 0.3s; } .foot-grid a:hover { color: var(--accent); }
+        .email-button { display: inline-block; background: var(--primary); color: #fff; padding: 8px 20px; border-radius: 4px; margin: 5px 0 15px 0; font-size: 0.9rem;} .email-button:hover { background: var(--accent); }
+        
+        .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 40px; right: 40px; background-color: #25d366; color: #FFF; border-radius: 50px; text-align: center; font-size: 30px; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); z-index: 100; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #128C7E; }
+
+        @media(max-width: 991px) {
+            .content-wrap { grid-template-columns: 1fr; }
+            .img-content { order: -1; margin-bottom: 30px; }
+            .leader-card { grid-template-columns: 1fr; text-align: center; }
+            .leader-text p { border-left: none; border-top: 4px solid var(--accent); padding-left: 0; padding-top: 20px; }
+        }
+        @media(max-width: 768px) {
+            .top-bar { flex-direction: column; text-align: center; gap: 10px; }
+            nav { padding: 15px 5%; }
+            .menu-btn { display: block; }
+            .nav-links { position: fixed; top: 110px; left: -100%; width: 100%; height: 100vh; background: var(--primary); flex-direction: column; align-items: center; padding-top: 50px; transition: 0.4s; z-index: 999; }
+            .nav-links.active { left: 0; }
+            .page-header h1 { font-size: 2.5rem; }
+            .stat-box { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.2); width: 100%; padding: 20px 0; }
+            .stat-box:last-child { border-bottom: none; }
+        }
     </style>
 </head>
 <body>
-    <div id="loader"><div class="house-loader"></div><div class="load-txt">Constructing</div></div>
+
+    <div id="loader">
+        <div class="logo-wrapper">
+            <img src="dss.png" alt="Niwasa Constructions Logo">
+        </div>
+        <div class="loader-text">Loading Details</div>
+        <div class="loading-line"></div>
+    </div>
+
+    <div class="top-bar">
+        <div><i class="fas fa-envelope"></i> niwasaconstructions@gmail.com &nbsp;&nbsp;|&nbsp;&nbsp; <i class="fas fa-phone"></i> +94 77 856 8527</div>
+        <div><i class="fas fa-clock"></i> Mon - Sat: 8.00 AM - 5.00 PM</div>
+    </div>
 
     <nav>
-        <a href="index.html" class="logo">Niwasa <span>Constructions</span></a>
+        <a href="index.html" class="logo">
+            <img src="dss.png" alt="Niwasa Logo">
+            නිවස <span>Constructions</span>
+        </a>
         <div class="menu-btn"><i class="fas fa-bars"></i></div>
         <div class="nav-links">
             <a href="index.html">Home</a>
@@ -21,55 +152,120 @@
             <a href="services.html">Services</a>
             <a href="projects.html">Projects</a>
             <a href="contact us.html">Contact Us</a>
+            <a href="contact us.html" class="quote-btn">Get a Quote</a>
         </div>
     </nav>
 
     <div class="page-header">
-        <h1 class="reveal">About Niwasa Constructions</h1>
+        <h1 class="reveal">About <span>Niwasa</span></h1>
+        <p class="reveal">Discover the vision, experience, and dedication behind Sri Lanka's most trusted luxury construction company.</p>
     </div>
 
-        <section class="section reveal" style="background: var(--gray);">
-    <div class="contact-wrap" style="align-items: center;">
-        <div>
-            <h2 style="font-family:'Playfair Display',serif; color:var(--nav); font-size:2.5rem; margin-bottom:20px;">Our Leadership</h2>
-            <p style="font-weight: 600; color: var(--gold); font-size: 1.2rem; margin-bottom: 5px;">Janaka Bandara Aththanayaka</p>
-            <p style="font-style: italic; margin-bottom: 20px;">Managing Director, Niwasa Constructions (Pvt) Ltd</p>
-            <p>Under the visionary leadership of Mr. Aththanayaka, Niwasa Constructions has grown into a trusted name in Kandy, known for its dedication to Vastu Vidya and modern engineering excellence.</p>
+    <div class="stats-container reveal">
+        <div class="stat-box">
+            <i class="fas fa-users"></i>
+            <h3>100K+</h3>
+            <p>Facebook Followers</p>
         </div>
-        <div style="text-align: center;">
-            <!-- Using an official profile image from social media as a placeholder -->
-            <img src="https://res.cloudinary.com/dzkpfnwbl/image/upload/v1778496214/68448006_2256956841068257_2858141190337855488_n_shkizc.jpg" 
-                 alt="Janaka Bandara Aththanayaka" 
-                 style="width:100%; max-width:400px; border-radius:15px; border: 5px solid var(--gold); box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+        <div class="stat-box">
+            <i class="fas fa-star"></i>
+            <h3>5-Star</h3>
+            <p>Client Ratings</p>
+        </div>
+        <div class="stat-box">
+            <i class="fas fa-home"></i>
+            <h3>100%</h3>
+            <p>Stress-Free Building</p>
+        </div>
+        <div class="stat-box">
+            <i class="fas fa-hard-hat"></i>
+            <h3>Expert</h3>
+            <p>Engineering Team</p>
         </div>
     </div>
-</section>
-    
-    <section class="section reveal">
-        <div class="contact-wrap" style="align-items: center;">
-            <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800" alt="About Us" style="width:100%; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
-            <div>
-                <h2 style="font-family:'Playfair Display',serif; color:var(--nav); font-size:2.5rem; margin-bottom:20px;">Building Excellence Since Day One</h2>
-                <p style="margin-bottom:20px;">Niwasa Constructions (Pvt) Ltd was founded with a vision to elevate the standard of construction in Sri Lanka. We blend traditional craftsmanship with cutting-edge architectural design to create spaces that are durable and beautiful.</p>
-                <p style="margin-bottom:20px;">Our expert engineers and architects work closely with clients to ensure every luxury finish exceeds expectations.</p>
-                <p> Niwasa Construction (Pvt) Ltd is a premier general contracting firm based at No. 03 Bowala Lane, Kandy, specializing in the design and execution of residential and small-scale commercial projects. Under the leadership of Managing Director Janaka Bandara Aththanayaka, our company has built a strong reputation for combining traditional Vastu Vidya principles with modern architectural innovation. Our expert team, including esteemed professionals like Architect Sujeewa Herath and Structural Engineer Lakruwan Fernando, is uniquely experienced in handling challenging terrains, such as hillside construction projects in areas like Talathuoya.With over 100,000 followers on our official Facebook page, we maintain transparency and trust by showcasing a diverse portfolio of ongoing and completed works, including major projects in Gannoruwa, Polgolla, Waligalla, and Theldeniya. Our comprehensive service suite covers everything from house planning and 3D modeling to detailed B.O.Q. estimates and high-end finishes like modern timber flooring. We are dedicated to providing a "stress-free" construction experience, assisting our clients with essential local authority approvals and ensuring every project is guided by rigorous engineering supervision. Recognized with a 5-star rating for professional craftsmanship, Niwasa Construction remains a trusted partner in turning your architectural dreams into enduring realities.</p>
+
+    <section class="section">
+        <div class="content-wrap reveal">
+            <div class="text-content">
+                <h2 class="sec-title">Building Excellence <span>Since Day One</span></h2>
+                <p><strong>Niwasa Construction (Pvt) Ltd</strong> is a premier general contracting firm based in Kandy, specializing in the design and execution of residential and small-scale commercial projects.</p>
+                <p>We have built a strong reputation for combining traditional Vastu Vidya principles with modern architectural innovation. We are dedicated to providing a "stress-free" construction experience, assisting our clients with essential local authority approvals and ensuring every project is guided by rigorous engineering supervision.</p>
+                
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> <strong>Expert Team:</strong> Guided by esteemed professionals like Architect Sujeewa Herath and Structural Engineer Lakruwan Fernando.</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>Challenging Terrains:</strong> Uniquely experienced in handling hillside construction projects in areas like Talathuoya.</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>Transparency & Trust:</strong> Showcasing a diverse portfolio of major projects in Gannoruwa, Polgolla, Waligalla, and Theldeniya.</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>Comprehensive Service:</strong> From 3D modeling and BOQ estimates to high-end finishes like modern timber flooring.</li>
+                </ul>
+            </div>
+            
+            <div class="img-content">
+                <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800" alt="Construction Excellence">
             </div>
         </div>
     </section>
 
-
+    <section class="leadership-bg">
+        <div class="leader-card reveal">
+            <div class="leader-img">
+                <img src="https://res.cloudinary.com/dzkpfnwbl/image/upload/v1778496214/68448006_2256956841068257_2858141190337855488_n_shkizc.jpg" alt="Janaka Bandara Aththanayaka">
+            </div>
+            <div class="leader-text">
+                <h2>Janaka Bandara Aththanayaka</h2>
+                <h4>Managing Director / Founder</h4>
+                <p>"Under the visionary leadership of Mr. Aththanayaka, Niwasa Constructions has grown into a trusted name in Kandy. Recognized with a 5-star rating for professional craftsmanship, our mission is to remain a trusted partner in turning your architectural dreams into enduring realities, ensuring a perfect blend of luxury, safety, and Vastu Vidya."</p>
+            </div>
+        </div>
+    </section>
 
     <footer>
         <div class="foot-grid">
-            <div><h4>Niwasa Constructions</h4><p>Building your future with luxury and confidence.</p></div>
-            <div><h4>Quick Links</h4><a href="contact us.html">Contact Us</a><a href="services.html">Our Services</a><a href="projects.html">Our Projects</a></div>
-            <div><h4>Contact Info</h4><p><i class="fas fa-map-marker-alt" style="color:var(--gold);margin-right:10px;"></i> No: 03, Bowala Lane, Kandy, Sri Lanka</p><p><i class="fas fa-phone" style="color:var(--gold);margin-right:10px;"></i> +94 77 856 8527</p></div>
+            <div><h3>Aththanayaka Niwasa</h3><p>Design & Build Company. We are a leading construction company in Sri Lanka. We have completed successful projects.</p></div>
+            <div><h3>Our Services</h3><a href="services.html">House Designs</a><a href="services.html">Construction</a><a href="services.html">Estimations</a></div>
+            <div><h3>Office Address</h3>
+                <p>No: 03, Bowala Lane, Kandy</p>
+                <p>web.niwasaconstructions@gmail.com</p><a href="mailto:web.niwasaconstructions@gmail.com" class="email-button">Send Email</a>
+                <p>+94 77 856 8527</p></div>
         </div>
-        <p class="text-center-sm">&copy; 2026 Niwasa Constructions (Pvt) Ltd. All Rights Reserved.</p>
+        <div style="text-align: center; font-size: 0.9rem; margin-top: 20px;">2026 © All Rights Reserved | Niwasa Constructions (Pvt) Ltd</div>
     </footer>
 
+    <a href="https://wa.me/94778568527" class="whatsapp-float" target="_blank" title="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
     <script>
-        document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("loader");window.addEventListener("load",()=>{setTimeout(()=>{e.style.opacity="0",setTimeout(()=>e.style.display="none",500)},2e3)});const t=document.querySelector(".menu-btn"),n=document.querySelector(".nav-links");t&&t.addEventListener("click",()=>{n.classList.toggle("show"),t.innerHTML=n.classList.contains("show")?'<i class="fas fa-times"></i>':'<i class="fas fa-bars"></i>'});const o=document.querySelectorAll(".reveal"),s=()=>{o.forEach(e=>{e.getBoundingClientRect().top<window.innerHeight-100&&e.classList.add("active")})};window.addEventListener("scroll",s),s()});
+        document.addEventListener("DOMContentLoaded", () => {
+            // Loader
+            const loader = document.getElementById("loader");
+            window.addEventListener("load", () => {
+                setTimeout(() => {
+                    loader.classList.add("loader-hidden");
+                    setTimeout(() => { loader.style.display = "none"; }, 800); 
+                }, 1500); 
+            });
+
+            // Mobile Menu
+            const menuBtn = document.querySelector(".menu-btn"), navLinks = document.querySelector(".nav-links");
+            menuBtn.addEventListener("click", () => { 
+                navLinks.classList.toggle("active"); 
+                menuBtn.innerHTML = navLinks.classList.contains("active") ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+
+            // Scroll Reveal Animation
+            const reveals = document.querySelectorAll(".reveal");
+            const revealOnScroll = () => {
+                reveals.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
+                    if (elementTop < windowHeight - 100) {
+                        element.classList.add("active");
+                    }
+                });
+            };
+            window.addEventListener("scroll", revealOnScroll);
+            revealOnScroll(); 
+        });
     </script>
 </body>
 </html>
