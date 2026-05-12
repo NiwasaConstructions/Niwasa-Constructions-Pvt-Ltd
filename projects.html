@@ -7,89 +7,239 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        :root { --primary: #003366; --accent: #F2A900; --text: #333; --light: #f8f9fa; }
+        
+        /* --- BRAND COLORS: STRICT BLUE & RED --- */
+        :root { 
+            --primary: #003366; /* Deep Navy Blue */
+            --accent: #CC0000;  /* Pure Solid Red */
+            --dark-bg: #00152b; /* Very Dark Blue for Top Bar */
+            --text-dark: #111; 
+            --text-light: #fff; 
+            --light: #f8f9fa; 
+            --gray: #e9ecef; 
+        }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        a { text-decoration: none; } ul { list-style: none; }
+        a { text-decoration: none; } ul { list-style: none; } html { scroll-behavior: smooth; background: var(--light); }
         
-        .top-bar { background: var(--primary); color: #fff; padding: 10px 5%; display: flex; justify-content: space-between; font-size: 0.85rem; }
-        nav { background: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; } .logo span { color: var(--accent); }
-        .nav-links { display: flex; gap: 20px; } .nav-links a { color: var(--text); font-weight: 500; text-transform: uppercase; font-size: 0.9rem; } .nav-links a.active { color: var(--accent); }
-        
-        .page-head { background: linear-gradient(rgba(0,51,102,0.8), rgba(0,51,102,0.8)), url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600') center/cover; padding: 100px 20px; text-align: center; color: #fff; }
-        .page-head h1 { font-size: 3rem; text-transform: uppercase; }
-        
-        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; padding: 80px 5%; background: var(--light); }
-        .proj-card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.3s; cursor: pointer; }
-        .proj-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .proj-card img { width: 100%; height: 280px; object-fit: cover; }
-        .proj-info { padding: 25px; text-align: center; border-bottom: 4px solid var(--accent); }
-        .proj-info h3 { color: var(--primary); font-size: 1.3rem; margin-bottom: 10px; }
-        .proj-info p { color: #777; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        /* --- LOADER --- */
+        #loader { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease-in-out, visibility 0.8s; }
+        .logo-wrapper { position: relative; width: 280px; margin-bottom: 40px; animation: pulseLogo 2.5s infinite alternate ease-in-out; overflow: hidden; }
+        .logo-wrapper img { width: 100%; display: block; }
+        .logo-wrapper::after { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0)); transform: skewX(-25deg); animation: shimmerSweep 3s infinite; }
+        @keyframes pulseLogo { 0% { transform: scale(0.95); filter: drop-shadow(0 0 15px rgba(0, 51, 102, 0.6)); } 100% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(204, 0, 0, 0.6)); } }
+        @keyframes shimmerSweep { 0% { left: -150%; } 50%, 100% { left: 200%; } }
+        .loader-text { color: #fff; font-size: 1rem; letter-spacing: 5px; font-weight: 300; text-transform: uppercase; margin-bottom: 15px; }
+        .loading-line { width: 200px; height: 2px; background: #222; border-radius: 5px; position: relative; overflow: hidden; }
+        .loading-line::before { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 5px; animation: loadingBar 2s infinite ease-in-out alternate; }
+        @keyframes loadingBar { 0% { width: 0%; transform: translateX(0); } 100% { width: 100%; transform: translateX(200px); } }
+        .loader-hidden { opacity: 0; visibility: hidden; }
 
-        footer { background: var(--primary); color: #ccc; padding: 60px 5% 20px; }
+        /* --- TOP BAR & NAV --- */
+        .top-bar { background: var(--dark-bg); color: #ccc; padding: 10px 5%; display: flex; justify-content: space-between; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .top-bar div { display: flex; align-items: center; gap: 15px; }
+        nav { background: var(--primary); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border-bottom: 3px solid var(--accent); }
+        .logo { display: flex; align-items: center; gap: 15px; font-size: 1.6rem; font-weight: 700; color: #fff; text-transform: uppercase; } 
+        .logo img { height: 60px; }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 20px; } .nav-links a { color: #fff; font-weight: 500; text-transform: uppercase; font-size: 0.9rem; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .quote-btn { background: var(--accent); color: #fff; padding: 8px 20px; border-radius: 4px; font-weight: 600; border: none; cursor: pointer;}
+        .quote-btn:hover { background: #fff; color: var(--accent); }
+        .menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; }
+        
+        /* --- FIXED PAGE HEADER --- */
+        .page-header { 
+            height: 50vh; 
+            background: linear-gradient(rgba(0, 30, 60, 0.85), rgba(0, 10, 20, 0.9)), url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600') center/cover; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; border-bottom: 4px solid var(--accent); 
+        }
+        
+        /* Red Highlight Badge */
+        .page-header h1 { font-size: 4rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .page-header h1 span { 
+            background: var(--accent); color: #fff; padding: 5px 20px; border-radius: 6px; display: inline-block; box-shadow: 0 10px 20px rgba(204, 0, 0, 0.3);
+        }
+        .page-header p { font-size: 1.2rem; font-weight: 300; max-width: 700px; color: #eee; margin-top: 15px; }
+
+        /* --- NEW: PROJECT FILTER BUTTONS --- */
+        .filter-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin: 60px 5% 20px; }
+        .filter-btn { padding: 10px 25px; background: transparent; border: 2px solid var(--primary); color: var(--primary); font-weight: 600; border-radius: 30px; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        .filter-btn:hover, .filter-btn.active { background: var(--primary); color: #fff; box-shadow: 0 5px 15px rgba(0, 51, 102, 0.3); }
+
+        /* --- PROJECTS GRID --- */
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; padding: 40px 5% 80px; max-width: 1300px; margin: 0 auto; }
+        .proj-card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.4s; cursor: pointer; border-bottom: 4px solid var(--primary); position: relative; }
+        .proj-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.2); border-color: var(--accent); }
+        
+        .img-wrapper { position: relative; overflow: hidden; height: 280px; }
+        .proj-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .proj-card:hover img { transform: scale(1.1); }
+        
+        /* Overlay icon on hover */
+        .img-overlay { position: absolute; inset: 0; background: rgba(0, 51, 102, 0.6); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.4s; }
+        .proj-card:hover .img-overlay { opacity: 1; }
+        .img-overlay i { font-size: 3rem; color: #fff; transform: translateY(20px); transition: 0.4s; }
+        .proj-card:hover .img-overlay i { transform: translateY(0); }
+
+        .proj-info { padding: 25px; text-align: center; }
+        .proj-info h3 { color: var(--primary); font-size: 1.3rem; margin-bottom: 5px; font-weight: 600; }
+        .proj-info p { color: var(--accent); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500; }
+
+        /* --- NEW: CALL TO ACTION SECTION --- */
+        .cta-section { background: var(--primary); color: #fff; padding: 60px 5%; text-align: center; border-top: 4px solid var(--accent); position: relative; overflow: hidden; }
+        .cta-section::before { content: ''; position: absolute; top: -50px; left: -50px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.05); }
+        .cta-section h2 { font-size: 2.5rem; margin-bottom: 15px; text-transform: uppercase; }
+        .cta-section p { font-size: 1.1rem; color: #ccc; margin-bottom: 30px; }
+        .cta-btn { display: inline-block; padding: 15px 40px; background: var(--accent); color: #fff; font-size: 1.1rem; font-weight: 600; border-radius: 5px; text-transform: uppercase; transition: 0.3s; box-shadow: 0 5px 15px rgba(204, 0, 0, 0.4); }
+        .cta-btn:hover { background: #fff; color: var(--accent); transform: translateY(-3px); }
+
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- FOOTER & WHATSAPP --- */
+        footer { background: var(--dark-bg); color: #ccc; padding: 60px 5% 20px; border-top: 1px solid rgba(255,255,255,0.1); }
         .foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
-        .foot-grid h3 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; } .foot-grid a { color: #ccc; display: block; margin-bottom: 10px; }
+        .foot-grid h3 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; border-left: 3px solid var(--accent); padding-left: 10px; } .foot-grid a { color: #ccc; display: block; margin-bottom: 10px; transition: 0.3s; } .foot-grid a:hover { color: var(--accent); }
+        .email-button { display: inline-block; background: var(--primary); color: #fff; padding: 8px 20px; border-radius: 4px; margin: 5px 0 15px 0; font-size: 0.9rem;} .email-button:hover { background: var(--accent); }
+        
+        .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 40px; right: 40px; background-color: #25d366; color: #FFF; border-radius: 50px; text-align: center; font-size: 30px; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); z-index: 100; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #128C7E; }
 
-        /* --- LIGHTBOX GALLERY CSS --- */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; flex-direction: column; }
-        .modal-content { max-width: 90%; max-height: 80vh; object-fit: contain; border-radius: 4px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease; }
+        @media(max-width: 768px) {
+            .top-bar { flex-direction: column; text-align: center; gap: 10px; }
+            nav { padding: 15px 5%; }
+            .menu-btn { display: block; }
+            .nav-links { position: fixed; top: 110px; left: -100%; width: 100%; height: 100vh; background: var(--primary); flex-direction: column; align-items: center; padding-top: 50px; transition: 0.4s; z-index: 999; }
+            .nav-links.active { left: 0; }
+            .page-header h1 { font-size: 2.5rem; }
+            .filter-btn { padding: 8px 20px; font-size: 0.8rem; }
+            .cta-section h2 { font-size: 2rem; }
+        }
+
+        /* --- GALLERY MODAL --- */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); justify-content: center; align-items: center; flex-direction: column; }
+        .modal-content { max-width: 90%; max-height: 80vh; object-fit: contain; border-radius: 4px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); border: 2px solid var(--primary); animation: zoomIn 0.3s ease; }
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .close-btn { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; transition: 0.3s; z-index: 2001;}
-        .close-btn:hover { color: var(--accent); }
-        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); color: white; font-size: 35px; cursor: pointer; user-select: none; transition: 0.3s; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 5px; z-index: 2001;}
-        .nav-btn:hover { background: var(--accent); }
+        .close-btn { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 2001;} .close-btn:hover { color: var(--accent); }
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); color: white; font-size: 35px; cursor: pointer; background: var(--primary); padding: 10px 20px; border-radius: 5px; z-index: 2001;} .nav-btn:hover { background: var(--accent); }
         .prev-btn { left: 20px; } .next-btn { right: 20px; }
     </style>
 </head>
 <body>
-    <div class="top-bar"><div><i class="fas fa-envelope"></i> niwasaconstructions@gmail.com</div><div><i class="fas fa-phone"></i> +94 77 856 8527</div></div>
+
+    <div id="loader">
+        <div class="logo-wrapper">
+            <img src="dss.png" alt="Niwasa Constructions Logo">
+        </div>
+        <div class="loader-text">Loading Projects</div>
+        <div class="loading-line"></div>
+    </div>
+
+    <div class="top-bar">
+        <div><i class="fas fa-envelope"></i> niwasaconstructions@gmail.com &nbsp;&nbsp;|&nbsp;&nbsp; <i class="fas fa-phone"></i> +94 77 856 8527</div>
+        <div><i class="fas fa-clock"></i> Mon - Sat: 8.00 AM - 5.00 PM</div>
+    </div>
+
     <nav>
-        <a href="index.html" class="logo">Niwasa <span>Constructions</span></a>
+        <a href="index.html" class="logo">
+            <img src="dss.png" alt="Niwasa Logo">
+            නිවස <span>Constructions</span>
+        </a>
+        <div class="menu-btn"><i class="fas fa-bars"></i></div>
         <div class="nav-links">
-            <a href="index.html">Home</a><a href="about us.html">About Us</a><a href="services.html">Services</a><a href="projects.html" class="active">Projects</a><a href="contact us.html">Contact Us</a>
+            <a href="index.html">Home</a>
+            <a href="about us.html">About Us</a>
+            <a href="services.html">Services</a>
+            <a href="projects.html" class="active">Projects</a>
+            <a href="contact us.html">Contact Us</a>
+            <a href="contact us.html" class="quote-btn">Get a Quote</a>
         </div>
     </nav>
 
-    <div class="page-head">
-        <h1>Our Completed Projects</h1>
+    <div class="page-header">
+        <h1 class="reveal">Our <span>Portfolio</span></h1>
+        <p class="reveal">Discover our collection of successfully completed residential, commercial, and renovation projects across Sri Lanka.</p>
+    </div>
+
+    <div class="filter-container reveal">
+        <button class="filter-btn active" data-filter="all">All Projects</button>
+        <button class="filter-btn" data-filter="residential">Residential</button>
+        <button class="filter-btn" data-filter="commercial">Commercial</button>
+        <button class="filter-btn" data-filter="renovation">Renovation & Landscaping</button>
     </div>
 
     <div class="projects-grid">
-        <div class="proj-card" onclick="openGallery('proj1')">
-            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800">
+        <div class="proj-card reveal" data-category="residential" onclick="openGallery('Weligalla')">
+            <div class="img-wrapper">
+                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800">
+                <div class="img-overlay"><i class="fas fa-search-plus"></i></div>
+            </div>
             <div class="proj-info"><h3>Kundasale, Kandy</h3><p>Residential</p></div>
         </div>
-        <div class="proj-card" onclick="openGallery('proj2')">
-            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800">
+
+        <div class="proj-card reveal" data-category="commercial" onclick="openGallery('proj2')">
+            <div class="img-wrapper">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800">
+                <div class="img-overlay"><i class="fas fa-search-plus"></i></div>
+            </div>
             <div class="proj-info"><h3>Kumbiyangoda Road, Matale</h3><p>Commercial</p></div>
         </div>
-        <div class="proj-card" onclick="openGallery('proj3')">
-            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800">
+
+        <div class="proj-card reveal" data-category="renovation" onclick="openGallery('proj3')">
+            <div class="img-wrapper">
+                <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800">
+                <div class="img-overlay"><i class="fas fa-search-plus"></i></div>
+            </div>
             <div class="proj-info"><h3>Puttalam Road, Wariyapola</h3><p>Renovation</p></div>
         </div>
-        <div class="proj-card" onclick="openGallery('proj4')">
-            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800">
+
+        <div class="proj-card reveal" data-category="residential" onclick="openGallery('proj4')">
+            <div class="img-wrapper">
+                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800">
+                <div class="img-overlay"><i class="fas fa-search-plus"></i></div>
+            </div>
             <div class="proj-info"><h3>Kotuwegedara Road, Matale</h3><p>Residential</p></div>
         </div>
-        <div class="proj-card" onclick="openGallery('proj5')">
-            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800">
+
+        <div class="proj-card reveal" data-category="renovation" onclick="openGallery('proj5')">
+            <div class="img-wrapper">
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800">
+                <div class="img-overlay"><i class="fas fa-search-plus"></i></div>
+            </div>
             <div class="proj-info"><h3>Renovation Garden Ariwatta</h3><p>Landscaping</p></div>
         </div>
-        <div class="proj-card" onclick="openGallery('proj6')">
-            <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800">
+
+        <div class="proj-card reveal" data-category="commercial" onclick="openGallery('proj6')">
+            <div class="img-wrapper">
+                <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800">
+                <div class="img-overlay"><i class="fas fa-search-plus"></i></div>
+            </div>
             <div class="proj-info"><h3>Gohagoda Road Katugastota</h3><p>Commercial</p></div>
         </div>
     </div>
 
+    <section class="cta-section reveal">
+        <h2>ඔබේ නිවාස සිහිනයත් හැබෑ කරගමුද?</h2>
+        <p>Contact us today for a free consultation and personalized estimate for your project.</p>
+        <a href="contact us.html" class="cta-btn">Get in Touch Now</a>
+    </section>
+
     <footer>
         <div class="foot-grid">
-            <div><h3>Niwasa Constructions</h3><p>Leading construction company in Sri Lanka.</p></div>
-            <div><h3>Our Services</h3><a href="services.html">Residential</a><a href="services.html">Commercial</a></div>
-            <div><h3>Office Address</h3><p>info@niwasaconstructions.com</p><p>+94 71 123 4567</p></div>
+            <div><h3>Aththanayaka Niwasa</h3><p>Design & Build Company. We are a leading construction company in Sri Lanka. We have completed successful projects.</p></div>
+            <div><h3>Our Services</h3><a href="services.html">House Designs</a><a href="services.html">Construction</a><a href="services.html">Estimations</a></div>
+            <div><h3>Office Address</h3>
+                <p>No: 03, Bowala Lane, Kandy</p>
+                <p>web.niwasaconstructions@gmail.com</p><a href="mailto:web.niwasaconstructions@gmail.com" class="email-button">Send Email</a>
+                <p>+94 77 856 8527</p></div>
         </div>
-        <div style="text-align: center; font-size: 0.9rem;">2026 &copy; All Rights Reserved | Niwasa Constructions</div>
+        <div style="text-align: center; font-size: 0.9rem; margin-top: 20px;">2026 &copy; All Rights Reserved | Niwasa Constructions (Pvt) Ltd</div>
     </footer>
+
+    <a href="https://wa.me/94778568527" class="whatsapp-float" target="_blank" title="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <div id="galleryModal" class="modal">
         <span class="close-btn" onclick="closeGallery()">&times;</span>
@@ -99,7 +249,66 @@
     </div>
 
     <script>
-        // Dictionary containing arrays of images for each project
+        document.addEventListener("DOMContentLoaded", () => {
+            // Loader
+            const loader = document.getElementById("loader");
+            window.addEventListener("load", () => {
+                setTimeout(() => {
+                    loader.classList.add("loader-hidden");
+                    setTimeout(() => { loader.style.display = "none"; }, 800); 
+                }, 1500); 
+            });
+
+            // Mobile Menu
+            const menuBtn = document.querySelector(".menu-btn"), navLinks = document.querySelector(".nav-links");
+            menuBtn.addEventListener("click", () => { 
+                navLinks.classList.toggle("active"); 
+                menuBtn.innerHTML = navLinks.classList.contains("active") ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+
+            // Scroll Reveal Animation
+            const reveals = document.querySelectorAll(".reveal");
+            const revealOnScroll = () => {
+                reveals.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
+                    if (elementTop < windowHeight - 100) {
+                        element.classList.add("active");
+                    }
+                });
+            };
+            window.addEventListener("scroll", revealOnScroll);
+            revealOnScroll(); 
+
+            // Project Filtering Logic
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const projCards = document.querySelectorAll('.proj-card');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+                    
+                    const filterValue = btn.getAttribute('data-filter');
+                    
+                    projCards.forEach(card => {
+                        if(filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
+                            card.style.display = 'block';
+                            // Small timeout to allow display:block to apply before animating opacity if needed
+                            setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'scale(1)'; }, 50);
+                        } else {
+                            card.style.opacity = '0'; 
+                            card.style.transform = 'scale(0.8)';
+                            setTimeout(() => { card.style.display = 'none'; }, 300);
+                        }
+                    });
+                });
+            });
+        });
+
+        // Gallery Data (Added Weligalla key to match click event)
         const projectImages = {
             'Weligalla': [
                 'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453733/Weligalla%20Project/Front1_njgakv.jpg',
@@ -142,6 +351,7 @@
 
         function openGallery(projectId) {
             currentGallery = projectImages[projectId];
+            if(!currentGallery) return; // Prevent error if ID is missing
             currentIndex = 0; 
             document.getElementById('modalImage').src = currentGallery[currentIndex];
             document.getElementById('galleryModal').style.display = 'flex';
