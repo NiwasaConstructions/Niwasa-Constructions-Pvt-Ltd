@@ -49,22 +49,13 @@
         .menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; }
         
         /* --- HERO SECTION --- */
-        .hero { 
-            height: 80vh; 
-            background: linear-gradient(rgba(0, 30, 60, 0.85), rgba(0, 10, 20, 0.9)), url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600') center/cover; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; overflow: hidden; 
-        }
+        .hero { height: 80vh; background: linear-gradient(rgba(0, 30, 60, 0.85), rgba(0, 10, 20, 0.9)), url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; overflow: hidden; }
         .hero h1, .hero p, .hero .luxury-btn { opacity: 0; transform: translateY(40px); transition: opacity 1s ease-out, transform 1s ease-out; }
-        
         .hero h1 { font-size: 4rem; font-weight: 700; margin-bottom: 20px; line-height: 1.2; text-transform: uppercase; } 
-        .hero h1 span.highlight { 
-            background: var(--accent); color: #fff; padding: 5px 25px; display: inline-block; margin-top: 10px; border-radius: 6px; box-shadow: 0 10px 20px rgba(204, 0, 0, 0.3); font-size: 3.5rem;
-        }
-        
+        .hero h1 span.highlight { background: var(--accent); color: #fff; padding: 5px 25px; display: inline-block; margin-top: 10px; border-radius: 6px; box-shadow: 0 10px 20px rgba(204, 0, 0, 0.3); font-size: 3.5rem; }
         .hero p { font-size: 1.2rem; font-weight: 300; max-width: 900px; margin-bottom: 40px; color: #eee; line-height: 1.6; }
         .hero .luxury-btn { padding: 18px 45px; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; background: var(--accent); border: 2px solid var(--accent); color: #fff; transition: 0.3s, transform 1s ease-out; border-radius: 5px; box-shadow: 0 5px 15px rgba(204,0,0,0.4); }
         .hero .luxury-btn:hover { background: transparent; color: #fff; }
-        
         .hero.hero-loaded h1 { opacity: 1; transform: translateY(0); }
         .hero.hero-loaded p { opacity: 1; transform: translateY(0); transition-delay: 0.3s; }
         .hero.hero-loaded .luxury-btn { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
@@ -109,7 +100,6 @@
         .project-card img { width: 100%; height: 250px; object-fit: cover; }
         .project-info { padding: 20px; text-align: center; color: var(--text-dark); } .project-info h3 { font-size: 1.2rem; color: var(--primary); }
         
-        /* SEE MORE BUTTON */
         .see-more-container { text-align: center; margin-top: 50px; }
         .see-more-btn { display: inline-block; padding: 12px 35px; border: 2px solid var(--primary); color: var(--primary); font-size: 1.1rem; font-weight: 600; border-radius: 5px; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; }
         .see-more-btn:hover { background: var(--primary); color: #fff; box-shadow: 0 5px 15px rgba(0,51,102,0.3); transform: translateY(-3px); }
@@ -122,11 +112,15 @@
         .cta-btn { display: inline-block; padding: 15px 40px; background: var(--accent); color: #fff; font-size: 1.1rem; font-weight: 600; border-radius: 5px; text-transform: uppercase; transition: 0.3s; box-shadow: 0 5px 15px rgba(204, 0, 0, 0.4); }
         .cta-btn:hover { background: #fff; color: var(--accent); transform: translateY(-3px); }
 
+        /* --- NEW: MAP SECTION FOR HOME PAGE --- */
+        .home-map-section { width: 100%; height: 400px; line-height: 0; background: #eee; border-top: 4px solid var(--accent); }
+        .home-map-section iframe { width: 100%; height: 100%; border: none; }
+
         .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         /* --- FOOTER --- */
-        footer { background: var(--dark-bg); color: #ccc; padding: 60px 5% 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        footer { background: var(--dark-bg); color: #ccc; padding: 60px 5% 20px; }
         .foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
         .foot-grid h3 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; border-left: 3px solid var(--accent); padding-left: 10px; } .foot-grid a { color: #ccc; display: block; margin-bottom: 10px; transition: 0.3s; } .foot-grid a:hover { color: var(--accent); }
         .email-button { display: inline-block; background: var(--primary); color: #fff; padding: 8px 20px; border-radius: 4px; margin: 5px 0 15px 0; font-size: 0.9rem;} .email-button:hover { background: var(--accent); }
@@ -143,6 +137,7 @@
             .hero h1 { font-size: 2.2rem; } .hero h1 span.highlight { font-size: 1.8rem; padding: 5px 15px; }
             .ticker-container { flex-direction: column; gap: 10px; } .ticker-side.left { border-right: none; border-bottom: 4px solid var(--accent); }
             .cta-section h2 { font-size: 2rem; }
+            .home-map-section { height: 300px; }
         }
 
         /* --- GALLERY MODAL --- */
@@ -176,7 +171,7 @@
         </a>
         <div class="menu-btn"><i class="fas fa-bars"></i></div>
         <div class="nav-links">
-            <a href="index.html" class="active">Home</a><a href="about us.html">About Us</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="contact us.html">Contact Us</a><a href="contact us" class="quote-btn">Get a Quote</a>
+            <a href="index.html" class="active">Home</a><a href="about us.html">About Us</a><a href="services.html">Services</a><a href="projects.html">Projects</a><a href="contact us.html">Contact Us</a><a href="contact us.html" class="quote-btn">Get a Quote</a>
         </div>
     </nav>
 
@@ -279,10 +274,14 @@
         <a href="contact us.html" class="cta-btn">Get in Touch Now</a>
     </section>
 
+    <div class="home-map-section reveal">
+        <iframe src="<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1978.859175205738!2d80.61178036209829!3d7.272855998946984!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae3676ee6c66c01%3A0x25302aa2be26e5c4!2sNiwasa%20Constructions%20Pvt%20Ltd.!5e0!3m2!1sen!2slk!4v1778567229234!5m2!1sen!2slk" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+
     <footer>
         <div class="foot-grid">
             <div><h3>Aththanayaka Niwasa</h3><p>Design & Build Company. We are a leading construction company in Sri Lanka. We have completed successful projects.</p></div>
-            <div><h3>Our Services</h3><a href="services.html">Residential Construction</a><a href="services.html">Commercial Construction</a></div>
+            <div><h3>Our Services</h3><a href="services.html">House Designs</a><a href="services.html">Construction</a><a href="services.html">Estimations</a></div>
             <div><h3>Office Address</h3>
                 <p>No: 03, Bowala Lane, Kandy</p>
                 <p>web.niwasaconstructions@gmail.com</p><a href="mailto:web.niwasaconstructions@gmail.com" class="email-button">Send Email</a>
@@ -349,6 +348,7 @@
             revealOnScroll(); // Trigger once on load
         });
 
+        // Gallery Data
         const projectImages = {
             'Weligalla': [
                 'https://res.cloudinary.com/dzkpfnwbl/image/upload/v1775453733/Weligalla%20Project/Front1_njgakv.jpg',
