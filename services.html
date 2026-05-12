@@ -3,17 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Services | Niwasa Constructions</title>
+    <title>Our Services | Niwasa Constructions</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap');:root{--bg:#fff;--txt:#222;--nav:#0A192F;--gold:#D4AF37;--gray:#f4f4f5;}*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}h1,h2,h3,h4,.logo{font-family:'Playfair Display',serif;}a{text-decoration:none;}ul{list-style:none;}html{scroll-behavior:smooth;}#loader{position:fixed;inset:0;background:var(--nav);z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;transition:0.5s;}.house-loader{width:60px;height:60px;border-bottom:4px solid var(--gold);position:relative;animation:bld 2s infinite;}.house-loader::before{content:'';position:absolute;bottom:0;left:15px;width:30px;height:35px;background:var(--gold);animation:gw 2s infinite;}.house-loader::after{content:'';position:absolute;bottom:35px;left:-10px;border-left:40px solid transparent;border-right:40px solid transparent;border-bottom:35px solid var(--gold);animation:rf 2s infinite;}@keyframes bld{0%,100%{border-color:transparent;}50%{border-color:var(--gold);}}@keyframes gw{0%,100%{height:0;}50%{height:35px;}}@keyframes rf{0%,100%{transform:translateY(-20px);opacity:0;}50%{transform:translateY(0);opacity:1;}}.load-txt{color:var(--gold);margin-top:30px;letter-spacing:3px;text-transform:uppercase;animation:pulse 1.5s infinite;font-family:'Playfair Display',serif;}@keyframes pulse{50%{opacity:0.5;}}nav{background:var(--nav);padding:20px 5%;display:flex;justify-content:space-between;align-items:center;position:fixed;width:100%;top:0;z-index:1000;box-shadow:0 4px 10px rgba(0,0,0,0.3);}.logo{color:var(--gold);font-size:1.8rem;}.logo span{color:#fff;}.nav-links{display:flex;gap:25px;}.nav-links a{color:#fff;text-transform:uppercase;font-size:0.9rem;transition:0.3s;font-weight:600;}.nav-links a:hover,.nav-links a.active{color:var(--gold);}.menu-btn{display:none;color:var(--gold);font-size:1.8rem;cursor:pointer;}.page-header{height:45vh;background:linear-gradient(rgba(10,25,47,0.9),rgba(10,25,47,0.9)),url('https://images.unsplash.com/photo-1504307651254-35680f356f58?w=1600') center/cover;display:flex;align-items:center;justify-content:center;color:var(--gold);margin-top:70px;text-align:center;}.page-header h1{font-size:3.5rem;}.section{padding:100px 5%;}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:40px;}.card{background:var(--gray);padding:40px 30px;text-align:center;border-bottom:4px solid transparent;transition:0.4s;border-radius:8px;}.card:hover{transform:translateY(-10px);border-color:var(--gold);background:#fff;box-shadow:0 15px 30px rgba(0,0,0,0.1);}.card i{font-size:3rem;color:var(--gold);margin-bottom:20px;}.card h3{color:var(--nav);margin-bottom:15px;font-size:1.5rem;}footer{background:var(--nav);color:#fff;padding:60px 5% 20px;}.foot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:40px;margin-bottom:40px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:40px;}.foot-grid h4{color:var(--gold);margin-bottom:20px;font-size:1.5rem;}.foot-grid a{color:#ccc;display:block;margin-bottom:10px;transition:0.3s;}.foot-grid a:hover{color:var(--gold);}.text-center-sm{text-align:center;color:#888;font-size:0.9rem;}.reveal{opacity:0;transform:translateY(50px);transition:all 0.8s ease;}.reveal.active{opacity:1;transform:translateY(0);}@media(max-width:768px){.menu-btn{display:block;}.nav-links{position:fixed;top:70px;right:-100%;flex-direction:column;background:var(--nav);width:100%;height:calc(100vh - 70px);align-items:center;justify-content:center;transition:0.4s;}.nav-links.show{right:0;}}
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        /* --- BRAND COLORS (MATCHING HOME PAGE) --- */
+        :root { 
+            --primary: #1E4E8C; /* Logo Dark Blue */
+            --accent: #E85D22;  /* Logo Orange/Red */
+            --text-dark: #111; 
+            --text-light: #fff; 
+            --light: #f8f9fa; 
+            --gray: #e9ecef; 
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        a { text-decoration: none; } ul { list-style: none; } html { scroll-behavior: smooth; background: var(--light); }
+        
+        /* --- PREMIUM LOGO ANIMATION LOADER --- */
+        #loader {
+            position: fixed; inset: 0; background: #000000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease-in-out, visibility 0.8s;
+        }
+        .logo-wrapper { position: relative; width: 280px; margin-bottom: 40px; animation: pulseLogo 2.5s infinite alternate ease-in-out; overflow: hidden; }
+        .logo-wrapper img { width: 100%; display: block; }
+        .logo-wrapper::after { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0)); transform: skewX(-25deg); animation: shimmerSweep 3s infinite; }
+        @keyframes pulseLogo { 0% { transform: scale(0.95); filter: drop-shadow(0 0 15px rgba(30, 78, 140, 0.4)); } 100% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(232, 93, 34, 0.6)); } }
+        @keyframes shimmerSweep { 0% { left: -150%; } 50%, 100% { left: 200%; } }
+        .loader-text { color: #fff; font-size: 1rem; letter-spacing: 5px; font-weight: 300; text-transform: uppercase; margin-bottom: 15px; }
+        .loading-line { width: 200px; height: 2px; background: #222; border-radius: 5px; position: relative; overflow: hidden; }
+        .loading-line::before { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 50%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 5px; animation: loadingBar 2s infinite ease-in-out alternate; }
+        @keyframes loadingBar { 0% { width: 0%; transform: translateX(0); } 100% { width: 100%; transform: translateX(200px); } }
+        .loader-hidden { opacity: 0; visibility: hidden; }
+
+        /* --- NAVIGATION --- */
+        nav { 
+            background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        .logo { display: flex; align-items: center; gap: 15px; font-size: 1.6rem; font-weight: 700; color: #fff; text-transform: uppercase; } 
+        .logo img { height: 60px; }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 20px; } .nav-links a { color: #fff; font-weight: 500; text-transform: uppercase; font-size: 0.9rem; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .quote-btn { background: var(--accent); color: #fff; padding: 8px 20px; border-radius: 4px; font-weight: 600; border: none; cursor: pointer;}
+        .quote-btn:hover { background: #cf4f1a; color: #fff; }
+        .menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; }
+        
+        /* --- PAGE HEADER --- */
+        .page-header { 
+            height: 50vh; 
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1541888086225-f674ce89228e?w=1600') center/cover; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; 
+        }
+        .page-header h1 { font-size: 4rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .page-header h1 span { color: var(--accent); }
+        .page-header p { font-size: 1.2rem; font-weight: 300; max-width: 600px; color: #ccc; }
+
+        /* --- SERVICES SECTION --- */
+        .section { padding: 80px 5%; max-width: 1300px; margin: 0 auto; }
+        .sec-title { text-align: center; font-size: 2.5rem; color: var(--primary); margin-bottom: 50px; text-transform: uppercase; font-weight: 700; }
+        .sec-title span { color: var(--accent); }
+
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; }
+        
+        .service-card { 
+            background: #fff; padding: 50px 30px; text-align: center; border-radius: 10px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.4s; position: relative; overflow: hidden;
+            border-bottom: 4px solid var(--gray);
+        }
+        .service-card:hover { 
+            transform: translateY(-10px); border-bottom-color: var(--accent); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+        }
+        
+        /* Icon styling */
+        .icon-box { 
+            width: 90px; height: 90px; background: rgba(30, 78, 140, 0.05); border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; transition: 0.4s;
+        }
+        .service-card:hover .icon-box { background: var(--primary); }
+        .service-card i { font-size: 2.5rem; color: var(--primary); transition: 0.4s; }
+        .service-card:hover i { color: #fff; }
+
+        .service-card h3 { color: var(--primary); margin-bottom: 15px; font-size: 1.4rem; font-weight: 600; }
+        .service-card .eng-title { font-size: 1rem; color: var(--accent); margin-bottom: 20px; font-weight: 500; display: block; }
+        .service-card p { color: #666; font-size: 1rem; line-height: 1.7; }
+
+        /* Scroll Reveal Animation */
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- FOOTER --- */
+        footer { background: #000; color: #ccc; padding: 60px 5% 20px; border-top: 4px solid var(--accent); margin-top: 50px;}
+        .foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
+        .foot-grid h3 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; } .foot-grid a { color: #ccc; display: block; margin-bottom: 10px; transition: 0.3s; } .foot-grid a:hover { color: var(--accent); }
+        .email-button { display: inline-block; background: var(--primary); color: #fff; padding: 5px 15px; border-radius: 3px; margin: 5px 0 15px 0; font-size: 0.85rem;}
+
+        @media(max-width: 768px) {
+            nav { padding: 15px 5%; }
+            .menu-btn { display: block; }
+            .nav-links { position: fixed; top: 80px; left: -100%; width: 100%; height: 100vh; background: #000; flex-direction: column; align-items: center; padding-top: 50px; transition: 0.4s; z-index: 999; }
+            .nav-links.active { left: 0; }
+            .page-header h1 { font-size: 2.5rem; }
+            .services-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
-    <div id="loader"><div class="house-loader"></div><div class="load-txt">Constructing</div></div>
+
+    <div id="loader">
+        <div class="logo-wrapper">
+            <img src="dss.png" alt="Niwasa Constructions Logo">
+        </div>
+        <div class="loader-text">Loading Services</div>
+        <div class="loading-line"></div>
+    </div>
 
     <nav>
-        <a href="index.html" class="logo">Niwasa <span>Constructions</span></a>
+        <a href="index.html" class="logo">
+            <img src="dss.png" alt="Niwasa Logo">
+            නිවස <span>Constructions</span>
+        </a>
         <div class="menu-btn"><i class="fas fa-bars"></i></div>
         <div class="nav-links">
             <a href="index.html">Home</a>
@@ -21,35 +131,95 @@
             <a href="services.html" class="active">Services</a>
             <a href="projects.html">Projects</a>
             <a href="contact us.html">Contact Us</a>
+            <a href="contact us" class="quote-btn">Get a Quote</a>
         </div>
     </nav>
 
     <div class="page-header">
-        <h1 class="reveal">Our Premium Services</h1>
+        <h1 class="reveal">Our <span>Services</span></h1>
+        <p class="reveal">Building excellence through innovation, experience, and dedication.</p>
     </div>
 
-    <section class="section reveal">
-        <div class="grid">
-            <div class="card reveal"><i class="fas fa-drafting-compass"></i><h3>Architectural Design</h3><p>Innovative aesthetic designs tailored to your specific requirements.</p></div>
-            <div class="card reveal"><i class="fas fa-home"></i><h3>Residential Build</h3><p>From modern dwellings to luxurious countryside estates.</p></div>
-            <div class="card reveal"><i class="fas fa-building"></i><h3>Commercial Build</h3><p>High-quality office buildings, retail spaces, and hospitality establishments.</p></div>
-            <div class="card reveal"><i class="fas fa-paint-roller"></i><h3>Interior Design</h3><p>Bespoke interior finishes blending comfort and luxury.</p></div>
-            <div class="card reveal"><i class="fas fa-leaf"></i><h3>Sustainable Construction</h3><p>Eco-friendly solutions and energy-efficient systems.</p></div>
-            <div class="card reveal"><i class="fas fa-hard-hat"></i><h3>Project Management</h3><p>End-to-end management ensuring on-time delivery.</p></div>
+    <section class="section">
+        <h2 class="sec-title reveal">අපගේ ප්‍රධාන <span>සේවාවන්</span></h2>
+        
+        <div class="services-grid">
+            
+            <div class="service-card reveal">
+                <div class="icon-box"><i class="fas fa-pencil-ruler"></i></div>
+                <h3>වාස්තු විද්‍යාත්මක නිවාස සැලසුම්</h3>
+                <span class="eng-title">Architectural House Designs</span>
+                <p>වරලත් වාස්තු විද්‍යාඥයෙකු අතින් නිමවෙන, ඔබගේ සිතුම් පැතුම් වලට හරියටම ගැලපෙන නවීන සහ සම්ප්‍රදායික නිවාස සැලසුම් නිර්මාණය කිරීම.</p>
+            </div>
+
+            <div class="service-card reveal">
+                <div class="icon-box"><i class="fas fa-calculator"></i></div>
+                <h3>BOQ සහ ඇස්තමේන්තු සැකසීම</h3>
+                <span class="eng-title">BOQ & Estimations</span>
+                <p>බැංකු ණය පහසුකම් ලබා ගැනීම සඳහා අවශ්‍ය වන නිවැරදි සහ පිළිගත් BOQ (Bill of Quantities) සහ ඉදිකිරීම් ඇස්තමේන්තු සකසා දීම.</p>
+            </div>
+
+            <div class="service-card reveal">
+                <div class="icon-box"><i class="fas fa-user-tie"></i></div>
+                <h3>ඉංජිනේරු මගපෙන්වීම</h3>
+                <span class="eng-title">Expert Engineering Guidance</span>
+                <p>වසර ගණනාවක අත්දැකීම් ඇති පළපුරුදු ඉංජිනේරුවරුන්ගේ පූර්ණ අධීක්ෂණය යටතේ ඉදිකිරීම් කටයුතු ආරක්ෂාකාරීව සහ ප්‍රමිතියෙන් යුතුව සිදු කිරීම.</p>
+            </div>
+
+            <div class="service-card reveal">
+                <div class="icon-box"><i class="fas fa-city"></i></div>
+                <h3>නිවාස හා ගොඩනැගිලි ඉදිකිරීම</h3>
+                <span class="eng-title">House & Building Construction</span>
+                <p>අත්තිවාරමේ සිට යතුරු භාර දීම දක්වා (Turnkey Solutions), නිවාස සහ වාණිජ ගොඩනැගිලි ඉදිකිරීමේ සම්පූර්ණ වගකීම අප විසින් භාරගනු ලැබේ.</p>
+            </div>
+
         </div>
     </section>
 
     <footer>
         <div class="foot-grid">
-            <div><h4>Niwasa Constructions</h4><p>Building your future with luxury and confidence.</p></div>
-            <div><h4>Quick Links</h4><a href="about us.html">About Us</a><a href="services.html">Services</a></div>
-            <div><h4>Contact Info</h4><p><i class="fas fa-phone" style="color:var(--gold);"></i> +94 77 123 4567</p></div>
+            <div><h3>Aththanayaka Niwasa</h3><p>Design & Build Company. We are a leading construction company in Sri Lanka. We have completed successful projects.</p></div>
+            <div><h3>Our Services</h3><a href="services.html">House Designs</a><a href="services.html">Construction</a><a href="services.html">Estimations</a></div>
+            <div><h3>Office Address</h3>
+                <p>No: 03, Bowala Lane, Kandy</p>
+                <p>web.niwasaconstructions@gmail.com</p><a href="mailto:web.niwasaconstructions@gmail.com" class="email-button">Send Email</a>
+                <p>+94 77 856 8527</p></div>
         </div>
-        <p class="text-center-sm">&copy; 2026 Niwasa Constructions. All Rights Reserved.</p>
+        <div style="text-align: center; font-size: 0.9rem; margin-top: 20px;">2026 &copy; All Rights Reserved | Niwasa Constructions (Pvt) Ltd</div>
     </footer>
 
     <script>
-        document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("loader");window.addEventListener("load",()=>{setTimeout(()=>{e.style.opacity="0",setTimeout(()=>e.style.display="none",500)},2e3)});const t=document.querySelector(".menu-btn"),n=document.querySelector(".nav-links");t&&t.addEventListener("click",()=>{n.classList.toggle("show"),t.innerHTML=n.classList.contains("show")?'<i class="fas fa-times"></i>':'<i class="fas fa-bars"></i>'});const o=document.querySelectorAll(".reveal"),s=()=>{o.forEach(e=>{e.getBoundingClientRect().top<window.innerHeight-100&&e.classList.add("active")})};window.addEventListener("scroll",s),s()});
+        document.addEventListener("DOMContentLoaded", () => {
+            // Loader Logic
+            const loader = document.getElementById("loader");
+            window.addEventListener("load", () => {
+                setTimeout(() => {
+                    loader.classList.add("loader-hidden");
+                    setTimeout(() => { loader.style.display = "none"; }, 800); 
+                }, 1500); // Slightly shorter load time for inner pages
+            });
+
+            // Mobile Menu Logic
+            const menuBtn = document.querySelector(".menu-btn"), navLinks = document.querySelector(".nav-links");
+            menuBtn.addEventListener("click", () => { 
+                navLinks.classList.toggle("active"); 
+                menuBtn.innerHTML = navLinks.classList.contains("active") ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+
+            // Scroll Reveal Animation
+            const reveals = document.querySelectorAll(".reveal");
+            const revealOnScroll = () => {
+                reveals.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
+                    if (elementTop < windowHeight - 100) {
+                        element.classList.add("active");
+                    }
+                });
+            };
+            window.addEventListener("scroll", revealOnScroll);
+            revealOnScroll(); // Trigger once on load
+        });
     </script>
 </body>
 </html>
