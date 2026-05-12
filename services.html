@@ -8,10 +8,10 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
-        /* --- BRAND COLORS (MATCHING HOME PAGE) --- */
+        /* --- STRICT BLUE & RED THEME --- */
         :root { 
-            --primary: #1E4E8C; /* Logo Dark Blue */
-            --accent: #E85D22;  /* Logo Orange/Red */
+            --primary: #003366; /* Deep Navy Blue */
+            --accent: #CC0000;  /* Pure Solid Red */
             --text-dark: #111; 
             --text-light: #fff; 
             --light: #f8f9fa; 
@@ -21,14 +21,12 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         a { text-decoration: none; } ul { list-style: none; } html { scroll-behavior: smooth; background: var(--light); }
         
-        /* --- PREMIUM LOGO ANIMATION LOADER --- */
-        #loader {
-            position: fixed; inset: 0; background: #000000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease-in-out, visibility 0.8s;
-        }
+        /* --- LOADER --- */
+        #loader { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease-in-out, visibility 0.8s; }
         .logo-wrapper { position: relative; width: 280px; margin-bottom: 40px; animation: pulseLogo 2.5s infinite alternate ease-in-out; overflow: hidden; }
         .logo-wrapper img { width: 100%; display: block; }
         .logo-wrapper::after { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0)); transform: skewX(-25deg); animation: shimmerSweep 3s infinite; }
-        @keyframes pulseLogo { 0% { transform: scale(0.95); filter: drop-shadow(0 0 15px rgba(30, 78, 140, 0.4)); } 100% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(232, 93, 34, 0.6)); } }
+        @keyframes pulseLogo { 0% { transform: scale(0.95); filter: drop-shadow(0 0 15px rgba(0, 51, 102, 0.6)); } 100% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(204, 0, 0, 0.6)); } }
         @keyframes shimmerSweep { 0% { left: -150%; } 50%, 100% { left: 200%; } }
         .loader-text { color: #fff; font-size: 1rem; letter-spacing: 5px; font-weight: 300; text-transform: uppercase; margin-bottom: 15px; }
         .loading-line { width: 200px; height: 2px; background: #222; border-radius: 5px; position: relative; overflow: hidden; }
@@ -36,68 +34,52 @@
         @keyframes loadingBar { 0% { width: 0%; transform: translateX(0); } 100% { width: 100%; transform: translateX(200px); } }
         .loader-hidden { opacity: 0; visibility: hidden; }
 
-        /* --- NAVIGATION --- */
-        nav { 
-            background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-        }
+        /* --- TOP BAR & NAV --- */
+        .top-bar { background: var(--primary); color: #fff; padding: 10px 5%; display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .top-bar div { display: flex; align-items: center; gap: 15px; }
+        nav { background: #000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.5); border-bottom: 2px solid var(--primary); }
         .logo { display: flex; align-items: center; gap: 15px; font-size: 1.6rem; font-weight: 700; color: #fff; text-transform: uppercase; } 
         .logo img { height: 60px; }
         .logo span { color: var(--accent); }
         .nav-links { display: flex; gap: 20px; } .nav-links a { color: #fff; font-weight: 500; text-transform: uppercase; font-size: 0.9rem; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
         .quote-btn { background: var(--accent); color: #fff; padding: 8px 20px; border-radius: 4px; font-weight: 600; border: none; cursor: pointer;}
-        .quote-btn:hover { background: #cf4f1a; color: #fff; }
+        .quote-btn:hover { background: #a30000; color: #fff; }
         .menu-btn { display: none; font-size: 1.5rem; color: #fff; cursor: pointer; }
         
         /* --- PAGE HEADER --- */
-        .page-header { 
-            height: 50vh; 
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1541888086225-f674ce89228e?w=1600') center/cover; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; 
-        }
-        .page-header h1 { font-size: 4rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .page-header { height: 50vh; background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 51, 102, 0.7)), url('https://images.unsplash.com/photo-1541888086225-f674ce89228e?w=1600') center/cover; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-align: center; border-bottom: 4px solid var(--accent); }
+        .page-header h1 { font-size: 4rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
         .page-header h1 span { color: var(--accent); }
-        .page-header p { font-size: 1.2rem; font-weight: 300; max-width: 600px; color: #ccc; }
+        .page-header p { font-size: 1.2rem; font-weight: 300; max-width: 600px; color: #eee; }
 
         /* --- SERVICES SECTION --- */
         .section { padding: 80px 5%; max-width: 1300px; margin: 0 auto; }
-        .sec-title { text-align: center; font-size: 2.5rem; color: var(--primary); margin-bottom: 50px; text-transform: uppercase; font-weight: 700; }
+        .sec-title { text-align: center; font-size: 2.8rem; color: var(--primary); margin-bottom: 50px; text-transform: uppercase; font-weight: 700; }
         .sec-title span { color: var(--accent); }
 
         .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; }
         
-        .service-card { 
-            background: #fff; padding: 50px 30px; text-align: center; border-radius: 10px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.4s; position: relative; overflow: hidden;
-            border-bottom: 4px solid var(--gray);
-        }
-        .service-card:hover { 
-            transform: translateY(-10px); border-bottom-color: var(--accent); 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
-        }
+        .service-card { background: #fff; padding: 50px 30px; text-align: center; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.4s; position: relative; overflow: hidden; border-bottom: 4px solid var(--primary); }
+        .service-card:hover { transform: translateY(-10px); border-bottom-color: var(--accent); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         
-        /* Icon styling */
-        .icon-box { 
-            width: 90px; height: 90px; background: rgba(30, 78, 140, 0.05); border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; transition: 0.4s;
-        }
-        .service-card:hover .icon-box { background: var(--primary); }
+        .icon-box { width: 90px; height: 90px; background: rgba(0, 51, 102, 0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; transition: 0.4s; border: 1px solid var(--primary); }
+        .service-card:hover .icon-box { background: var(--primary); border-color: var(--primary); }
         .service-card i { font-size: 2.5rem; color: var(--primary); transition: 0.4s; }
         .service-card:hover i { color: #fff; }
 
         .service-card h3 { color: var(--primary); margin-bottom: 15px; font-size: 1.4rem; font-weight: 600; }
-        .service-card .eng-title { font-size: 1rem; color: var(--accent); margin-bottom: 20px; font-weight: 500; display: block; }
-        .service-card p { color: #666; font-size: 1rem; line-height: 1.7; }
+        .service-card .eng-title { font-size: 1rem; color: var(--accent); margin-bottom: 20px; font-weight: 600; display: block; text-transform: uppercase; letter-spacing: 1px; }
+        .service-card p { color: #555; font-size: 1rem; line-height: 1.7; }
 
-        /* Scroll Reveal Animation */
         .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         /* --- FOOTER --- */
         footer { background: #000; color: #ccc; padding: 60px 5% 20px; border-top: 4px solid var(--accent); margin-top: 50px;}
         .foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
-        .foot-grid h3 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; } .foot-grid a { color: #ccc; display: block; margin-bottom: 10px; transition: 0.3s; } .foot-grid a:hover { color: var(--accent); }
-        .email-button { display: inline-block; background: var(--primary); color: #fff; padding: 5px 15px; border-radius: 3px; margin: 5px 0 15px 0; font-size: 0.85rem;}
+        .foot-grid h3 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; border-left: 3px solid var(--accent); padding-left: 10px; } .foot-grid a { color: #ccc; display: block; margin-bottom: 10px; transition: 0.3s; } .foot-grid a:hover { color: var(--accent); }
+        .email-button { display: inline-block; background: var(--primary); color: #fff; padding: 5px 15px; border-radius: 3px; margin: 5px 0 15px 0; font-size: 0.85rem;} .email-button:hover { background: var(--accent); }
 
         @media(max-width: 768px) {
             nav { padding: 15px 5%; }
@@ -117,6 +99,11 @@
         </div>
         <div class="loader-text">Loading Services</div>
         <div class="loading-line"></div>
+    </div>
+
+    <div class="top-bar">
+        <div><i class="fas fa-envelope"></i> niwasaconstructions@gmail.com &nbsp;&nbsp;|&nbsp;&nbsp; <i class="fas fa-phone"></i> +94 77 856 8527</div>
+        <div><i class="fas fa-clock"></i> Mon - Sat: 8.00 AM - 5.00 PM</div>
     </div>
 
     <nav>
@@ -144,7 +131,6 @@
         <h2 class="sec-title reveal">අපගේ ප්‍රධාන <span>සේවාවන්</span></h2>
         
         <div class="services-grid">
-            
             <div class="service-card reveal">
                 <div class="icon-box"><i class="fas fa-pencil-ruler"></i></div>
                 <h3>වාස්තු විද්‍යාත්මක නිවාස සැලසුම්</h3>
@@ -172,7 +158,6 @@
                 <span class="eng-title">House & Building Construction</span>
                 <p>අත්තිවාරමේ සිට යතුරු භාර දීම දක්වා (Turnkey Solutions), නිවාස සහ වාණිජ ගොඩනැගිලි ඉදිකිරීමේ සම්පූර්ණ වගකීම අප විසින් භාරගනු ලැබේ.</p>
             </div>
-
         </div>
     </section>
 
@@ -190,23 +175,20 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Loader Logic
             const loader = document.getElementById("loader");
             window.addEventListener("load", () => {
                 setTimeout(() => {
                     loader.classList.add("loader-hidden");
                     setTimeout(() => { loader.style.display = "none"; }, 800); 
-                }, 1500); // Slightly shorter load time for inner pages
+                }, 1500); 
             });
 
-            // Mobile Menu Logic
             const menuBtn = document.querySelector(".menu-btn"), navLinks = document.querySelector(".nav-links");
             menuBtn.addEventListener("click", () => { 
                 navLinks.classList.toggle("active"); 
                 menuBtn.innerHTML = navLinks.classList.contains("active") ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
             });
 
-            // Scroll Reveal Animation
             const reveals = document.querySelectorAll(".reveal");
             const revealOnScroll = () => {
                 reveals.forEach(element => {
@@ -218,7 +200,7 @@
                 });
             };
             window.addEventListener("scroll", revealOnScroll);
-            revealOnScroll(); // Trigger once on load
+            revealOnScroll(); 
         });
     </script>
 </body>
