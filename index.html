@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niwasa Constructions ERP</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f6f9; }
+        #dashboard-section { display: none; } /* මුලින්ම Dashboard එක hide කරලා තියන්නේ */
+    </style>
+</head>
+<body>
+
+    <div id="login-section" class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-body text-center">
+                        <h4 class="mb-4">Niwasa ERP Login</h4>
+                        <input type="email" id="email" class="form-control mb-3" placeholder="Email Address">
+                        <input type="password" id="password" class="form-control mb-3" placeholder="Password">
+                        <button id="login-btn" class="btn btn-primary w-100">Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-section" class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Aththanayaka Niwasa Constructions</h2>
+            <button id="logout-btn" class="btn btn-danger">Logout</button>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-3">
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
+                    <a href="#" class="list-group-item list-group-item-action">Vendors</a>
+                    <a href="#" class="list-group-item list-group-item-action">Pending Bills</a>
+                    <a href="#" class="list-group-item list-group-item-action">Payments</a>
+                </div>
+            </div>
+            
+            <div class="col-md-9">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5>Welcome to the ERP System!</h5>
+                        <p>මෙතන තමා අපේ vendors ලගේ bills සහ payments පෙන්නන tables එන්නේ.</p>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
