@@ -9,13 +9,15 @@
     <style>
         body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .sidebar { background-color: #1e3a5f; min-height: calc(100vh - 80px); border-radius: 10px; padding: 15px 0;}
-        .sidebar a { color: #cfd8dc; border: none; padding: 12px 20px; font-weight: 500; transition: 0.3s; background: transparent; display: block; text-decoration: none; }
+        /* අර Cursor අවුල හැදුවේ මෙතනින් */
+        .sidebar a { cursor: pointer !important; user-select: none; color: #cfd8dc; border: none; padding: 12px 20px; font-weight: 500; transition: 0.3s; background: transparent; display: block; text-decoration: none; }
         .sidebar a:hover, .sidebar a.active { background-color: #e64a19; color: white; border-radius: 5px; margin: 0 10px; }
         .app-section { display: none; animation: fadeIn 0.4s; }
         .app-section.active { display: block; }
         .card { border: none; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .card-header { font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border-radius: 10px 10px 0 0 !important; }
         .brand-header { background-color: white; padding: 15px 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; border-left: 5px solid #e64a19; }
+        .stat-card { border-radius: 15px; padding: 20px; color: white; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -46,16 +48,44 @@
         <div class="row">
             <div class="col-md-2 mb-3">
                 <div class="sidebar shadow-sm">
-                    <a class="nav-link active" data-target="vendors"><i class="bi bi-people-fill me-2"></i> Vendors</a>
+                    <a class="nav-link active" data-target="dashboard"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+                    <a class="nav-link" data-target="vendors"><i class="bi bi-people-fill me-2"></i> Vendors</a>
                     <a class="nav-link" data-target="sites"><i class="bi bi-cone-striped me-2"></i> Sites</a>
                     <a class="nav-link" data-target="bills"><i class="bi bi-receipt-cutoff me-2"></i> Add Bills</a>
                     <a class="nav-link" data-target="payments" style="color:#a5d6a7;"><i class="bi bi-cash-coin me-2"></i> Payments</a>
+                    <a class="nav-link" data-target="reports"><i class="bi bi-graph-up text-warning me-2"></i> Reports</a>
                 </div>
             </div>
             
             <div class="col-md-10">
                 
-                <div id="section-vendors" class="app-section active">
+                <div id="section-dashboard" class="app-section active">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="stat-card bg-danger shadow">
+                                <h5>Total Outstanding (ගෙවිය යුතු)</h5>
+                                <h2>Rs. <span id="dash-due">0.00</span></h2>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-card bg-success shadow">
+                                <h5>Monthly Paid (මේ මාසයේ ගෙවීම්)</h5>
+                                <h2>Rs. <span id="dash-paid">0.00</span></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card border-warning mb-4">
+                        <div class="card-header bg-warning text-dark"><i class="bi bi-calendar-event"></i> Upcoming Cheque Reminders</div>
+                        <div class="card-body">
+                            <table class="table table-sm">
+                                <thead><tr><th>Date</th><th>Cheque No</th><th>Amount</th><th>Status</th></tr></thead>
+                                <tbody id="cheque-reminders"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="section-vendors" class="app-section">
                     <div class="card">
                         <div class="card-header text-white" style="background-color: #1e3a5f;"><i class="bi bi-people"></i> Manage Vendors</div>
                         <div class="card-body bg-white">
@@ -96,14 +126,24 @@
                             <form id="bill-form" class="row g-3 mb-4 bg-light p-3 rounded">
                                 <div class="col-md-3"><select id="b-vendor" class="form-select vendor-dropdown" required><option value="">Select Vendor</option></select></div>
                                 <div class="col-md-3"><select id="b-site" class="form-select site-dropdown" required><option value="">Select Site</option></select></div>
+                                <div class="col-md-2">
+                                    <select id="b-category" class="form-select" required>
+                                        <option value="">Material...</option>
+                                        <option value="Cement">Cement (සිමෙන්ති)</option>
+                                        <option value="Steel">Steel (කම්බි)</option>
+                                        <option value="Sand_Metal">Sand/Metal (වැලි/ගල්)</option>
+                                        <option value="Paint">Paint (තීන්ත)</option>
+                                        <option value="Other">Other (වෙනත්)</option>
+                                    </select>
+                                </div>
                                 <div class="col-md-2"><input type="text" id="b-number" class="form-control" placeholder="Bill No" required></div>
                                 <div class="col-md-2"><input type="date" id="b-date" class="form-control" required></div>
-                                <div class="col-md-2"><select id="b-type" class="form-select" required><option value="CREDIT">Credit</option><option value="CASH">Cash</option></select></div>
-                                <div class="col-md-10"><input type="number" id="b-amount" class="form-control" placeholder="Total Amount (Rs.)" required></div>
-                                <div class="col-md-2"><button type="submit" class="btn text-white w-100" style="background-color: #e64a19;"><i class="bi bi-save"></i> Save</button></div>
+                                <div class="col-md-4"><select id="b-type" class="form-select" required><option value="CREDIT">Credit</option><option value="CASH">Cash</option></select></div>
+                                <div class="col-md-5"><input type="number" id="b-amount" class="form-control" placeholder="Total Amount (Rs.)" required></div>
+                                <div class="col-md-3"><button type="submit" class="btn text-white w-100" style="background-color: #e64a19;"><i class="bi bi-save"></i> Save Bill</button></div>
                             </form>
                             <table class="table table-hover table-sm">
-                                <thead class="table-light"><tr><th>Date</th><th>Bill No</th><th>Amount</th><th>Paid</th><th>Status</th></tr></thead>
+                                <thead class="table-light"><tr><th>Date</th><th>Bill No</th><th>Material</th><th>Amount</th><th>Status</th></tr></thead>
                                 <tbody id="b-table"></tbody>
                             </table>
                         </div>
@@ -128,7 +168,7 @@
                             <div id="pending-bills-container" style="display:none;" class="mb-4">
                                 <h6 class="fw-bold text-primary">2. Allocate amounts to Pending Bills</h6>
                                 <table class="table table-bordered table-hover">
-                                    <thead class="table-light"><tr><th>Bill No</th><th>Due Amount (Rs.)</th><th>Pay Amount (Rs.)</th></tr></thead>
+                                    <thead class="table-light"><tr><th>Bill No & Category</th><th>Due Amount (Rs.)</th><th>Pay Amount (Rs.)</th></tr></thead>
                                     <tbody id="p-bills-table"></tbody>
                                 </table>
                                 <div class="alert alert-info text-end">
@@ -147,12 +187,38 @@
                                         <option value="SAMPATH_CHEQUE">Sampath Cheque</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4" id="cheque-box" style="display: none;">
-                                    <input type="text" id="p-cheque-no" class="form-control border-danger" placeholder="Enter Cheque Number">
+                                <div class="col-md-5" id="cheque-box" style="display: none;">
+                                    <div class="input-group">
+                                        <input type="text" id="p-cheque-no" class="form-control border-danger" placeholder="Cheque No">
+                                        <input type="date" id="p-cheque-date" class="form-control border-danger" placeholder="Date">
+                                    </div>
                                 </div>
-                                <div class="col-md-4"><button type="submit" class="btn btn-success w-100"><i class="bi bi-check-circle"></i> Confirm Payment</button></div>
+                                <div class="col-md-3"><button type="submit" class="btn btn-success w-100"><i class="bi bi-check-circle"></i> Confirm</button></div>
                             </form>
+                        </div>
+                    </div>
+                </div>
 
+                <div id="section-reports" class="app-section">
+                    <div class="card border-info">
+                        <div class="card-header bg-info text-dark"><i class="bi bi-graph-up"></i> Site-wise Costing Report</div>
+                        <div class="card-body bg-white">
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <label class="fw-bold">Select Site to Generate Report:</label>
+                                    <select id="report-site" class="form-select site-dropdown"><option value="">Select Site...</option></select>
+                                </div>
+                            </div>
+                            <div id="report-results" style="display: none;">
+                                <div class="row mb-3">
+                                    <div class="col-md-6"><div class="alert alert-secondary">Total Material Cost: <strong id="rep-tot" class="fs-5">0</strong></div></div>
+                                    <div class="col-md-6"><div class="alert alert-success">Total Amount Paid: <strong id="rep-paid" class="fs-5">0</strong></div></div>
+                                </div>
+                                <table class="table table-sm table-striped">
+                                    <thead><tr><th>Date</th><th>Bill No</th><th>Category</th><th>Amount</th></tr></thead>
+                                    <tbody id="report-table"></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
