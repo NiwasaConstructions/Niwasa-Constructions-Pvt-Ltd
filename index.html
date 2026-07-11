@@ -24,13 +24,16 @@
 </head>
 <body>
 
-    <!-- Login Section -->
+<!-- Login Section -->
     <div id="login-section" class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-4">
                 <div class="card shadow-lg mt-5">
                     <div class="card-body text-center p-5">
-                        <h3 class="mb-4 text-primary" style="color: #1e3a5f !important;"><b>NIWASA</b> ERP</h3>
+                        <!-- ලෝගෝ එක මෙතනට දැම්මා -->
+                        <img src="dss.png" alt="Niwasa Constructions Logo" style="max-height: 100px; width: auto;" class="mb-3">
+                        
+                        <h4 class="mb-4 text-primary" style="color: #1e3a5f !important;">Payment Management ERP</h4>
                         <input type="email" id="email" class="form-control mb-3" placeholder="Email Address">
                         <input type="password" id="password" class="form-control mb-4" placeholder="Password">
                         <button id="login-btn" class="btn w-100 text-white" style="background-color: #e64a19;">Secure Login</button>
@@ -40,11 +43,16 @@
         </div>
     </div>
 
-    <!-- Dashboard Section -->
+<!-- Dashboard Section -->
     <div id="dashboard-section" class="container-fluid mt-3 px-4" style="display: none;">
         
         <div class="d-flex justify-content-between align-items-center brand-header">
-            <h4 class="mb-0" style="color: #1e3a5f;"><i class="bi bi-building me-2"></i> Aththanayaka Niwasa Constructions</h4>
+            <div class="d-flex align-items-center">
+                <!-- උඩ මෙනු එකේ ලෝගෝ එක -->
+                <img src="dss.png" alt="Logo" style="max-height: 45px; margin-right: 15px; border-radius: 5px;">
+                <h4 class="mb-0" style="color: #1e3a5f;">Niwasa Constructions (Pvt) Ltd</h4>
+                <h2class class="mb-0" style="color: #1e3a5f;">Payment Management ERP</h2>
+            </div>
             <button id="logout-btn" class="btn btn-outline-danger btn-sm"><i class="bi bi-box-arrow-right"></i> Logout</button>
         </div>
         
