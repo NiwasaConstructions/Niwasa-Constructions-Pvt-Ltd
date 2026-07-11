@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-import { getFirestore, collection, setDoc, doc, onSnapshot, query, where, writeBatch, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import { getFirestore, collection, setDoc, doc, onSnapshot, query, where, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -16,11 +16,10 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// --- UTILITY: Generate Custom IDs ---
+let allBillsList = []; // For reports
+
 const generateCustomID = (prefix) => {
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-    const timePart = Date.now().toString().slice(-4);
-    return `${prefix}-${timePart}${randomNum}`;
+    return `${prefix}-${Date.now().toString().slice(-4)}${Math.floor(1000 + Math.random() * 9000)}`;
 };
 
 // --- AUTHENTICATION ---
@@ -29,7 +28,6 @@ onAuthStateChanged(auth, (user) => {
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('dashboard-section').style.display = 'block';
         
-        // Set today's date in date pickers
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('b-date').value = today;
         document.getElementById('p-date').value = today;
@@ -48,19 +46,15 @@ document.getElementById('login-btn').addEventListener('click', () => {
 });
 document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
 
-// --- NAVIGATION LOGIC (FIXED) ---
+// --- NAVIGATION LOGIC ---
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', (e) => {
-        // 1. Remove active class from all links
+        e.preventDefault();
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        // 2. Add active to clicked link
         e.currentTarget.classList.add('active');
         
-        // 3. Hide all sections
         document.querySelectorAll('.app-section').forEach(sec => sec.classList.remove('active'));
-        // 4. Show target section
-        const targetId = e.currentTarget.getAttribute('data-target');
-        document.getElementById(`section-${targetId}`).classList.add('active');
+        document.getElementById(`section-${e.currentTarget.getAttribute('data-target')}`).classList.add('active');
     });
 });
 
@@ -68,68 +62,102 @@ document.querySelectorAll('.nav-link').forEach(link => {
 let pendingBillsForPayment = [];
 
 function initDataLoad() {
-    // 1. Load Vendors
     onSnapshot(collection(db, "vendors"), (snap) => {
         const vTable = document.getElementById('v-table');
         const vDrops = document.querySelectorAll('.vendor-dropdown');
         vTable.innerHTML = '';
         let dropHtml = '<option value="">Select Vendor...</option>';
         
-        snap.forEach(document => {
-            let data = document.data();
-            vTable.innerHTML += `<tr>
-                <td><span class="badge bg-secondary">${data.custom_id}</span></td>
-                <td class="fw-bold">${data.name}</td>
-                <td>${data.contact}</td>
-                <td>${data.address || '-'}</td>
-            </tr>`;
-            dropHtml += `<option value="${document.id}">${data.custom_id} - ${data.name}</option>`;
+        snap.forEach(docSnap => {
+            let data = docSnap.data();
+            vTable.innerHTML += `<tr><td><span class="badge bg-secondary">${data.custom_id}</span></td><td class="fw-bold">${data.name}</td><td>${data.contact}</td><td>${data.address || '-'}</td></tr>`;
+            dropHtml += `<option value="${docSnap.id}">${data.custom_id} - ${data.name}</option>`;
         });
         vDrops.forEach(d => d.innerHTML = dropHtml);
     });
 
-    // 2. Load Sites
     onSnapshot(collection(db, "sites"), (snap) => {
         const sTable = document.getElementById('s-table');
-        const sDrop = document.querySelector('.site-dropdown');
+        const sDrop = document.querySelectorAll('.site-dropdown');
         sTable.innerHTML = '';
         let dropHtml = '<option value="">Select Site...</option>';
         
-        snap.forEach(document => {
-            let data = document.data();
+        snap.forEach(docSnap => {
+            let data = docSnap.data();
             sTable.innerHTML += `<tr><td><i class="bi bi-geo-alt text-danger me-2"></i> ${data.name}</td></tr>`;
-            dropHtml += `<option value="${document.id}">${data.name}</option>`;
+            dropHtml += `<option value="${docSnap.id}">${data.name}</option>`;
         });
-        sDrop.innerHTML = dropHtml;
+        sDrop.forEach(d => d.innerHTML = dropHtml);
     });
 
-    // 3. Load Bills
+    // Load Bills & Calculate Dashboard Total Due
     onSnapshot(collection(db, "bills"), (snap) => {
         const bTable = document.getElementById('b-table');
         bTable.innerHTML = '';
-        snap.forEach(document => {
-            let d = document.data();
+        allBillsList = [];
+        let totalDueAmount = 0;
+
+        snap.forEach(docSnap => {
+            let d = docSnap.data();
+            allBillsList.push(d); // Save for reports
+            totalDueAmount += (d.total_amount - d.paid_amount);
+
             let statusColor = d.status === 'SETTLED' ? 'success' : (d.status === 'PARTIAL' ? 'info' : 'warning');
             bTable.innerHTML += `<tr>
                 <td>${d.date}</td>
                 <td class="fw-bold">${d.bill_number}</td>
+                <td><span class="badge bg-secondary">${d.category || '-'}</span></td>
                 <td>Rs. ${d.total_amount}</td>
-                <td class="text-success">Rs. ${d.paid_amount}</td>
                 <td><span class="badge bg-${statusColor}">${d.status}</span></td>
             </tr>`;
         });
+        
+        // Update Dashboard Outstanding
+        document.getElementById('dash-due').innerText = totalDueAmount.toLocaleString(undefined, {minimumFractionDigits: 2});
+        
+        // Trigger report update if site is selected
+        document.getElementById('report-site').dispatchEvent(new Event('change'));
+    });
+
+    // Load Payments & Calculate Dashboard Monthly Paid & Cheques
+    onSnapshot(collection(db, "payments"), (snap) => {
+        const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+        const todayStr = new Date().toISOString().split('T')[0];
+        let monthlyPaid = 0;
+        let cTable = document.getElementById('cheque-reminders');
+        cTable.innerHTML = '';
+
+        snap.forEach(docSnap => {
+            let d = docSnap.data();
+            
+            // Monthly calc
+            if(d.payment_date && d.payment_date.startsWith(currentMonth)) {
+                monthlyPaid += d.total_amount;
+            }
+
+            // Cheque reminders (Pending cheques from today onwards)
+            if(d.method.includes('CHEQUE') && d.cheque_date && d.cheque_date >= todayStr) {
+                cTable.innerHTML += `<tr>
+                    <td class="text-danger fw-bold">${d.cheque_date}</td>
+                    <td>${d.cheque_number}</td>
+                    <td>Rs. ${d.total_amount}</td>
+                    <td><span class="badge bg-warning text-dark">Pending Clearance</span></td>
+                </tr>`;
+            }
+        });
+        
+        if(cTable.innerHTML === '') cTable.innerHTML = '<tr><td colspan="4" class="text-center">No upcoming cheques.</td></tr>';
+        
+        // Update Dashboard Monthly Paid
+        document.getElementById('dash-paid').innerText = monthlyPaid.toLocaleString(undefined, {minimumFractionDigits: 2});
     });
 }
 
-// Add Vendor
+// --- FORMS LOGIC ---
 document.getElementById('vendor-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const customId = generateCustomID('VEN');
-    
-    // Create reference with auto ID, but save custom ID inside
-    const newVendorRef = doc(collection(db, "vendors")); 
-    await setDoc(newVendorRef, {
-        custom_id: customId,
+    await setDoc(doc(collection(db, "vendors")), {
+        custom_id: generateCustomID('VEN'),
         name: document.getElementById('v-name').value,
         contact: document.getElementById('v-contact').value,
         address: document.getElementById('v-address').value
@@ -137,29 +165,25 @@ document.getElementById('vendor-form').addEventListener('submit', async (e) => {
     e.target.reset();
 });
 
-// Add Site
 document.getElementById('site-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const newSiteRef = doc(collection(db, "sites"));
-    await setDoc(newSiteRef, { name: document.getElementById('s-name').value });
+    await setDoc(doc(collection(db, "sites")), { name: document.getElementById('s-name').value });
     e.target.reset();
 });
 
-// Add Bill
 document.getElementById('bill-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const type = document.getElementById('b-type').value;
     const total = parseFloat(document.getElementById('b-amount').value);
-    const paid = type === 'CASH' ? total : 0;
     
-    const newBillRef = doc(collection(db, "bills"));
-    await setDoc(newBillRef, {
+    await setDoc(doc(collection(db, "bills")), {
         vendor_id: document.getElementById('b-vendor').value,
         site_id: document.getElementById('b-site').value,
+        category: document.getElementById('b-category').value, // අලුත් ෆීචර් එක
         bill_number: document.getElementById('b-number').value,
         date: document.getElementById('b-date').value,
         total_amount: total,
-        paid_amount: paid,
+        paid_amount: type === 'CASH' ? total : 0,
         status: type === 'CASH' ? 'SETTLED' : 'PENDING',
         created_at: new Date().toISOString()
     });
@@ -168,35 +192,21 @@ document.getElementById('bill-form').addEventListener('submit', async (e) => {
     document.getElementById('b-date').value = new Date().toISOString().split('T')[0];
 });
 
-// --- PAYMENTS & SET-OFF LOGIC ---
-
-// Cheque Box UI Toggle
+// --- PAYMENTS LOGIC ---
 document.getElementById('p-method').addEventListener('change', (e) => {
-    const val = e.target.value;
-    const chequeBox = document.getElementById('cheque-box');
-    const chequeInput = document.getElementById('p-cheque-no');
-    
-    if (val.includes('CHEQUE')) {
-        chequeBox.style.display = 'block';
-        chequeInput.required = true;
-    } else {
-        chequeBox.style.display = 'none';
-        chequeInput.required = false;
-        chequeInput.value = '';
-    }
+    const isCheque = e.target.value.includes('CHEQUE');
+    document.getElementById('cheque-box').style.display = isCheque ? 'flex' : 'none';
+    document.getElementById('p-cheque-no').required = isCheque;
+    document.getElementById('p-cheque-date').required = isCheque;
 });
 
-// Load Pending Bills for Vendor
 document.getElementById('p-vendor').addEventListener('change', async (e) => {
     const vId = e.target.value;
     const pContainer = document.getElementById('pending-bills-container');
     const pForm = document.getElementById('payment-form');
     const pbTable = document.getElementById('p-bills-table');
     
-    if(!vId) {
-        pContainer.style.display = 'none'; pForm.style.display = 'none';
-        return;
-    }
+    if(!vId) { pContainer.style.display = 'none'; pForm.style.display = 'none'; return; }
 
     const q = query(collection(db, "bills"), where("vendor_id", "==", vId), where("status", "!=", "SETTLED"));
     const snap = await getDocs(q);
@@ -205,98 +215,106 @@ document.getElementById('p-vendor').addEventListener('change', async (e) => {
     pbTable.innerHTML = '';
     
     if(snap.empty) {
-        pbTable.innerHTML = '<tr><td colspan="3" class="text-center text-danger py-3">No pending bills for this vendor.</td></tr>';
-        pContainer.style.display = 'block'; pForm.style.display = 'none';
-        return;
+        pbTable.innerHTML = '<tr><td colspan="3" class="text-center text-danger py-3">No pending bills.</td></tr>';
+        pContainer.style.display = 'block'; pForm.style.display = 'none'; return;
     }
 
-    snap.forEach(document => {
-        let d = document.data();
+    snap.forEach(docSnap => {
+        let d = docSnap.data();
         let due = d.total_amount - d.paid_amount;
-        pendingBillsForPayment.push({ id: document.id, due: due, original_paid: d.paid_amount, total: d.total_amount });
+        pendingBillsForPayment.push({ id: docSnap.id, due: due, original_paid: d.paid_amount, total: d.total_amount });
         
         pbTable.innerHTML += `
             <tr>
-                <td class="fw-bold">${d.bill_number} <br><small class="text-muted">Date: ${d.date}</small></td>
+                <td class="fw-bold">${d.bill_number} <br><span class="badge bg-secondary">${d.category || 'N/A'}</span></td>
                 <td class="text-danger fw-bold">Rs. ${due}</td>
-                <td>
-                    <input type="number" class="form-control pay-input border-primary" data-id="${document.id}" placeholder="Enter amount" max="${due}" min="0">
-                </td>
+                <td><input type="number" class="form-control pay-input border-primary" data-id="${docSnap.id}" max="${due}" min="0"></td>
             </tr>
         `;
     });
 
-    pContainer.style.display = 'block';
-    pForm.style.display = 'flex';
+    pContainer.style.display = 'block'; pForm.style.display = 'flex';
 
-    // Calculate total on typing
     document.querySelectorAll('.pay-input').forEach(input => {
         input.addEventListener('input', () => {
-            let tot = 0;
-            document.querySelectorAll('.pay-input').forEach(i => tot += Number(i.value || 0));
+            let tot = 0; document.querySelectorAll('.pay-input').forEach(i => tot += Number(i.value || 0));
             document.getElementById('p-total-calc').innerText = tot.toLocaleString();
         });
     });
 });
 
-// Submit Payment
 document.getElementById('payment-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const inputs = document.querySelectorAll('.pay-input');
-    
-    let allocations = [];
-    let totalPayment = 0;
+    let allocations = []; let totalPayment = 0;
 
-    inputs.forEach(input => {
+    document.querySelectorAll('.pay-input').forEach(input => {
         const amount = Number(input.value);
-        if(amount > 0) {
-            allocations.push({ bill_id: input.dataset.id, amount: amount });
-            totalPayment += amount;
-        }
+        if(amount > 0) { allocations.push({ bill_id: input.dataset.id, amount: amount }); totalPayment += amount; }
     });
 
-    if(totalPayment <= 0) {
-        alert("Please enter a payment amount for at least one bill.");
-        return;
-    }
+    if(totalPayment <= 0) { alert("Enter amount to pay!"); return; }
 
     const batch = writeBatch(db);
 
-    // 1. Update Bills
     allocations.forEach(alloc => {
         const billRef = doc(db, "bills", alloc.bill_id);
         const billData = pendingBillsForPayment.find(b => b.id === alloc.bill_id);
-        
         const newPaid = billData.original_paid + alloc.amount;
-        const newStatus = newPaid >= billData.total ? "SETTLED" : "PARTIAL";
-        
-        batch.update(billRef, { paid_amount: newPaid, status: newStatus });
+        batch.update(billRef, { paid_amount: newPaid, status: newPaid >= billData.total ? "SETTLED" : "PARTIAL" });
     });
 
-    // 2. Add Payment Record with Custom ID
-    const payCustomId = generateCustomID('PAY');
+    const isCheque = document.getElementById('p-method').value.includes('CHEQUE');
     const newPaymentRef = doc(collection(db, "payments"));
+    
     batch.set(newPaymentRef, {
-        payment_id: payCustomId,
+        payment_id: generateCustomID('PAY'),
         vendor_id: document.getElementById('p-vendor').value,
         payment_date: document.getElementById('p-date').value,
         total_amount: totalPayment,
         method: document.getElementById('p-method').value,
-        cheque_number: document.getElementById('p-cheque-no').value || null,
+        cheque_number: isCheque ? document.getElementById('p-cheque-no').value : null,
+        cheque_date: isCheque ? document.getElementById('p-cheque-date').value : null,
         allocations: allocations,
         timestamp: new Date().toISOString()
     });
 
-    try {
-        await batch.commit();
-        alert(`Payment Saved Successfully!\nPayment ID: ${payCustomId}`);
-        
-        // Reset UI
+    await batch.commit().then(() => {
+        alert("Payment Saved!");
         document.getElementById('p-vendor').value = "";
         document.getElementById('p-vendor').dispatchEvent(new Event('change'));
         document.getElementById('payment-form').reset();
-        document.getElementById('p-total-calc').innerText = "0";
-    } catch (err) {
-        alert("Error saving payment: " + err.message);
-    }
+    }).catch(err => alert("Error: " + err.message));
+});
+
+// --- REPORTS LOGIC ---
+document.getElementById('report-site').addEventListener('change', (e) => {
+    const sId = e.target.value;
+    const repResults = document.getElementById('report-results');
+    const repTable = document.getElementById('report-table');
+    
+    if(!sId) { repResults.style.display = 'none'; return; }
+    
+    repResults.style.display = 'block';
+    repTable.innerHTML = '';
+    
+    let totalCost = 0;
+    let totalPaid = 0;
+
+    allBillsList.forEach(bill => {
+        if(bill.site_id === sId) {
+            totalCost += bill.total_amount;
+            totalPaid += bill.paid_amount;
+            repTable.innerHTML += `<tr>
+                <td>${bill.date}</td>
+                <td>${bill.bill_number}</td>
+                <td>${bill.category || '-'}</td>
+                <td>Rs. ${bill.total_amount}</td>
+            </tr>`;
+        }
+    });
+    
+    if(repTable.innerHTML === '') repTable.innerHTML = '<tr><td colspan="4" class="text-center">No bills found for this site.</td></tr>';
+    
+    document.getElementById('rep-tot').innerText = totalCost.toLocaleString(undefined, {minimumFractionDigits: 2});
+    document.getElementById('rep-paid').innerText = totalPaid.toLocaleString(undefined, {minimumFractionDigits: 2});
 });
