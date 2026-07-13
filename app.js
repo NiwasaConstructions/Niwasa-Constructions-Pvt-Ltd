@@ -25,7 +25,7 @@ let allVendorsList = [];
 let allBillsList = []; 
 let allPaymentsList = [];
 let allLorryRecords = [];
-let currentBillVendorFilter = 'ALL'; // Bills Filter
+let currentBillVendorFilter = 'ALL'; 
 
 const generateCustomID = (prefix) => `${prefix}-${Date.now().toString().slice(-4)}${Math.floor(1000 + Math.random() * 9000)}`;
 
@@ -111,14 +111,20 @@ function initDataLoad() {
         vTable.innerHTML = ''; let dropHtml = '<option value="">Select Vendor...</option>';
         snap.forEach(docSnap => {
             let d = docSnap.data(); allVendorsList.push({ id: docSnap.id, ...d });
+        });
+
+        // අලුත් Vendor උඩින්ම පේන්න Sort කිරීම
+        allVendorsList.sort((a, b) => b.custom_id.localeCompare(a.custom_id));
+
+        allVendorsList.forEach(d => {
             let bankInfo = d.bank_name ? `<strong>${d.bank_name}</strong> ${d.bank_branch ? `(${d.bank_branch})` : ''}<br><small>${d.acc_name || ''} - ${d.bank_acc || ''}</small>` : '-';
             vTable.innerHTML += `<tr><td><span class="badge bg-secondary">${d.custom_id}</span></td><td class="fw-bold">${d.name}</td><td>${d.contact}<br><small class="text-muted">${d.address || ''}</small></td><td>${bankInfo}</td>
-            <td><button class="btn btn-sm btn-outline-primary edit-vendor-btn" data-id="${docSnap.id}"><i class="bi bi-pencil"></i></button></td></tr>`;
-            dropHtml += `<option value="${docSnap.id}">${d.custom_id} - ${d.name}</option>`;
+            <td><button class="btn btn-sm btn-outline-primary edit-vendor-btn" data-id="${d.id}"><i class="bi bi-pencil"></i></button></td></tr>`;
+            dropHtml += `<option value="${d.id}">${d.custom_id} - ${d.name}</option>`;
         });
         vDrops.forEach(drop => drop.innerHTML = dropHtml);
         
-        renderVendorFilterButtons(); // Load filter buttons
+        renderVendorFilterButtons();
         
         document.querySelectorAll('.edit-vendor-btn').forEach(btn => btn.addEventListener('click', (e) => {
             const vData = allVendorsList.find(v => v.id === e.currentTarget.dataset.id);
@@ -155,6 +161,10 @@ function initDataLoad() {
     onSnapshot(collection(db, "bills"), (snap) => {
         allBillsList = []; let totalDue = 0;
         snap.forEach(docSnap => { let d = docSnap.data(); allBillsList.push({ id: docSnap.id, ...d }); totalDue += (d.total_amount - d.paid_amount); });
+        
+        // අලුත්ම බිල උඩින්ම පේන්න Sort කිරීම (Descending)
+        allBillsList.sort((a, b) => new Date(b.created_at || b.date) - new Date(a.created_at || a.date));
+        
         document.getElementById('dash-due').innerText = totalDue.toLocaleString(undefined, {minimumFractionDigits: 2}); applyBillFilters(); 
     });
 
@@ -166,11 +176,18 @@ function initDataLoad() {
             let d = docSnap.data(); allPaymentsList.push({ id: docSnap.id, ...d });
             if(d.payment_date && d.payment_date.startsWith(currentMonth) && d.cheque_status !== 'RETURNED') monthlyPaid += d.total_amount;
             if(d.method.includes('CHEQUE') && d.cheque_status === 'PENDING') pendingChequesTotal += d.total_amount;
+        });
+
+        // අලුත්ම Payment එක උඩින්ම පේන්න Sort කිරීම (Descending)
+        allPaymentsList.sort((a, b) => new Date(b.timestamp || b.payment_date) - new Date(a.timestamp || a.payment_date));
+
+        allPaymentsList.forEach(d => {
             let imgBtn = d.attachment_url ? `<a href="${d.attachment_url}" target="_blank" class="text-primary"><i class="bi bi-image fs-5"></i></a>` : '-';
             let statusBadge = d.cheque_status === 'PENDING' ? '<span class="badge bg-warning">Pending</span>' : (d.cheque_status === 'RETURNED' ? '<span class="badge bg-danger">Returned</span>' : '<span class="badge bg-success">Cleared</span>');
             pTable.innerHTML += `<tr><td>${d.payment_date}</td><td class="fw-bold">${d.payment_id}</td><td>${d.method.replace('_', ' ')} ${d.cheque_number ? `(${d.cheque_number})` : ''}</td>
                 <td class="text-success fw-bold">Rs. ${d.total_amount}</td><td>${statusBadge}</td><td>${imgBtn}</td></tr>`;
         });
+
         document.getElementById('dash-paid').innerText = monthlyPaid.toLocaleString(undefined, {minimumFractionDigits: 2});
         document.getElementById('dash-cheques').innerText = pendingChequesTotal.toLocaleString(undefined, {minimumFractionDigits: 2});
         renderChequesTable();
@@ -181,15 +198,25 @@ function initDataLoad() {
         allLorryRecords = [];
         snap.forEach(docSnap => { allLorryRecords.push({ id: docSnap.id, ...docSnap.data() }); });
         
+        // පියවර 1: බැලන්ස් එක හරියට හැදෙන්න මුලින්ම පරණ එකේ ඉඳන් අලුත් එකට Sort කරනවා (Ascending)
         allLorryRecords.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         
-        const lTable = document.getElementById('lorry-table'); lTable.innerHTML = '';
         let currentBalance = 0;
-        
         allLorryRecords.forEach(d => {
             if(d.type === 'ADVANCE' || d.type === 'OPENING_BAL') currentBalance += d.amount;
             if(d.type === 'EXPENSE') currentBalance -= d.amount;
-            
+            d.runningBalance = currentBalance; // බැලන්ස් එක ඒ වෙලාවේ Save කරගන්නවා
+        });
+        
+        const dashBal = document.getElementById('dash-lorry-bal');
+        dashBal.innerText = currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
+        if(currentBalance < 0) dashBal.classList.add('text-danger'); else dashBal.classList.remove('text-danger');
+
+        // පියවර 2: Table එකට දාද්දි අලුත් එක උඩින්ම පේන්න Reverse කරනවා (Descending)
+        allLorryRecords.reverse();
+
+        const lTable = document.getElementById('lorry-table'); lTable.innerHTML = '';
+        allLorryRecords.forEach(d => {
             let imgBtn = d.attachment_url ? `<a href="${d.attachment_url}" target="_blank" class="text-primary"><i class="bi bi-image fs-5"></i></a>` : '-';
             let inAmt = (d.type === 'ADVANCE' || d.type === 'OPENING_BAL') ? d.amount.toLocaleString() : '-';
             let outAmt = d.type === 'EXPENSE' ? d.amount.toLocaleString() : '-';
@@ -200,15 +227,11 @@ function initDataLoad() {
                 <td>${badge}${d.description}</td>
                 <td class="text-success fw-bold">${inAmt}</td>
                 <td class="text-danger fw-bold">${outAmt}</td>
-                <td class="fw-bold fs-6 ${currentBalance < 0 ? 'text-danger' : 'text-primary'}">${currentBalance.toLocaleString()}</td>
+                <td class="fw-bold fs-6 ${d.runningBalance < 0 ? 'text-danger' : 'text-primary'}">${d.runningBalance.toLocaleString()}</td>
                 <td class="text-center">${imgBtn}</td>
                 <td><button class="btn btn-sm btn-outline-danger del-lorry-btn" data-id="${d.id}"><i class="bi bi-trash"></i></button></td>
             </tr>`;
         });
-        
-        const dashBal = document.getElementById('dash-lorry-bal');
-        dashBal.innerText = currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
-        if(currentBalance < 0) dashBal.classList.add('text-danger'); else dashBal.classList.remove('text-danger');
 
         document.querySelectorAll('.del-lorry-btn').forEach(btn => btn.addEventListener('click', async (e) => {
             if(confirm("Delete this record? It will change the running balance.")) await deleteDoc(doc(db, "lorry_cash", e.currentTarget.dataset.id));
@@ -419,7 +442,7 @@ function renderChequesTable() {
     }));
 }
 
-// --- LORRY FORM SUBMIT (Photo made Optional) ---
+// --- LORRY FORM SUBMIT ---
 document.getElementById('lorry-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('l-submit-btn');
