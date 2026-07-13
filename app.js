@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/fireba
 import { getFirestore, collection, setDoc, doc, updateDoc, deleteDoc, onSnapshot, query, where, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
+// Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCGMzbzofR43a0RfrZxwt_M1--8INcxbxc",
   authDomain: "erp---niwasa-payments.firebaseapp.com",
@@ -16,13 +17,18 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// ImgBB Configuration
 const IMGBB_API_KEY = "3a1d8af31b4c28245b2e1bcaa81d866f"; 
+
+// Global State Variables
 let allVendorsList = [];
 let allBillsList = []; 
 let allPaymentsList = [];
+let allLorryRecords = [];
 
 const generateCustomID = (prefix) => `${prefix}-${Date.now().toString().slice(-4)}${Math.floor(1000 + Math.random() * 9000)}`;
 
+// Image Upload Helper
 async function uploadToImgBB(file) {
     const formData = new FormData(); formData.append('image', file);
     const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
@@ -37,6 +43,7 @@ onAuthStateChanged(auth, (user) => {
         document.getElementById('dashboard-section').style.display = 'block';
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('b-date').value = today; document.getElementById('p-date').value = today;
+        document.getElementById('l-date').value = today;
         initDataLoad();
     } else {
         document.getElementById('login-section').style.display = 'block';
@@ -55,6 +62,20 @@ document.querySelectorAll('.nav-link').forEach(link => {
         document.querySelectorAll('.app-section').forEach(sec => sec.classList.remove('active'));
         document.getElementById(`section-${e.currentTarget.getAttribute('data-target')}`).classList.add('active');
     });
+});
+
+// Modal Resets
+document.getElementById('add-vendor-btn').addEventListener('click', () => {
+    document.getElementById('vendor-form').reset();
+    document.getElementById('edit-vendor-id').value = '';
+    document.getElementById('vendor-modal-title').innerText = "Add New Vendor";
+});
+
+document.getElementById('add-bill-btn').addEventListener('click', () => {
+    document.getElementById('bill-form').reset();
+    document.getElementById('edit-bill-id').value = '';
+    document.getElementById('b-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('bill-modal-title').innerText = "Add New Bill";
 });
 
 // --- DATA LOAD ---
@@ -124,6 +145,41 @@ function initDataLoad() {
         document.getElementById('dash-cheques').innerText = pendingChequesTotal.toLocaleString(undefined, {minimumFractionDigits: 2});
         renderChequesTable();
     });
+
+    // Lorry Petty Cash Load
+    onSnapshot(collection(db, "lorry_cash"), (snap) => {
+        allLorryRecords = [];
+        snap.forEach(docSnap => { allLorryRecords.push({ id: docSnap.id, ...docSnap.data() }); });
+        
+        allLorryRecords.sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        const lTable = document.getElementById('lorry-table'); lTable.innerHTML = '';
+        let currentBalance = 0;
+        
+        allLorryRecords.forEach(d => {
+            if(d.type === 'ADVANCE') currentBalance += d.amount;
+            if(d.type === 'EXPENSE') currentBalance -= d.amount;
+            
+            let imgBtn = d.attachment_url ? `<a href="${d.attachment_url}" target="_blank" class="text-primary"><i class="bi bi-image fs-5"></i></a>` : '-';
+            
+            lTable.innerHTML += `<tr>
+                <td>${d.date}</td><td>${d.description}</td>
+                <td class="text-success fw-bold">${d.type === 'ADVANCE' ? d.amount : '-'}</td>
+                <td class="text-danger fw-bold">${d.type === 'EXPENSE' ? d.amount : '-'}</td>
+                <td class="fw-bold fs-6 ${currentBalance < 0 ? 'text-danger' : 'text-primary'}">${currentBalance.toLocaleString()}</td>
+                <td class="text-center">${imgBtn}</td>
+                <td><button class="btn btn-sm btn-outline-danger del-lorry-btn" data-id="${d.id}"><i class="bi bi-trash"></i></button></td>
+            </tr>`;
+        });
+        
+        const dashBal = document.getElementById('dash-lorry-bal');
+        dashBal.innerText = currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
+        if(currentBalance < 0) dashBal.classList.add('text-danger'); else dashBal.classList.remove('text-danger');
+
+        document.querySelectorAll('.del-lorry-btn').forEach(btn => btn.addEventListener('click', async (e) => {
+            if(confirm("Delete this record? It will change the running balance.")) await deleteDoc(doc(db, "lorry_cash", e.currentTarget.dataset.id));
+        }));
+    });
 }
 
 // --- MODALS FORMS SUBMIT ---
@@ -145,14 +201,17 @@ document.getElementById('site-form').addEventListener('submit', async (e) => {
 
 document.getElementById('bill-form').addEventListener('submit', async (e) => {
     e.preventDefault(); const editId = document.getElementById('edit-bill-id').value; const vId = document.getElementById('b-vendor').value; const bNo = document.getElementById('b-number').value;
+    
     if(!editId || (editId && allBillsList.find(b => b.id === editId).bill_number !== bNo)) {
         if(allBillsList.some(b => b.vendor_id === vId && b.bill_number.toLowerCase() === bNo.toLowerCase())) return alert("Error: This Bill Number already exists for this vendor!");
     }
+    
     const btn = document.getElementById('b-submit-btn'); const fileInput = document.getElementById('b-file'); let imageUrl = null;
     if(fileInput.files.length > 0) {
         btn.innerHTML = `Uploading...`; btn.disabled = true;
         try { imageUrl = await uploadToImgBB(fileInput.files[0]); } catch (err) { alert("Image Upload Failed!"); btn.innerHTML = `Save Bill`; btn.disabled = false; return; }
     }
+    
     const type = document.getElementById('b-type').value; const total = parseFloat(document.getElementById('b-amount').value);
     const billData = { vendor_id: vId, site_id: document.getElementById('b-site').value, items_info: document.getElementById('b-items').value, bill_number: bNo, date: document.getElementById('b-date').value, total_amount: total };
     if (imageUrl) billData.attachment_url = imageUrl;
@@ -210,29 +269,23 @@ function applyBillFilters() {
 document.getElementById('search-bills').addEventListener('input', applyBillFilters);
 document.getElementById('filter-status').addEventListener('change', applyBillFilters);
 
-
-// --- PAYMENT MODAL LOGIC (100% WORKING CHECKBOXES) ---
-
+// --- PAYMENT MODAL LOGIC (CHECKBOXES - EVENT DELEGATION) ---
 function calcTotalForPayments() {
-    let tot = 0; 
-    document.querySelectorAll('.pay-input').forEach(i => tot += Number(i.value || 0));
+    let tot = 0; document.querySelectorAll('.pay-input').forEach(i => tot += Number(i.value || 0));
     document.getElementById('p-total-calc').innerText = tot.toLocaleString();
 }
 
-// Global Event Listeners for Dynamic Table Elements (Event Delegation)
 document.getElementById('p-bills-table').addEventListener('change', (e) => {
     if (e.target.classList.contains('bill-select-cb')) {
         const inputField = document.getElementById(`pay-input-${e.target.dataset.id}`);
-        inputField.value = e.target.checked ? e.target.dataset.due : '';
-        calcTotalForPayments();
+        inputField.value = e.target.checked ? e.target.dataset.due : ''; calcTotalForPayments();
     }
 });
 
 document.getElementById('p-bills-table').addEventListener('input', (e) => {
     if (e.target.classList.contains('pay-input')) {
         const cb = document.querySelector(`.bill-select-cb[data-id="${e.target.dataset.id}"]`);
-        if(cb) cb.checked = (Number(e.target.value) === Number(cb.dataset.due));
-        calcTotalForPayments();
+        if(cb) cb.checked = (Number(e.target.value) === Number(cb.dataset.due)); calcTotalForPayments();
     }
 });
 
@@ -242,17 +295,14 @@ document.getElementById('p-method').addEventListener('change', (e) => {
     document.getElementById('p-cheque-no').required = isCheque; document.getElementById('p-cheque-date').required = isCheque;
 });
 
-// Load Bills when Vendor is selected
 document.getElementById('p-vendor').addEventListener('change', (e) => {
     const vId = e.target.value; const pbTable = document.getElementById('p-bills-table');
     if(!vId) { document.getElementById('pending-bills-container').style.display = 'none'; document.getElementById('payment-form').style.display = 'none'; return; }
     
     pbTable.innerHTML = '';
     const pendingBills = allBillsList.filter(b => b.vendor_id === vId && b.status !== 'SETTLED');
-    
-    if(pendingBills.length === 0) { 
-        pbTable.innerHTML = '<tr><td colspan="4" class="text-center text-danger">No pending bills for this vendor.</td></tr>'; 
-    } else {
+    if(pendingBills.length === 0) { pbTable.innerHTML = '<tr><td colspan="4" class="text-center text-danger">No pending bills for this vendor.</td></tr>'; } 
+    else {
         pendingBills.forEach(d => {
             let due = d.total_amount - d.paid_amount;
             pbTable.innerHTML += `<tr>
@@ -263,10 +313,8 @@ document.getElementById('p-vendor').addEventListener('change', (e) => {
             </tr>`;
         });
     }
-    
-    document.getElementById('pending-bills-container').style.display = 'block'; 
-    document.getElementById('payment-form').style.display = 'flex';
-    calcTotalForPayments(); // Reset total to 0 when table loads
+    document.getElementById('pending-bills-container').style.display = 'block'; document.getElementById('payment-form').style.display = 'flex';
+    calcTotalForPayments(); 
 });
 
 document.getElementById('payment-form').addEventListener('submit', async (e) => {
@@ -333,6 +381,33 @@ function renderChequesTable() {
         }
     }));
 }
+
+// --- LORRY FORM SUBMIT ---
+document.getElementById('lorry-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('l-submit-btn');
+    const fileInput = document.getElementById('l-file');
+    const type = document.getElementById('l-type').value;
+    
+    if(type === 'EXPENSE' && fileInput.files.length === 0) {
+        return alert("අනිවාර්යයෙන්ම බිලෙහි ඡායාරූපයක් (Photo) ඇතුලත් කළ යුතුයි!");
+    }
+
+    let imageUrl = null;
+    if(fileInput.files.length > 0) {
+        btn.innerHTML = `Uploading...`; btn.disabled = true;
+        try { imageUrl = await uploadToImgBB(fileInput.files[0]); } 
+        catch (err) { alert("Image Upload Failed!"); btn.innerHTML = `Save Record`; btn.disabled = false; return; }
+    }
+
+    await setDoc(doc(collection(db, "lorry_cash")), {
+        type: type, date: document.getElementById('l-date').value, description: document.getElementById('l-desc').value,
+        amount: parseFloat(document.getElementById('l-amount').value), attachment_url: imageUrl, timestamp: new Date().toISOString()
+    });
+
+    alert("Record Saved!"); e.target.reset(); document.getElementById('l-date').value = new Date().toISOString().split('T')[0];
+    btn.innerHTML = `Save Record`; btn.disabled = false;
+});
 
 // --- REPORTS ---
 document.getElementById('report-type').addEventListener('change', (e) => {
