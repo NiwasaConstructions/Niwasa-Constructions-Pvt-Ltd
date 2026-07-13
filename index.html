@@ -25,8 +25,10 @@
         /* Mobile Responsive Adjustments */
         @media (max-width: 767px) {
             .sidebar { min-height: auto; margin-bottom: 20px; }
-            .brand-header { padding: 10px 15px; }
-            .brand-header h4 { font-size: 16px; }
+            .brand-header { padding: 10px 15px; flex-direction: column; text-align: center; }
+            .brand-header .d-flex { flex-direction: column; }
+            .brand-header h4 { font-size: 16px; margin-top: 10px; }
+            #logout-btn { margin-top: 10px; }
             .table-responsive { overflow-x: auto; }
             table { font-size: 13px; }
             .modal-dialog { margin: 10px; }
@@ -43,8 +45,8 @@
             <div class="col-md-4">
                 <div class="card shadow-lg mt-5">
                     <div class="card-body text-center p-5">
-                        <img src="Old Logo.jpg" alt="Logo" style="max-height: 100px; width: auto;" class="mb-3">
-                        <h4 class="mb-4 text-primary" style="color: #1e3a5f !important;">Niwasa Constructions - Payment Management System</h4>
+                        <img src="dss.png" alt="Logo" style="max-height: 100px; width: auto;" class="mb-3">
+                        <h4 class="mb-4 text-primary" style="color: #1e3a5f !important;">Payment Management System</h4>
                         <input type="email" id="email" class="form-control mb-3" placeholder="Email Address">
                         <input type="password" id="password" class="form-control mb-4" placeholder="Password">
                         <button id="login-btn" class="btn w-100 text-white" style="background-color: #e64a19;">Secure Login</button>
@@ -59,8 +61,8 @@
         
         <div class="d-flex justify-content-between align-items-center brand-header">
             <div class="d-flex align-items-center">
-                <img src="Old Logo.jpg" alt="Logo" style="max-height: 45px; margin-right: 15px; border-radius: 5px;">
-                <h4 class="mb-0" style="color: #1e3a5f;"> Niwasa Constructions (Pvt) Ltd</h4>
+                <img src="dss.png" alt="Logo" style="max-height: 45px; margin-right: 15px; border-radius: 5px;">
+                <h4 class="mb-0" style="color: #1e3a5f;">Niwasa Constructions (Pvt) Ltd - Payment Management System</h4>
             </div>
             <button id="logout-btn" class="btn btn-outline-danger btn-sm"><i class="bi bi-box-arrow-right"></i> Logout</button>
         </div>
@@ -86,9 +88,9 @@
                 <!-- 0. DASHBOARD -->
                 <div id="section-dashboard" class="app-section active">
                     <div class="row mb-4">
-                        <div class="col-md-3"><div class="stat-card bg-danger shadow"><h6>Total Outstanding Due</h6><h3>Rs. <span id="dash-due">0.00</span></h3></div></div>
-                        <div class="col-md-3"><div class="stat-card bg-success shadow"><h6>Monthly Paid (This Month)</h6><h3>Rs. <span id="dash-paid">0.00</span></h3></div></div>
-                        <div class="col-md-3"><div class="stat-card bg-warning text-dark shadow"><h6>Unrealized Cheques Value</h6><h3>Rs. <span id="dash-cheques">0.00</span></h3></div></div>
+                        <div class="col-md-3"><div class="stat-card bg-danger shadow mb-3 mb-md-0"><h6>Total Outstanding Due</h6><h3>Rs. <span id="dash-due">0.00</span></h3></div></div>
+                        <div class="col-md-3"><div class="stat-card bg-success shadow mb-3 mb-md-0"><h6>Monthly Paid (This Month)</h6><h3>Rs. <span id="dash-paid">0.00</span></h3></div></div>
+                        <div class="col-md-3"><div class="stat-card bg-warning text-dark shadow mb-3 mb-md-0"><h6>Unrealized Cheques Value</h6><h3>Rs. <span id="dash-cheques">0.00</span></h3></div></div>
                         <div class="col-md-3"><div class="stat-card bg-info text-dark shadow"><h6>Driver's Balance</h6><h3>Rs. <span id="dash-lorry-bal">0.00</span></h3></div></div>
                     </div>
                 </div>
@@ -138,7 +140,7 @@
                         </div>
                         <div class="card-body bg-white">
                             <div class="row mb-3">
-                                <div class="col-md-6"><input type="text" id="search-bills" class="form-control" placeholder="Search by Bill No or Amount..."></div>
+                                <div class="col-md-6 mb-2 mb-md-0"><input type="text" id="search-bills" class="form-control" placeholder="Search by Bill No or Amount..."></div>
                                 <div class="col-md-3">
                                     <select id="filter-status" class="form-select">
                                         <option value="ALL">All Status</option><option value="PENDING">Pending & Partial</option><option value="SETTLED">Settled</option>
@@ -200,6 +202,7 @@
                                     <select id="l-type" class="form-select border-primary" required>
                                         <option value="ADVANCE">Advance Given (+)</option>
                                         <option value="EXPENSE">Expense (-)</option>
+                                        <option value="OPENING_BAL">Opening Balance</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3">
@@ -212,7 +215,8 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label class="fw-bold">Amount (Rs.)</label>
-                                    <input type="number" id="l-amount" class="form-control" required>
+                                    <input type="number" id="l-amount" class="form-control" step="any" required>
+                                    <small class="text-muted" style="font-size: 11px;">(අපෙන් දෙන්න තියේනම් සෘණ අගයක් දෙන්න. උදා: -2000)</small>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="fw-bold">Bill / Slip Photo (Expenses සඳහා අනිවාර්යයි)</label>
@@ -226,7 +230,7 @@
                             <div class="table-responsive">
                                 <table class="table table-sm table-bordered align-middle">
                                     <thead class="table-light">
-                                        <tr><th>Date</th><th>Description</th><th>Advance In (+)</th><th>Expense Out (-)</th><th>Running Balance</th><th>Bill Photo</th><th>Action</th></tr>
+                                        <tr><th>Date</th><th>Description</th><th>Advance/Opening (+)</th><th>Expense Out (-)</th><th>Running Balance</th><th>Bill Photo</th><th>Action</th></tr>
                                     </thead>
                                     <tbody id="lorry-table"></tbody>
                                 </table>
@@ -245,24 +249,24 @@
                         </div>
                         <div class="card-body bg-white">
                             <div class="row mb-4 bg-light p-3 rounded border align-items-end">
-                                <div class="col-md-3">
+                                <div class="col-md-3 mb-2 mb-md-0">
                                     <label class="fw-bold">Report Type:</label>
                                     <select id="report-type" class="form-select border-primary">
                                         <option value="SITE">Site-wise Costing</option>
                                         <option value="VENDOR">Vendor Ledger</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3" id="report-site-div">
+                                <div class="col-md-3 mb-2 mb-md-0" id="report-site-div">
                                     <label class="fw-bold">Select Site:</label>
                                     <select id="report-site" class="form-select report-site-dropdown"><option value="">Select Site...</option></select>
                                 </div>
-                                <div class="col-md-3" id="report-vendor-div" style="display:none;">
+                                <div class="col-md-3 mb-2 mb-md-0" id="report-vendor-div" style="display:none;">
                                     <label class="fw-bold">Select Vendor:</label>
                                     <select id="report-vendor" class="form-select vendor-dropdown"><option value="">Select Vendor...</option></select>
                                 </div>
-                                <div class="col-md-2"><label class="fw-bold">From Date:</label><input type="date" id="rep-start" class="form-control"></div>
-                                <div class="col-md-2"><label class="fw-bold">To Date:</label><input type="date" id="rep-end" class="form-control"></div>
-                                <div class="col-md-2"><button id="generate-rep-btn" class="btn btn-primary w-100 mt-2 mt-md-0"><i class="bi bi-search"></i> Generate</button></div>
+                                <div class="col-md-2 mb-2 mb-md-0"><label class="fw-bold">From Date:</label><input type="date" id="rep-start" class="form-control"></div>
+                                <div class="col-md-2 mb-2 mb-md-0"><label class="fw-bold">To Date:</label><input type="date" id="rep-end" class="form-control"></div>
+                                <div class="col-md-2"><button id="generate-rep-btn" class="btn btn-primary w-100"><i class="bi bi-search"></i> Generate</button></div>
                             </div>
                             
                             <div id="report-site-results" style="display: none;">
@@ -355,7 +359,7 @@
                         <div class="col-md-6"><label>Bill Number</label><input type="text" id="b-number" class="form-control" required></div>
                         <div class="col-md-4"><label>Date</label><input type="date" id="b-date" class="form-control" required></div>
                         <div class="col-md-4"><label>Type</label><select id="b-type" class="form-select" required><option value="CREDIT">Credit</option><option value="CASH">Cash</option></select></div>
-                        <div class="col-md-4"><label>Amount (Rs.)</label><input type="number" id="b-amount" class="form-control" required></div>
+                        <div class="col-md-4"><label>Amount (Rs.)</label><input type="number" id="b-amount" class="form-control" step="any" required></div>
                         <div class="col-md-12"><label>Bill Image (Optional / Leave empty to keep existing)</label><input type="file" id="b-file" class="form-control" accept="image/*"></div>
                     </div>
                     <div class="modal-footer"><button type="submit" id="b-submit-btn" class="btn btn-danger w-100">Save Bill</button></div>
