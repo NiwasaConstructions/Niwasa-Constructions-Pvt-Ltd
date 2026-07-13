@@ -25,6 +25,7 @@ let allVendorsList = [];
 let allBillsList = []; 
 let allPaymentsList = [];
 let allLorryRecords = [];
+let currentBillVendorFilter = 'ALL'; // Bills Filter
 
 const generateCustomID = (prefix) => `${prefix}-${Date.now().toString().slice(-4)}${Math.floor(1000 + Math.random() * 9000)}`;
 
@@ -78,6 +79,29 @@ document.getElementById('add-bill-btn').addEventListener('click', () => {
     document.getElementById('bill-modal-title').innerText = "Add New Bill";
 });
 
+// --- RENDER VENDOR FILTER BUTTONS ---
+function renderVendorFilterButtons() {
+    const container = document.getElementById('vendor-filter-buttons');
+    if(!container) return;
+    
+    let html = `<button class="btn btn-sm ${currentBillVendorFilter === 'ALL' ? 'btn-primary' : 'btn-outline-primary'} vendor-filter-btn" data-id="ALL">All Vendors</button>`;
+    
+    allVendorsList.forEach(v => {
+        let activeClass = currentBillVendorFilter === v.id ? 'btn-primary' : 'btn-outline-primary';
+        html += `<button class="btn btn-sm ${activeClass} vendor-filter-btn" data-id="${v.id}">${v.name}</button>`;
+    });
+    
+    container.innerHTML = html;
+    
+    document.querySelectorAll('.vendor-filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            currentBillVendorFilter = e.currentTarget.dataset.id;
+            renderVendorFilterButtons(); 
+            applyBillFilters();
+        });
+    });
+}
+
 // --- DATA LOAD ---
 function initDataLoad() {
     // Vendors
@@ -93,6 +117,8 @@ function initDataLoad() {
             dropHtml += `<option value="${docSnap.id}">${d.custom_id} - ${d.name}</option>`;
         });
         vDrops.forEach(drop => drop.innerHTML = dropHtml);
+        
+        renderVendorFilterButtons(); // Load filter buttons
         
         document.querySelectorAll('.edit-vendor-btn').forEach(btn => btn.addEventListener('click', (e) => {
             const vData = allVendorsList.find(v => v.id === e.currentTarget.dataset.id);
@@ -155,7 +181,8 @@ function initDataLoad() {
         allLorryRecords = [];
         snap.forEach(docSnap => { allLorryRecords.push({ id: docSnap.id, ...docSnap.data() }); });
         
-        allLorryRecords.sort((a, b) => new Date(a.date) - new Date(b.date));
+        // අතිශය වැදගත්: වෙලාව (timestamp) අනුව හරියටම sort කිරීම
+        allLorryRecords.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         
         const lTable = document.getElementById('lorry-table'); lTable.innerHTML = '';
         let currentBalance = 0;
@@ -235,9 +262,13 @@ document.getElementById('bill-form').addEventListener('submit', async (e) => {
     btn.innerHTML = `Save Bill`; btn.disabled = false; bootstrap.Modal.getInstance(document.getElementById('billModal')).hide();
 });
 
+// Bills Search & Filter
 function applyBillFilters() {
     const searchText = document.getElementById('search-bills').value.toLowerCase(); const statusFilter = document.getElementById('filter-status').value;
     const filtered = allBillsList.filter(b => {
+        // Vendor Filter Logic
+        if(currentBillVendorFilter !== 'ALL' && b.vendor_id !== currentBillVendorFilter) return false;
+
         const matchesSearch = b.bill_number.toLowerCase().includes(searchText) || b.total_amount.toString().includes(searchText);
         let matchesStatus = true;
         if (statusFilter === 'PENDING') matchesStatus = (b.status === 'PENDING' || b.status === 'PARTIAL');
