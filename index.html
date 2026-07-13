@@ -20,6 +20,7 @@
         .stat-card { border-radius: 15px; padding: 20px; color: white; }
         .ledger-credit { color: #dc3545; font-weight: bold; }
         .ledger-debit { color: #198754; font-weight: bold; }
+        .vendor-filter-btn { border-radius: 20px; font-weight: 500; } /* Vendor Buttons Styling */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Mobile Responsive Adjustments */
@@ -139,7 +140,16 @@
                             <button class="btn btn-sm btn-light fw-bold text-danger" id="add-bill-btn" data-bs-toggle="modal" data-bs-target="#billModal">+ Add New Bill</button>
                         </div>
                         <div class="card-body bg-white">
-                            <div class="row mb-3">
+                            
+                            <!-- Vendor Filter Buttons (NEW) -->
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-2"><i class="bi bi-funnel"></i> Filter by Vendor:</h6>
+                                <div id="vendor-filter-buttons" class="d-flex flex-wrap gap-2 pb-3 border-bottom">
+                                    <!-- Buttons generate here dynamically -->
+                                </div>
+                            </div>
+
+                            <div class="row mb-3 mt-3">
                                 <div class="col-md-6 mb-2 mb-md-0"><input type="text" id="search-bills" class="form-control" placeholder="Search by Bill No or Amount..."></div>
                                 <div class="col-md-3">
                                     <select id="filter-status" class="form-select">
@@ -266,7 +276,7 @@
                                 </div>
                                 <div class="col-md-2 mb-2 mb-md-0"><label class="fw-bold">From Date:</label><input type="date" id="rep-start" class="form-control"></div>
                                 <div class="col-md-2 mb-2 mb-md-0"><label class="fw-bold">To Date:</label><input type="date" id="rep-end" class="form-control"></div>
-                                <div class="col-md-2"><button id="generate-rep-btn" class="btn btn-primary w-100"><i class="bi bi-search"></i> Generate</button></div>
+                                <div class="col-md-2"><button id="generate-rep-btn" class="btn btn-primary w-100 mt-2 mt-md-0"><i class="bi bi-search"></i> Generate</button></div>
                             </div>
                             
                             <div id="report-site-results" style="display: none;">
@@ -368,7 +378,7 @@
         </div>
     </div>
 
-    <!-- Payment Modal (With Checkboxes) -->
+    <!-- Payment Modal -->
     <div class="modal fade" id="paymentModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content border-success">
