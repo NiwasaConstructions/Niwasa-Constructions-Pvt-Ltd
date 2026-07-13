@@ -181,7 +181,6 @@ function initDataLoad() {
         allLorryRecords = [];
         snap.forEach(docSnap => { allLorryRecords.push({ id: docSnap.id, ...docSnap.data() }); });
         
-        // අතිශය වැදගත්: වෙලාව (timestamp) අනුව හරියටම sort කිරීම
         allLorryRecords.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         
         const lTable = document.getElementById('lorry-table'); lTable.innerHTML = '';
@@ -266,7 +265,6 @@ document.getElementById('bill-form').addEventListener('submit', async (e) => {
 function applyBillFilters() {
     const searchText = document.getElementById('search-bills').value.toLowerCase(); const statusFilter = document.getElementById('filter-status').value;
     const filtered = allBillsList.filter(b => {
-        // Vendor Filter Logic
         if(currentBillVendorFilter !== 'ALL' && b.vendor_id !== currentBillVendorFilter) return false;
 
         const matchesSearch = b.bill_number.toLowerCase().includes(searchText) || b.total_amount.toString().includes(searchText);
@@ -421,16 +419,12 @@ function renderChequesTable() {
     }));
 }
 
-// --- LORRY FORM SUBMIT ---
+// --- LORRY FORM SUBMIT (Photo made Optional) ---
 document.getElementById('lorry-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('l-submit-btn');
     const fileInput = document.getElementById('l-file');
     const type = document.getElementById('l-type').value;
-    
-    if(type === 'EXPENSE' && fileInput.files.length === 0) {
-        return alert("අනිවාර්යයෙන්ම බිලෙහි ඡායාරූපයක් (Photo) ඇතුලත් කළ යුතුයි!");
-    }
 
     let imageUrl = null;
     if(fileInput.files.length > 0) {
