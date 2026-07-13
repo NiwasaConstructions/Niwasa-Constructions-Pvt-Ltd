@@ -80,6 +80,7 @@ document.getElementById('add-bill-btn').addEventListener('click', () => {
 
 // --- DATA LOAD ---
 function initDataLoad() {
+    // Vendors
     onSnapshot(collection(db, "vendors"), (snap) => {
         allVendorsList = [];
         const vTable = document.getElementById('v-table'); const vDrops = document.querySelectorAll('.vendor-dropdown');
@@ -106,6 +107,7 @@ function initDataLoad() {
         }));
     });
 
+    // Sites
     onSnapshot(collection(db, "sites"), (snap) => {
         const sTable = document.getElementById('s-table'); const activeDrops = document.querySelectorAll('.active-site-dropdown'); const allDrops = document.querySelectorAll('.report-site-dropdown'); 
         sTable.innerHTML = ''; let activeHtml = '<option value="">Select Site...</option>'; let allHtml = '<option value="">Select Site...</option>';
@@ -123,12 +125,14 @@ function initDataLoad() {
         }));
     });
 
+    // Bills
     onSnapshot(collection(db, "bills"), (snap) => {
         allBillsList = []; let totalDue = 0;
         snap.forEach(docSnap => { let d = docSnap.data(); allBillsList.push({ id: docSnap.id, ...d }); totalDue += (d.total_amount - d.paid_amount); });
         document.getElementById('dash-due').innerText = totalDue.toLocaleString(undefined, {minimumFractionDigits: 2}); applyBillFilters(); 
     });
 
+    // Payments
     onSnapshot(collection(db, "payments"), (snap) => {
         allPaymentsList = []; let monthlyPaid = 0, pendingChequesTotal = 0; const currentMonth = new Date().toISOString().slice(0, 7);
         const pTable = document.getElementById('payment-history-table'); pTable.innerHTML = '';
@@ -146,7 +150,7 @@ function initDataLoad() {
         renderChequesTable();
     });
 
-    // Lorry Petty Cash Load
+    // Lorry Petty Cash
     onSnapshot(collection(db, "lorry_cash"), (snap) => {
         allLorryRecords = [];
         snap.forEach(docSnap => { allLorryRecords.push({ id: docSnap.id, ...docSnap.data() }); });
@@ -157,15 +161,19 @@ function initDataLoad() {
         let currentBalance = 0;
         
         allLorryRecords.forEach(d => {
-            if(d.type === 'ADVANCE') currentBalance += d.amount;
+            if(d.type === 'ADVANCE' || d.type === 'OPENING_BAL') currentBalance += d.amount;
             if(d.type === 'EXPENSE') currentBalance -= d.amount;
             
             let imgBtn = d.attachment_url ? `<a href="${d.attachment_url}" target="_blank" class="text-primary"><i class="bi bi-image fs-5"></i></a>` : '-';
+            let inAmt = (d.type === 'ADVANCE' || d.type === 'OPENING_BAL') ? d.amount.toLocaleString() : '-';
+            let outAmt = d.type === 'EXPENSE' ? d.amount.toLocaleString() : '-';
+            let badge = d.type === 'OPENING_BAL' ? '<span class="badge bg-dark">Opening</span> ' : '';
             
             lTable.innerHTML += `<tr>
-                <td>${d.date}</td><td>${d.description}</td>
-                <td class="text-success fw-bold">${d.type === 'ADVANCE' ? d.amount : '-'}</td>
-                <td class="text-danger fw-bold">${d.type === 'EXPENSE' ? d.amount : '-'}</td>
+                <td>${d.date}</td>
+                <td>${badge}${d.description}</td>
+                <td class="text-success fw-bold">${inAmt}</td>
+                <td class="text-danger fw-bold">${outAmt}</td>
                 <td class="fw-bold fs-6 ${currentBalance < 0 ? 'text-danger' : 'text-primary'}">${currentBalance.toLocaleString()}</td>
                 <td class="text-center">${imgBtn}</td>
                 <td><button class="btn btn-sm btn-outline-danger del-lorry-btn" data-id="${d.id}"><i class="bi bi-trash"></i></button></td>
@@ -269,7 +277,7 @@ function applyBillFilters() {
 document.getElementById('search-bills').addEventListener('input', applyBillFilters);
 document.getElementById('filter-status').addEventListener('change', applyBillFilters);
 
-// --- PAYMENT MODAL LOGIC (CHECKBOXES - EVENT DELEGATION) ---
+// --- PAYMENT MODAL LOGIC ---
 function calcTotalForPayments() {
     let tot = 0; document.querySelectorAll('.pay-input').forEach(i => tot += Number(i.value || 0));
     document.getElementById('p-total-calc').innerText = tot.toLocaleString();
