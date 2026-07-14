@@ -141,11 +141,9 @@
                         </div>
                         <div class="card-body bg-white">
                             
-                            <!-- Vendor Filter Buttons -->
                             <div class="mb-3">
                                 <h6 class="text-muted mb-2"><i class="bi bi-funnel"></i> Filter by Vendor:</h6>
                                 <div id="vendor-filter-buttons" class="d-flex flex-wrap gap-2 pb-3 border-bottom">
-                                    <!-- Buttons generate here dynamically -->
                                 </div>
                             </div>
 
@@ -177,7 +175,8 @@
                         <div class="card-body bg-white">
                             <div class="table-responsive">
                                 <table class="table table-hover table-sm align-middle">
-                                    <thead class="table-light"><tr><th>Date</th><th>Payment ID</th><th>Method</th><th>Total Amount</th><th>Status</th><th>Slip/Copy</th></tr></thead>
+                                    <!-- අලුතින් Action තීරුව මෙතනට දැම්මා -->
+                                    <thead class="table-light"><tr><th>Date</th><th>Payment ID</th><th>Method</th><th>Total Amount</th><th>Status</th><th>Slip/Copy</th><th>Action</th></tr></thead>
                                     <tbody id="payment-history-table"></tbody>
                                 </table>
                             </div>
@@ -425,6 +424,45 @@
                         <div class="col-md-3"><label>Payment Slip/Image (Optional)</label><input type="file" id="p-file" class="form-control" accept="image/*"></div>
                         <div class="col-md-2 d-flex align-items-end"><button type="submit" id="p-submit-btn" class="btn btn-success w-100">Confirm</button></div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Details View Modal (NEW) -->
+    <div class="modal fade" id="paymentDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-info">
+                <div class="modal-header bg-info text-dark">
+                    <h5 class="modal-title"><i class="bi bi-info-circle"></i> Payment Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3 bg-light p-3 rounded">
+                        <div class="col-md-6 mb-2"><strong>Payment ID:</strong> <span id="detail-pay-id" class="text-primary fw-bold"></span></div>
+                        <div class="col-md-6 mb-2"><strong>Date:</strong> <span id="detail-pay-date"></span></div>
+                        <div class="col-md-6 mb-2"><strong>Method:</strong> <span id="detail-pay-method"></span></div>
+                        <div class="col-md-6 mb-2"><strong>Total Amount:</strong> <span id="detail-pay-total" class="text-success fw-bold fs-5"></span></div>
+                        
+                        <div class="col-md-12 mt-2" id="detail-cheque-info" style="display: none;">
+                            <div class="alert alert-warning py-2 mb-0"><strong>Cheque Info:</strong> <span id="detail-cheque-text" class="text-danger fw-bold"></span></div>
+                        </div>
+                    </div>
+                    
+                    <h6 class="fw-bold text-success mb-3"><i class="bi bi-receipt"></i> Settled Bills</h6>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm align-middle">
+                            <thead class="table-light">
+                                <tr><th>Bill No</th><th>Remarks (Items)</th><th>Amount Paid (Rs.)</th></tr>
+                            </thead>
+                            <tbody id="detail-allocations-table">
+                                <!-- Allocations load here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
