@@ -113,7 +113,6 @@ function initDataLoad() {
             let d = docSnap.data(); allVendorsList.push({ id: docSnap.id, ...d });
         });
 
-        // අලුත් Vendor උඩින්ම පේන්න Sort කිරීම
         allVendorsList.sort((a, b) => b.custom_id.localeCompare(a.custom_id));
 
         allVendorsList.forEach(d => {
@@ -124,7 +123,7 @@ function initDataLoad() {
         });
         vDrops.forEach(drop => drop.innerHTML = dropHtml);
         
-        renderVendorFilterButtons();
+        renderVendorFilterButtons(); 
         
         document.querySelectorAll('.edit-vendor-btn').forEach(btn => btn.addEventListener('click', (e) => {
             const vData = allVendorsList.find(v => v.id === e.currentTarget.dataset.id);
@@ -161,10 +160,7 @@ function initDataLoad() {
     onSnapshot(collection(db, "bills"), (snap) => {
         allBillsList = []; let totalDue = 0;
         snap.forEach(docSnap => { let d = docSnap.data(); allBillsList.push({ id: docSnap.id, ...d }); totalDue += (d.total_amount - d.paid_amount); });
-        
-        // අලුත්ම බිල උඩින්ම පේන්න Sort කිරීම (Descending)
         allBillsList.sort((a, b) => new Date(b.created_at || b.date) - new Date(a.created_at || a.date));
-        
         document.getElementById('dash-due').innerText = totalDue.toLocaleString(undefined, {minimumFractionDigits: 2}); applyBillFilters(); 
     });
 
@@ -178,19 +174,65 @@ function initDataLoad() {
             if(d.method.includes('CHEQUE') && d.cheque_status === 'PENDING') pendingChequesTotal += d.total_amount;
         });
 
-        // අලුත්ම Payment එක උඩින්ම පේන්න Sort කිරීම (Descending)
         allPaymentsList.sort((a, b) => new Date(b.timestamp || b.payment_date) - new Date(a.timestamp || a.payment_date));
 
         allPaymentsList.forEach(d => {
             let imgBtn = d.attachment_url ? `<a href="${d.attachment_url}" target="_blank" class="text-primary"><i class="bi bi-image fs-5"></i></a>` : '-';
             let statusBadge = d.cheque_status === 'PENDING' ? '<span class="badge bg-warning">Pending</span>' : (d.cheque_status === 'RETURNED' ? '<span class="badge bg-danger">Returned</span>' : '<span class="badge bg-success">Cleared</span>');
-            pTable.innerHTML += `<tr><td>${d.payment_date}</td><td class="fw-bold">${d.payment_id}</td><td>${d.method.replace('_', ' ')} ${d.cheque_number ? `(${d.cheque_number})` : ''}</td>
-                <td class="text-success fw-bold">Rs. ${d.total_amount}</td><td>${statusBadge}</td><td>${imgBtn}</td></tr>`;
+            
+            // අලුත් View Button එක Payment Table එකට එකතු කිරීම
+            pTable.innerHTML += `<tr>
+                <td>${d.payment_date}</td><td class="fw-bold">${d.payment_id}</td><td>${d.method.replace('_', ' ')} ${d.cheque_number ? `(${d.cheque_number})` : ''}</td>
+                <td class="text-success fw-bold">Rs. ${d.total_amount}</td><td>${statusBadge}</td><td>${imgBtn}</td>
+                <td><button class="btn btn-sm btn-outline-info view-payment-btn" data-id="${d.id}"><i class="bi bi-eye"></i> View</button></td>
+            </tr>`;
         });
 
         document.getElementById('dash-paid').innerText = monthlyPaid.toLocaleString(undefined, {minimumFractionDigits: 2});
         document.getElementById('dash-cheques').innerText = pendingChequesTotal.toLocaleString(undefined, {minimumFractionDigits: 2});
         renderChequesTable();
+
+        // View Payment Details Event Listener
+        document.querySelectorAll('.view-payment-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const payId = e.currentTarget.dataset.id;
+                const payData = allPaymentsList.find(p => p.id === payId);
+                if(!payData) return;
+
+                document.getElementById('detail-pay-id').innerText = payData.payment_id;
+                document.getElementById('detail-pay-date').innerText = payData.payment_date;
+                document.getElementById('detail-pay-method').innerText = payData.method.replace('_', ' ');
+                document.getElementById('detail-pay-total').innerText = 'Rs. ' + payData.total_amount.toLocaleString();
+
+                if(payData.cheque_number) {
+                    document.getElementById('detail-cheque-info').style.display = 'block';
+                    document.getElementById('detail-cheque-text').innerText = `${payData.cheque_number} (Date: ${payData.cheque_date || '-'} | Status: ${payData.cheque_status})`;
+                } else {
+                    document.getElementById('detail-cheque-info').style.display = 'none';
+                }
+
+                const allocTable = document.getElementById('detail-allocations-table');
+                allocTable.innerHTML = '';
+                
+                if(payData.allocations && payData.allocations.length > 0) {
+                    payData.allocations.forEach(alloc => {
+                        const bill = allBillsList.find(b => b.id === alloc.bill_id);
+                        let billNo = bill ? bill.bill_number : '<span class="text-danger">Deleted Bill</span>';
+                        let remarks = bill ? (bill.items_info || '-') : '-';
+                        
+                        allocTable.innerHTML += `<tr>
+                            <td class="fw-bold">${billNo}</td>
+                            <td>${remarks}</td>
+                            <td class="text-success fw-bold">Rs. ${alloc.amount.toLocaleString()}</td>
+                        </tr>`;
+                    });
+                } else {
+                    allocTable.innerHTML = `<tr><td colspan="3" class="text-center text-muted">No specific bills allocated.</td></tr>`;
+                }
+
+                new bootstrap.Modal(document.getElementById('paymentDetailsModal')).show();
+            });
+        });
     });
 
     // Lorry Petty Cash
@@ -198,21 +240,19 @@ function initDataLoad() {
         allLorryRecords = [];
         snap.forEach(docSnap => { allLorryRecords.push({ id: docSnap.id, ...docSnap.data() }); });
         
-        // පියවර 1: බැලන්ස් එක හරියට හැදෙන්න මුලින්ම පරණ එකේ ඉඳන් අලුත් එකට Sort කරනවා (Ascending)
         allLorryRecords.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         
         let currentBalance = 0;
         allLorryRecords.forEach(d => {
             if(d.type === 'ADVANCE' || d.type === 'OPENING_BAL') currentBalance += d.amount;
             if(d.type === 'EXPENSE') currentBalance -= d.amount;
-            d.runningBalance = currentBalance; // බැලන්ස් එක ඒ වෙලාවේ Save කරගන්නවා
+            d.runningBalance = currentBalance;
         });
         
         const dashBal = document.getElementById('dash-lorry-bal');
         dashBal.innerText = currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
         if(currentBalance < 0) dashBal.classList.add('text-danger'); else dashBal.classList.remove('text-danger');
 
-        // පියවර 2: Table එකට දාද්දි අලුත් එක උඩින්ම පේන්න Reverse කරනවා (Descending)
         allLorryRecords.reverse();
 
         const lTable = document.getElementById('lorry-table'); lTable.innerHTML = '';
