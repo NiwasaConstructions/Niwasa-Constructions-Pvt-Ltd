@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Niwasa Constructions ERP</title>
-    <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
@@ -17,13 +16,19 @@
         .card { border: none; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .card-header { font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border-radius: 10px 10px 0 0 !important; }
         .brand-header { background-color: white; padding: 15px 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; border-left: 5px solid #e64a19; }
-        .stat-card { border-radius: 15px; padding: 20px; color: white; }
+        .stat-card { border-radius: 15px; padding: 20px; color: white; position: relative; overflow: hidden; }
         .ledger-credit { color: #dc3545; font-weight: bold; }
         .ledger-debit { color: #198754; font-weight: bold; }
         .vendor-filter-btn { border-radius: 20px; font-weight: 500; } 
+        
+        /* Clickable Cards Custom CSS */
+        .clickable-card { cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .clickable-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important; }
+        .clickable-icon { position: absolute; top: 15px; right: 15px; opacity: 0.5; font-size: 1.2rem; }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Mobile Responsive Adjustments */
+        /* Mobile Responsive */
         @media (max-width: 767px) {
             .sidebar { min-height: auto; margin-bottom: 20px; }
             .brand-header { padding: 10px 15px; flex-direction: column; text-align: center; }
@@ -40,7 +45,6 @@
 </head>
 <body>
 
-    <!-- Login Section -->
     <div id="login-section" class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-4">
@@ -57,7 +61,6 @@
         </div>
     </div>
 
-    <!-- Dashboard Section -->
     <div id="dashboard-section" class="container-fluid mt-3 px-4" style="display: none;">
         
         <div class="d-flex justify-content-between align-items-center brand-header">
@@ -69,7 +72,6 @@
         </div>
         
         <div class="row">
-            <!-- Sidebar -->
             <div class="col-md-2 mb-3">
                 <div class="sidebar shadow-sm">
                     <a class="nav-link active" data-target="dashboard"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
@@ -83,20 +85,56 @@
                 </div>
             </div>
             
-            <!-- Main Content Area -->
             <div class="col-md-10">
                 
-                <!-- 0. DASHBOARD -->
                 <div id="section-dashboard" class="app-section active">
                     <div class="row mb-4">
-                        <div class="col-md-3"><div class="stat-card bg-danger shadow mb-3 mb-md-0"><h6>Total Outstanding Due</h6><h3>Rs. <span id="dash-due">0.00</span></h3></div></div>
-                        <div class="col-md-3"><div class="stat-card bg-success shadow mb-3 mb-md-0"><h6>Monthly Paid (This Month)</h6><h3>Rs. <span id="dash-paid">0.00</span></h3></div></div>
-                        <div class="col-md-3"><div class="stat-card bg-warning text-dark shadow mb-3 mb-md-0"><h6>Unrealized Cheques Value</h6><h3>Rs. <span id="dash-cheques">0.00</span></h3></div></div>
-                        <div class="col-md-3"><div class="stat-card bg-info text-dark shadow"><h6>Driver's Balance</h6><h3>Rs. <span id="dash-lorry-bal">0.00</span></h3></div></div>
+                        <div class="col-md-3">
+                            <div class="stat-card bg-danger shadow mb-3 mb-md-0 clickable-card" data-action="DUE">
+                                <h6>Total Outstanding Due</h6><h3>Rs. <span id="dash-due">0.00</span></h3>
+                                <i class="bi bi-hand-index-thumb clickable-icon text-white"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card bg-success shadow mb-3 mb-md-0 clickable-card" data-action="PAID">
+                                <h6>Monthly Paid (This Month)</h6><h3>Rs. <span id="dash-paid">0.00</span></h3>
+                                <i class="bi bi-hand-index-thumb clickable-icon text-white"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card bg-warning text-dark shadow mb-3 mb-md-0 clickable-card" data-action="CHEQUES">
+                                <h6>Unrealized Cheques Value</h6><h3>Rs. <span id="dash-cheques">0.00</span></h3>
+                                <i class="bi bi-hand-index-thumb clickable-icon text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card bg-info text-dark shadow">
+                                <h6>Driver's Balance</h6><h3>Rs. <span id="dash-lorry-bal">0.00</span></h3>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-header bg-white fw-bold border-bottom-0 pt-3"><i class="bi bi-graph-up-arrow text-danger me-2"></i>Top Owed Vendors</div>
+                                <div class="card-body" id="widget-top-vendors">
+                                    <div class="text-center text-muted mt-3"><div class="spinner-border spinner-border-sm"></div> Loading...</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-header bg-white fw-bold border-bottom-0 pt-3"><i class="bi bi-clock-history text-success me-2"></i>Recent Payments</div>
+                                <div class="card-body p-0">
+                                    <ul class="list-group list-group-flush" id="widget-recent-payments">
+                                        </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 1. VENDORS SECTION -->
                 <div id="section-vendors" class="app-section">
                     <div class="card">
                         <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #1e3a5f;">
@@ -114,7 +152,6 @@
                     </div>
                 </div>
 
-                <!-- 2. SITES SECTION -->
                 <div id="section-sites" class="app-section">
                     <div class="card">
                         <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #1e3a5f;">
@@ -132,7 +169,6 @@
                     </div>
                 </div>
 
-                <!-- 3. BILLS SECTION -->
                 <div id="section-bills" class="app-section">
                     <div class="card">
                         <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #1e3a5f;">
@@ -140,13 +176,10 @@
                             <button class="btn btn-sm btn-light fw-bold text-danger" id="add-bill-btn" data-bs-toggle="modal" data-bs-target="#billModal">+ Add New Bill</button>
                         </div>
                         <div class="card-body bg-white">
-                            
                             <div class="mb-3">
                                 <h6 class="text-muted mb-2"><i class="bi bi-funnel"></i> Filter by Vendor:</h6>
-                                <div id="vendor-filter-buttons" class="d-flex flex-wrap gap-2 pb-3 border-bottom">
-                                </div>
+                                <div id="vendor-filter-buttons" class="d-flex flex-wrap gap-2 pb-3 border-bottom"></div>
                             </div>
-
                             <div class="row mb-3 mt-3">
                                 <div class="col-md-6 mb-2 mb-md-0"><input type="text" id="search-bills" class="form-control" placeholder="Search by Bill No or Amount..."></div>
                                 <div class="col-md-3">
@@ -165,7 +198,6 @@
                     </div>
                 </div>
 
-                <!-- 4. PAYMENTS SECTION -->
                 <div id="section-payments" class="app-section">
                     <div class="card border-success">
                         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
@@ -175,7 +207,6 @@
                         <div class="card-body bg-white">
                             <div class="table-responsive">
                                 <table class="table table-hover table-sm align-middle">
-                                    <!-- අලුතින් Action තීරුව මෙතනට දැම්මා -->
                                     <thead class="table-light"><tr><th>Date</th><th>Payment ID</th><th>Method</th><th>Total Amount</th><th>Status</th><th>Slip/Copy</th><th>Action</th></tr></thead>
                                     <tbody id="payment-history-table"></tbody>
                                 </table>
@@ -184,7 +215,6 @@
                     </div>
                 </div>
 
-                <!-- 5. CHEQUES SECTION -->
                 <div id="section-cheques" class="app-section">
                     <div class="card border-warning">
                         <div class="card-header bg-warning text-dark"><i class="bi bi-bank"></i> Unrealized Cheques Management</div>
@@ -199,12 +229,10 @@
                     </div>
                 </div>
 
-                <!-- 7. LORRY PETTY CASH SECTION -->
                 <div id="section-lorry" class="app-section">
                     <div class="card border-info">
                         <div class="card-header bg-info text-dark"><i class="bi bi-truck"></i> Lorry Petty Cash Management</div>
                         <div class="card-body bg-white">
-                            
                             <form id="lorry-form" class="row g-3 mb-4 bg-light p-3 rounded border">
                                 <div class="col-md-3">
                                     <label class="fw-bold">Record Type</label>
@@ -214,26 +242,11 @@
                                         <option value="OPENING_BAL">Opening Balance</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="fw-bold">Date</label>
-                                    <input type="date" id="l-date" class="form-control" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="fw-bold">Description</label>
-                                    <input type="text" id="l-desc" class="form-control" placeholder="e.g. Morning Transfer / Sand 1 cube" required>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="fw-bold">Amount (Rs.)</label>
-                                    <input type="number" id="l-amount" class="form-control" step="any" required>
-                                    <small class="text-muted" style="font-size: 11px;">(Enter the Amount)</small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="fw-bold">Bill / Slip Photo (Optional)</label>
-                                    <input type="file" id="l-file" class="form-control" accept="image/*">
-                                </div>
-                                <div class="col-md-3 d-flex align-items-end">
-                                    <button type="submit" id="l-submit-btn" class="btn btn-info w-100 fw-bold">Save Record</button>
-                                </div>
+                                <div class="col-md-3"><label class="fw-bold">Date</label><input type="date" id="l-date" class="form-control" required></div>
+                                <div class="col-md-6"><label class="fw-bold">Description (විස්තරය)</label><input type="text" id="l-desc" class="form-control" placeholder="e.g. Morning Transfer / Sand 1 cube" required></div>
+                                <div class="col-md-3"><label class="fw-bold">Amount (Rs.)</label><input type="number" id="l-amount" class="form-control" step="any" required><small class="text-muted" style="font-size: 11px;">(අපෙන් දෙන්න තියේනම් සෘණ අගයක් දෙන්න. උදා: -2000)</small></div>
+                                <div class="col-md-6"><label class="fw-bold">Bill / Slip Photo (ඇත්නම් පමණක් / Optional)</label><input type="file" id="l-file" class="form-control" accept="image/*"></div>
+                                <div class="col-md-3 d-flex align-items-end"><button type="submit" id="l-submit-btn" class="btn btn-info w-100 fw-bold">Save Record</button></div>
                             </form>
 
                             <div class="table-responsive">
@@ -244,12 +257,10 @@
                                     <tbody id="lorry-table"></tbody>
                                 </table>
                             </div>
-
                         </div>
                     </div>
                 </div>
 
-                <!-- 8. REPORTS SECTION -->
                 <div id="section-reports" class="app-section">
                     <div class="card border-info">
                         <div class="card-header bg-info text-dark d-flex justify-content-between align-items-center">
@@ -258,21 +269,11 @@
                         </div>
                         <div class="card-body bg-white">
                             <div class="row mb-4 bg-light p-3 rounded border align-items-end">
-                                <div class="col-md-3 mb-2 mb-md-0">
-                                    <label class="fw-bold">Report Type:</label>
-                                    <select id="report-type" class="form-select border-primary">
-                                        <option value="SITE">Site-wise Costing</option>
-                                        <option value="VENDOR">Vendor Ledger</option>
-                                    </select>
+                                <div class="col-md-3 mb-2 mb-md-0"><label class="fw-bold">Report Type:</label>
+                                    <select id="report-type" class="form-select border-primary"><option value="SITE">Site-wise Costing</option><option value="VENDOR">Vendor Ledger</option></select>
                                 </div>
-                                <div class="col-md-3 mb-2 mb-md-0" id="report-site-div">
-                                    <label class="fw-bold">Select Site:</label>
-                                    <select id="report-site" class="form-select report-site-dropdown"><option value="">Select Site...</option></select>
-                                </div>
-                                <div class="col-md-3 mb-2 mb-md-0" id="report-vendor-div" style="display:none;">
-                                    <label class="fw-bold">Select Vendor:</label>
-                                    <select id="report-vendor" class="form-select vendor-dropdown"><option value="">Select Vendor...</option></select>
-                                </div>
+                                <div class="col-md-3 mb-2 mb-md-0" id="report-site-div"><label class="fw-bold">Select Site:</label><select id="report-site" class="form-select report-site-dropdown"><option value="">Select Site...</option></select></div>
+                                <div class="col-md-3 mb-2 mb-md-0" id="report-vendor-div" style="display:none;"><label class="fw-bold">Select Vendor:</label><select id="report-vendor" class="form-select vendor-dropdown"><option value="">Select Vendor...</option></select></div>
                                 <div class="col-md-2 mb-2 mb-md-0"><label class="fw-bold">From Date:</label><input type="date" id="rep-start" class="form-control"></div>
                                 <div class="col-md-2 mb-2 mb-md-0"><label class="fw-bold">To Date:</label><input type="date" id="rep-end" class="form-control"></div>
                                 <div class="col-md-2"><button id="generate-rep-btn" class="btn btn-primary w-100 mt-2 mt-md-0"><i class="bi bi-search"></i> Generate</button></div>
@@ -305,18 +306,31 @@
         </div>
     </div>
 
-    <!-- ================= MODALS ================= -->
+    <div class="modal fade" id="dashboardBreakdownModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0">
+                <div class="modal-header text-white" id="db-modal-header" style="background-color: #1e3a5f;">
+                    <h5 class="modal-title" id="db-modal-title">Vendor Breakdown</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light"><tr><th class="ps-4">Vendor Name</th><th class="text-end pe-4">Amount (Rs.)</th></tr></thead>
+                            <tbody id="db-modal-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Vendor Modal -->
     <div class="modal fade" id="vendorModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form id="vendor-form">
                     <input type="hidden" id="edit-vendor-id">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title" id="vendor-modal-title">Add New Vendor</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
+                    <div class="modal-header bg-primary text-white"><h5 class="modal-title" id="vendor-modal-title">Add New Vendor</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                     <div class="modal-body">
                         <div class="mb-2"><label>Vendor Name</label><input type="text" id="v-name" class="form-control" required></div>
                         <div class="mb-2"><label>Contact No</label><input type="text" id="v-contact" class="form-control" required></div>
@@ -333,34 +347,24 @@
         </div>
     </div>
 
-    <!-- Site Modal -->
     <div class="modal fade" id="siteModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form id="site-form">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">Add New Site</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-2"><label>Site Name / Location</label><input type="text" id="s-name" class="form-control" required></div>
-                    </div>
+                    <div class="modal-header bg-primary text-white"><h5 class="modal-title">Add New Site</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                    <div class="modal-body"><div class="mb-2"><label>Site Name / Location</label><input type="text" id="s-name" class="form-control" required></div></div>
                     <div class="modal-footer"><button type="submit" class="btn btn-primary w-100">Save Site</button></div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Bill Modal -->
     <div class="modal fade" id="billModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form id="bill-form">
                     <input type="hidden" id="edit-bill-id">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="bill-modal-title">Add New Bill</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
+                    <div class="modal-header bg-danger text-white"><h5 class="modal-title" id="bill-modal-title">Add New Bill</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                     <div class="modal-body row g-3">
                         <div class="col-md-6"><label>Select Vendor</label><select id="b-vendor" class="form-select vendor-dropdown" required><option value="">Select...</option></select></div>
                         <div class="col-md-6"><label>Select Site (Ongoing only)</label><select id="b-site" class="form-select active-site-dropdown" required><option value="">Select...</option></select></div>
@@ -377,14 +381,10 @@
         </div>
     </div>
 
-    <!-- Payment Modal -->
     <div class="modal fade" id="paymentModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content border-success">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Make New Payment & Set-off Bills</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
+                <div class="modal-header bg-success text-white"><h5 class="modal-title">Make New Payment & Set-off Bills</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col-md-4"><label class="fw-bold text-success">1. Select Vendor</label><select id="p-vendor" class="form-select border-success vendor-dropdown"><option value="">Select...</option></select></div>
@@ -395,9 +395,7 @@
                         <h6 class="fw-bold text-primary">2. Allocate amounts to Pending Bills</h6>
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm bg-white">
-                                <thead class="table-light">
-                                    <tr><th style="width: 50px;" class="text-center">Select</th><th>Bill No & Remarks</th><th>Due Amount</th><th>Pay Amount (Rs.)</th></tr>
-                                </thead>
+                                <thead class="table-light"><tr><th style="width: 50px;" class="text-center">Select</th><th>Bill No & Remarks</th><th>Due Amount</th><th>Pay Amount (Rs.)</th></tr></thead>
                                 <tbody id="p-bills-table"></tbody>
                             </table>
                         </div>
@@ -405,8 +403,7 @@
                     </div>
 
                     <form id="payment-form" class="row g-3" style="display:none;">
-                        <hr>
-                        <h6 class="fw-bold text-success mb-0">3. Payment Details</h6>
+                        <hr><h6 class="fw-bold text-success mb-0">3. Payment Details</h6>
                         <div class="col-md-3">
                             <label>Method</label>
                             <select id="p-method" class="form-select" required>
@@ -417,8 +414,7 @@
                         <div class="col-md-4" id="cheque-box" style="display: none;">
                             <label>Cheque No & Date</label>
                             <div class="input-group">
-                                <input type="text" id="p-cheque-no" class="form-control border-danger" placeholder="Number">
-                                <input type="date" id="p-cheque-date" class="form-control border-danger">
+                                <input type="text" id="p-cheque-no" class="form-control border-danger" placeholder="Number"><input type="date" id="p-cheque-date" class="form-control border-danger">
                             </div>
                         </div>
                         <div class="col-md-3"><label>Payment Slip/Image (Optional)</label><input type="file" id="p-file" class="form-control" accept="image/*"></div>
@@ -429,46 +425,28 @@
         </div>
     </div>
 
-    <!-- Payment Details View Modal (NEW) -->
     <div class="modal fade" id="paymentDetailsModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-info">
-                <div class="modal-header bg-info text-dark">
-                    <h5 class="modal-title"><i class="bi bi-info-circle"></i> Payment Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+                <div class="modal-header bg-info text-dark"><h5 class="modal-title"><i class="bi bi-info-circle"></i> Payment Details</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="row mb-3 bg-light p-3 rounded">
                         <div class="col-md-6 mb-2"><strong>Payment ID:</strong> <span id="detail-pay-id" class="text-primary fw-bold"></span></div>
                         <div class="col-md-6 mb-2"><strong>Date:</strong> <span id="detail-pay-date"></span></div>
                         <div class="col-md-6 mb-2"><strong>Method:</strong> <span id="detail-pay-method"></span></div>
                         <div class="col-md-6 mb-2"><strong>Total Amount:</strong> <span id="detail-pay-total" class="text-success fw-bold fs-5"></span></div>
-                        
-                        <div class="col-md-12 mt-2" id="detail-cheque-info" style="display: none;">
-                            <div class="alert alert-warning py-2 mb-0"><strong>Cheque Info:</strong> <span id="detail-cheque-text" class="text-danger fw-bold"></span></div>
-                        </div>
+                        <div class="col-md-12 mt-2" id="detail-cheque-info" style="display: none;"><div class="alert alert-warning py-2 mb-0"><strong>Cheque Info:</strong> <span id="detail-cheque-text" class="text-danger fw-bold"></span></div></div>
                     </div>
-                    
                     <h6 class="fw-bold text-success mb-3"><i class="bi bi-receipt"></i> Settled Bills</h6>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-sm align-middle">
-                            <thead class="table-light">
-                                <tr><th>Bill No</th><th>Remarks (Items)</th><th>Amount Paid (Rs.)</th></tr>
-                            </thead>
-                            <tbody id="detail-allocations-table">
-                                <!-- Allocations load here dynamically -->
-                            </tbody>
-                        </table>
+                        <table class="table table-bordered table-sm align-middle"><thead class="table-light"><tr><th>Bill No</th><th>Remarks (Items)</th><th>Amount Paid (Rs.)</th></tr></thead><tbody id="detail-allocations-table"></tbody></table>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="app.js"></script>
 </body>
