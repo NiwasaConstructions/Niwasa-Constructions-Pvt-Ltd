@@ -16,20 +16,20 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-
-// ImgBB Configuration
 const IMGBB_API_KEY = "3a1d8af31b4c28245b2e1bcaa81d866f"; 
 
-// Global State Variables
+// Global States
 let allVendorsList = [];
 let allBillsList = []; 
 let allPaymentsList = [];
 let allLorryRecords = [];
 let currentBillVendorFilter = 'ALL'; 
 
+// Dashboard Unified Stats
+let dashboardStats = {}; 
+
 const generateCustomID = (prefix) => `${prefix}-${Date.now().toString().slice(-4)}${Math.floor(1000 + Math.random() * 9000)}`;
 
-// Image Upload Helper
 async function uploadToImgBB(file) {
     const formData = new FormData(); formData.append('image', file);
     const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
@@ -43,8 +43,7 @@ onAuthStateChanged(auth, (user) => {
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('dashboard-section').style.display = 'block';
         const today = new Date().toISOString().split('T')[0];
-        document.getElementById('b-date').value = today; document.getElementById('p-date').value = today;
-        document.getElementById('l-date').value = today;
+        document.getElementById('b-date').value = today; document.getElementById('p-date').value = today; document.getElementById('l-date').value = today;
         initDataLoad();
     } else {
         document.getElementById('login-section').style.display = 'block';
@@ -65,90 +64,58 @@ document.querySelectorAll('.nav-link').forEach(link => {
     });
 });
 
-// Modal Resets
-document.getElementById('add-vendor-btn').addEventListener('click', () => {
-    document.getElementById('vendor-form').reset();
-    document.getElementById('edit-vendor-id').value = '';
-    document.getElementById('vendor-modal-title').innerText = "Add New Vendor";
-});
+document.getElementById('add-vendor-btn').addEventListener('click', () => { document.getElementById('vendor-form').reset(); document.getElementById('edit-vendor-id').value = ''; document.getElementById('vendor-modal-title').innerText = "Add New Vendor"; });
+document.getElementById('add-bill-btn').addEventListener('click', () => { document.getElementById('bill-form').reset(); document.getElementById('edit-bill-id').value = ''; document.getElementById('b-date').value = new Date().toISOString().split('T')[0]; document.getElementById('bill-modal-title').innerText = "Add New Bill"; });
 
-document.getElementById('add-bill-btn').addEventListener('click', () => {
-    document.getElementById('bill-form').reset();
-    document.getElementById('edit-bill-id').value = '';
-    document.getElementById('b-date').value = new Date().toISOString().split('T')[0];
-    document.getElementById('bill-modal-title').innerText = "Add New Bill";
-});
-
-// --- RENDER VENDOR FILTER BUTTONS ---
 function renderVendorFilterButtons() {
-    const container = document.getElementById('vendor-filter-buttons');
-    if(!container) return;
-    
+    const container = document.getElementById('vendor-filter-buttons'); if(!container) return;
     let html = `<button class="btn btn-sm ${currentBillVendorFilter === 'ALL' ? 'btn-primary' : 'btn-outline-primary'} vendor-filter-btn" data-id="ALL">All Vendors</button>`;
-    
-    allVendorsList.forEach(v => {
-        let activeClass = currentBillVendorFilter === v.id ? 'btn-primary' : 'btn-outline-primary';
-        html += `<button class="btn btn-sm ${activeClass} vendor-filter-btn" data-id="${v.id}">${v.name}</button>`;
-    });
-    
+    allVendorsList.forEach(v => { html += `<button class="btn btn-sm ${currentBillVendorFilter === v.id ? 'btn-primary' : 'btn-outline-primary'} vendor-filter-btn" data-id="${v.id}">${v.name}</button>`; });
     container.innerHTML = html;
-    
     document.querySelectorAll('.vendor-filter-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            currentBillVendorFilter = e.currentTarget.dataset.id;
-            renderVendorFilterButtons(); 
-            applyBillFilters();
-        });
+        btn.addEventListener('click', (e) => { currentBillVendorFilter = e.currentTarget.dataset.id; renderVendorFilterButtons(); applyBillFilters(); });
     });
 }
 
 // --- DATA LOAD ---
 function initDataLoad() {
-    // Vendors
+    // 1. Vendors
     onSnapshot(collection(db, "vendors"), (snap) => {
         allVendorsList = [];
         const vTable = document.getElementById('v-table'); const vDrops = document.querySelectorAll('.vendor-dropdown');
         vTable.innerHTML = ''; let dropHtml = '<option value="">Select Vendor...</option>';
-        snap.forEach(docSnap => {
-            let d = docSnap.data(); allVendorsList.push({ id: docSnap.id, ...d });
-        });
+        snap.forEach(docSnap => { let d = docSnap.data(); allVendorsList.push({ id: docSnap.id, ...d }); });
 
         allVendorsList.sort((a, b) => b.custom_id.localeCompare(a.custom_id));
-
         allVendorsList.forEach(d => {
             let bankInfo = d.bank_name ? `<strong>${d.bank_name}</strong> ${d.bank_branch ? `(${d.bank_branch})` : ''}<br><small>${d.acc_name || ''} - ${d.bank_acc || ''}</small>` : '-';
             vTable.innerHTML += `<tr><td><span class="badge bg-secondary">${d.custom_id}</span></td><td class="fw-bold">${d.name}</td><td>${d.contact}<br><small class="text-muted">${d.address || ''}</small></td><td>${bankInfo}</td>
             <td><button class="btn btn-sm btn-outline-primary edit-vendor-btn" data-id="${d.id}"><i class="bi bi-pencil"></i></button></td></tr>`;
             dropHtml += `<option value="${d.id}">${d.custom_id} - ${d.name}</option>`;
         });
-        vDrops.forEach(drop => drop.innerHTML = dropHtml);
-        
-        renderVendorFilterButtons(); 
+        vDrops.forEach(drop => drop.innerHTML = dropHtml); renderVendorFilterButtons(); 
         
         document.querySelectorAll('.edit-vendor-btn').forEach(btn => btn.addEventListener('click', (e) => {
             const vData = allVendorsList.find(v => v.id === e.currentTarget.dataset.id);
             document.getElementById('edit-vendor-id').value = vData.id;
             ['name', 'contact', 'address', 'acc_name', 'bank_name', 'bank_branch', 'acc_no'].forEach(f => {
                 let domId = f === 'acc_no' ? 'v-acc-no' : `v-${f.replace('_', '-')}`;
-                let dataKey = f === 'acc_no' ? 'bank_acc' : f;
-                document.getElementById(domId).value = vData[dataKey] || '';
+                document.getElementById(domId).value = vData[f === 'acc_no' ? 'bank_acc' : f] || '';
             });
-            document.getElementById('vendor-modal-title').innerText = "Edit Vendor Details";
-            new bootstrap.Modal(document.getElementById('vendorModal')).show();
+            document.getElementById('vendor-modal-title').innerText = "Edit Vendor Details"; new bootstrap.Modal(document.getElementById('vendorModal')).show();
         }));
+        calculateDashboardWidgets(); // Refresh Dashboard Data
     });
 
-    // Sites
+    // 2. Sites
     onSnapshot(collection(db, "sites"), (snap) => {
         const sTable = document.getElementById('s-table'); const activeDrops = document.querySelectorAll('.active-site-dropdown'); const allDrops = document.querySelectorAll('.report-site-dropdown'); 
         sTable.innerHTML = ''; let activeHtml = '<option value="">Select Site...</option>'; let allHtml = '<option value="">Select Site...</option>';
         snap.forEach(docSnap => {
             let d = docSnap.data(); let isOngoing = d.status === 'ONGOING';
-            sTable.innerHTML += `<tr><td class="fw-bold"><i class="bi bi-geo-alt text-danger me-2"></i> ${d.name}</td>
-                <td><span class="badge bg-${isOngoing ? 'primary' : 'secondary'}">${d.status}</span></td>
+            sTable.innerHTML += `<tr><td class="fw-bold"><i class="bi bi-geo-alt text-danger me-2"></i> ${d.name}</td><td><span class="badge bg-${isOngoing ? 'primary' : 'secondary'}">${d.status}</span></td>
                 <td><button class="btn btn-sm ${isOngoing ? 'btn-outline-success' : 'btn-secondary'} toggle-site-btn" data-id="${docSnap.id}" data-status="${d.status}" ${!isOngoing ? 'disabled' : ''}>${isOngoing ? 'Mark Completed' : 'Completed'}</button></td></tr>`;
-            allHtml += `<option value="${docSnap.id}">${d.name}</option>`;
-            if(isOngoing) activeHtml += `<option value="${docSnap.id}">${d.name}</option>`;
+            allHtml += `<option value="${docSnap.id}">${d.name}</option>`; if(isOngoing) activeHtml += `<option value="${docSnap.id}">${d.name}</option>`;
         });
         activeDrops.forEach(drop => drop.innerHTML = activeHtml); allDrops.forEach(drop => drop.innerHTML = allHtml);
         document.querySelectorAll('.toggle-site-btn').forEach(btn => btn.addEventListener('click', async (e) => {
@@ -156,90 +123,60 @@ function initDataLoad() {
         }));
     });
 
-    // Bills
+    // 3. Bills
     onSnapshot(collection(db, "bills"), (snap) => {
-        allBillsList = []; let totalDue = 0;
-        snap.forEach(docSnap => { let d = docSnap.data(); allBillsList.push({ id: docSnap.id, ...d }); totalDue += (d.total_amount - d.paid_amount); });
+        allBillsList = []; 
+        snap.forEach(docSnap => { allBillsList.push({ id: docSnap.id, ...docSnap.data() }); });
         allBillsList.sort((a, b) => new Date(b.created_at || b.date) - new Date(a.created_at || a.date));
-        document.getElementById('dash-due').innerText = totalDue.toLocaleString(undefined, {minimumFractionDigits: 2}); applyBillFilters(); 
+        applyBillFilters(); calculateDashboardWidgets();
     });
 
-    // Payments
+    // 4. Payments
     onSnapshot(collection(db, "payments"), (snap) => {
-        allPaymentsList = []; let monthlyPaid = 0, pendingChequesTotal = 0; const currentMonth = new Date().toISOString().slice(0, 7);
+        allPaymentsList = []; 
         const pTable = document.getElementById('payment-history-table'); pTable.innerHTML = '';
-        snap.forEach(docSnap => {
-            let d = docSnap.data(); allPaymentsList.push({ id: docSnap.id, ...d });
-            if(d.payment_date && d.payment_date.startsWith(currentMonth) && d.cheque_status !== 'RETURNED') monthlyPaid += d.total_amount;
-            if(d.method.includes('CHEQUE') && d.cheque_status === 'PENDING') pendingChequesTotal += d.total_amount;
-        });
+        snap.forEach(docSnap => { allPaymentsList.push({ id: docSnap.id, ...docSnap.data() }); });
 
         allPaymentsList.sort((a, b) => new Date(b.timestamp || b.payment_date) - new Date(a.timestamp || a.payment_date));
 
         allPaymentsList.forEach(d => {
             let imgBtn = d.attachment_url ? `<a href="${d.attachment_url}" target="_blank" class="text-primary"><i class="bi bi-image fs-5"></i></a>` : '-';
             let statusBadge = d.cheque_status === 'PENDING' ? '<span class="badge bg-warning">Pending</span>' : (d.cheque_status === 'RETURNED' ? '<span class="badge bg-danger">Returned</span>' : '<span class="badge bg-success">Cleared</span>');
-            
-            // අලුත් View Button එක Payment Table එකට එකතු කිරීම
             pTable.innerHTML += `<tr>
                 <td>${d.payment_date}</td><td class="fw-bold">${d.payment_id}</td><td>${d.method.replace('_', ' ')} ${d.cheque_number ? `(${d.cheque_number})` : ''}</td>
-                <td class="text-success fw-bold">Rs. ${d.total_amount}</td><td>${statusBadge}</td><td>${imgBtn}</td>
+                <td class="text-success fw-bold">Rs. ${d.total_amount.toLocaleString()}</td><td>${statusBadge}</td><td>${imgBtn}</td>
                 <td><button class="btn btn-sm btn-outline-info view-payment-btn" data-id="${d.id}"><i class="bi bi-eye"></i> View</button></td>
             </tr>`;
         });
 
-        document.getElementById('dash-paid').innerText = monthlyPaid.toLocaleString(undefined, {minimumFractionDigits: 2});
-        document.getElementById('dash-cheques').innerText = pendingChequesTotal.toLocaleString(undefined, {minimumFractionDigits: 2});
-        renderChequesTable();
+        renderChequesTable(); calculateDashboardWidgets();
 
-        // View Payment Details Event Listener
+        // Payment View Details logic
         document.querySelectorAll('.view-payment-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const payId = e.currentTarget.dataset.id;
-                const payData = allPaymentsList.find(p => p.id === payId);
-                if(!payData) return;
-
-                document.getElementById('detail-pay-id').innerText = payData.payment_id;
-                document.getElementById('detail-pay-date').innerText = payData.payment_date;
-                document.getElementById('detail-pay-method').innerText = payData.method.replace('_', ' ');
-                document.getElementById('detail-pay-total').innerText = 'Rs. ' + payData.total_amount.toLocaleString();
-
+                const payData = allPaymentsList.find(p => p.id === e.currentTarget.dataset.id); if(!payData) return;
+                document.getElementById('detail-pay-id').innerText = payData.payment_id; document.getElementById('detail-pay-date').innerText = payData.payment_date;
+                document.getElementById('detail-pay-method').innerText = payData.method.replace('_', ' '); document.getElementById('detail-pay-total').innerText = 'Rs. ' + payData.total_amount.toLocaleString();
                 if(payData.cheque_number) {
                     document.getElementById('detail-cheque-info').style.display = 'block';
                     document.getElementById('detail-cheque-text').innerText = `${payData.cheque_number} (Date: ${payData.cheque_date || '-'} | Status: ${payData.cheque_status})`;
-                } else {
-                    document.getElementById('detail-cheque-info').style.display = 'none';
-                }
+                } else { document.getElementById('detail-cheque-info').style.display = 'none'; }
 
-                const allocTable = document.getElementById('detail-allocations-table');
-                allocTable.innerHTML = '';
-                
+                const allocTable = document.getElementById('detail-allocations-table'); allocTable.innerHTML = '';
                 if(payData.allocations && payData.allocations.length > 0) {
                     payData.allocations.forEach(alloc => {
                         const bill = allBillsList.find(b => b.id === alloc.bill_id);
-                        let billNo = bill ? bill.bill_number : '<span class="text-danger">Deleted Bill</span>';
-                        let remarks = bill ? (bill.items_info || '-') : '-';
-                        
-                        allocTable.innerHTML += `<tr>
-                            <td class="fw-bold">${billNo}</td>
-                            <td>${remarks}</td>
-                            <td class="text-success fw-bold">Rs. ${alloc.amount.toLocaleString()}</td>
-                        </tr>`;
+                        allocTable.innerHTML += `<tr><td class="fw-bold">${bill ? bill.bill_number : '<span class="text-danger">Deleted Bill</span>'}</td><td>${bill ? (bill.items_info || '-') : '-'}</td><td class="text-success fw-bold">Rs. ${alloc.amount.toLocaleString()}</td></tr>`;
                     });
-                } else {
-                    allocTable.innerHTML = `<tr><td colspan="3" class="text-center text-muted">No specific bills allocated.</td></tr>`;
-                }
-
+                } else { allocTable.innerHTML = `<tr><td colspan="3" class="text-center text-muted">No specific bills allocated.</td></tr>`; }
                 new bootstrap.Modal(document.getElementById('paymentDetailsModal')).show();
             });
         });
     });
 
-    // Lorry Petty Cash
+    // 5. Lorry Cash
     onSnapshot(collection(db, "lorry_cash"), (snap) => {
-        allLorryRecords = [];
-        snap.forEach(docSnap => { allLorryRecords.push({ id: docSnap.id, ...docSnap.data() }); });
-        
+        allLorryRecords = []; snap.forEach(docSnap => { allLorryRecords.push({ id: docSnap.id, ...docSnap.data() }); });
         allLorryRecords.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
         
         let currentBalance = 0;
@@ -249,43 +186,119 @@ function initDataLoad() {
             d.runningBalance = currentBalance;
         });
         
-        const dashBal = document.getElementById('dash-lorry-bal');
-        dashBal.innerText = currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
+        const dashBal = document.getElementById('dash-lorry-bal'); dashBal.innerText = currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
         if(currentBalance < 0) dashBal.classList.add('text-danger'); else dashBal.classList.remove('text-danger');
 
         allLorryRecords.reverse();
-
         const lTable = document.getElementById('lorry-table'); lTable.innerHTML = '';
         allLorryRecords.forEach(d => {
             let imgBtn = d.attachment_url ? `<a href="${d.attachment_url}" target="_blank" class="text-primary"><i class="bi bi-image fs-5"></i></a>` : '-';
             let inAmt = (d.type === 'ADVANCE' || d.type === 'OPENING_BAL') ? d.amount.toLocaleString() : '-';
             let outAmt = d.type === 'EXPENSE' ? d.amount.toLocaleString() : '-';
             let badge = d.type === 'OPENING_BAL' ? '<span class="badge bg-dark">Opening</span> ' : '';
-            
-            lTable.innerHTML += `<tr>
-                <td>${d.date}</td>
-                <td>${badge}${d.description}</td>
-                <td class="text-success fw-bold">${inAmt}</td>
-                <td class="text-danger fw-bold">${outAmt}</td>
-                <td class="fw-bold fs-6 ${d.runningBalance < 0 ? 'text-danger' : 'text-primary'}">${d.runningBalance.toLocaleString()}</td>
-                <td class="text-center">${imgBtn}</td>
-                <td><button class="btn btn-sm btn-outline-danger del-lorry-btn" data-id="${d.id}"><i class="bi bi-trash"></i></button></td>
-            </tr>`;
+            lTable.innerHTML += `<tr><td>${d.date}</td><td>${badge}${d.description}</td><td class="text-success fw-bold">${inAmt}</td><td class="text-danger fw-bold">${outAmt}</td><td class="fw-bold fs-6 ${d.runningBalance < 0 ? 'text-danger' : 'text-primary'}">${d.runningBalance.toLocaleString()}</td><td class="text-center">${imgBtn}</td><td><button class="btn btn-sm btn-outline-danger del-lorry-btn" data-id="${d.id}"><i class="bi bi-trash"></i></button></td></tr>`;
         });
-
         document.querySelectorAll('.del-lorry-btn').forEach(btn => btn.addEventListener('click', async (e) => {
-            if(confirm("Delete this record? It will change the running balance.")) await deleteDoc(doc(db, "lorry_cash", e.currentTarget.dataset.id));
+            if(confirm("Delete this record?")) await deleteDoc(doc(db, "lorry_cash", e.currentTarget.dataset.id));
         }));
     });
 }
 
+// --- NEW: DASHBOARD WIDGETS & MODAL BREAKDOWNS ---
+function calculateDashboardWidgets() {
+    if(allVendorsList.length === 0) return;
+    dashboardStats = {}; 
+    let totalDueAll = 0; let totalPaidAll = 0; let totalChequesAll = 0;
+    const currentMonth = new Date().toISOString().slice(0, 7);
+
+    // Initialize stats
+    allVendorsList.forEach(v => dashboardStats[v.id] = { name: v.name, due: 0, paid: 0, cheques: 0 });
+
+    // Calc Due
+    allBillsList.forEach(b => {
+        let amtDue = b.total_amount - b.paid_amount;
+        if(dashboardStats[b.vendor_id]) dashboardStats[b.vendor_id].due += amtDue;
+        totalDueAll += amtDue;
+    });
+
+    // Calc Paid & Cheques
+    allPaymentsList.forEach(p => {
+        if(p.cheque_status !== 'RETURNED' && p.payment_date.startsWith(currentMonth)) {
+            if(dashboardStats[p.vendor_id]) dashboardStats[p.vendor_id].paid += p.total_amount;
+            totalPaidAll += p.total_amount;
+        }
+        if(p.method.includes('CHEQUE') && p.cheque_status === 'PENDING') {
+            if(dashboardStats[p.vendor_id]) dashboardStats[p.vendor_id].cheques += p.total_amount;
+            totalChequesAll += p.total_amount;
+        }
+    });
+
+    // Update Main Cards
+    document.getElementById('dash-due').innerText = totalDueAll.toLocaleString(undefined, {minimumFractionDigits: 2});
+    document.getElementById('dash-paid').innerText = totalPaidAll.toLocaleString(undefined, {minimumFractionDigits: 2});
+    document.getElementById('dash-cheques').innerText = totalChequesAll.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+    // Render "Top Owed Vendors" Progress Bars
+    let vendorArr = Object.values(dashboardStats).filter(v => v.due > 0).sort((a, b) => b.due - a.due);
+    let topVendorsHTML = '';
+    let maxDue = vendorArr.length > 0 ? vendorArr[0].due : 1; // Prevent divide by zero
+
+    vendorArr.slice(0, 5).forEach(v => {
+        let percent = (v.due / maxDue) * 100;
+        topVendorsHTML += `
+            <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1"><span class="fw-bold" style="font-size: 13px;">${v.name}</span><span class="text-danger fw-bold" style="font-size: 13px;">Rs. ${v.due.toLocaleString()}</span></div>
+                <div class="progress" style="height: 6px;"><div class="progress-bar bg-danger" style="width: ${percent}%"></div></div>
+            </div>`;
+    });
+    if(vendorArr.length === 0) topVendorsHTML = '<div class="text-muted text-center pt-2">No outstanding dues!</div>';
+    document.getElementById('widget-top-vendors').innerHTML = topVendorsHTML;
+
+    // Render "Recent Payments" List
+    let recentHTML = '';
+    allPaymentsList.slice(0, 5).forEach(p => {
+        let vName = allVendorsList.find(v => v.id === p.vendor_id)?.name || 'Unknown';
+        recentHTML += `<li class="list-group-item px-3 py-2 d-flex justify-content-between align-items-center">
+            <div><div class="fw-bold" style="font-size: 13px;">${vName}</div><small class="text-muted" style="font-size: 11px;">${p.payment_date} | ${p.method.replace('_', ' ')}</small></div>
+            <span class="text-success fw-bold">Rs. ${p.total_amount.toLocaleString()}</span>
+        </li>`;
+    });
+    if(allPaymentsList.length === 0) recentHTML = '<li class="list-group-item text-muted text-center">No payments made yet.</li>';
+    document.getElementById('widget-recent-payments').innerHTML = recentHTML;
+}
+
+// Handle Clickable Cards
+document.querySelectorAll('.clickable-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+        const action = e.currentTarget.dataset.action;
+        let title = ''; let targetField = ''; let colorClass = ''; let headerColor = '';
+        
+        if(action === 'DUE') { title = "Outstanding Dues Breakdown"; targetField = 'due'; colorClass = 'text-danger'; headerColor = 'bg-danger'; }
+        if(action === 'PAID') { title = `Payments Breakdown (${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })})`; targetField = 'paid'; colorClass = 'text-success'; headerColor = 'bg-success'; }
+        if(action === 'CHEQUES') { title = "Unrealized Cheques Breakdown"; targetField = 'cheques'; colorClass = 'text-warning'; headerColor = 'bg-warning'; }
+
+        document.getElementById('db-modal-title').innerText = title;
+        document.getElementById('db-modal-header').className = `modal-header text-white ${headerColor}`;
+        if(action === 'CHEQUES') document.getElementById('db-modal-header').classList.replace('text-white', 'text-dark'); // Warning needs dark text
+
+        let html = '';
+        let list = Object.values(dashboardStats).filter(v => v[targetField] > 0).sort((a, b) => b[targetField] - a[targetField]);
+        
+        list.forEach(v => {
+            html += `<tr><td class="ps-4 fw-bold">${v.name}</td><td class="text-end pe-4 fw-bold ${colorClass}">Rs. ${v[targetField].toLocaleString()}</td></tr>`;
+        });
+        if(list.length === 0) html = `<tr><td colspan="2" class="text-center py-4 text-muted">No records found for this category.</td></tr>`;
+        
+        document.getElementById('db-modal-table').innerHTML = html;
+        new bootstrap.Modal(document.getElementById('dashboardBreakdownModal')).show();
+    });
+});
+
+
 // --- MODALS FORMS SUBMIT ---
 document.getElementById('vendor-form').addEventListener('submit', async (e) => {
     e.preventDefault(); const editId = document.getElementById('edit-vendor-id').value;
-    const vendorData = {
-        name: document.getElementById('v-name').value, contact: document.getElementById('v-contact').value, address: document.getElementById('v-address').value, 
-        acc_name: document.getElementById('v-acc-name').value, bank_name: document.getElementById('v-bank-name').value, bank_branch: document.getElementById('v-bank-branch').value, bank_acc: document.getElementById('v-acc-no').value
-    };
+    const vendorData = { name: document.getElementById('v-name').value, contact: document.getElementById('v-contact').value, address: document.getElementById('v-address').value, acc_name: document.getElementById('v-acc-name').value, bank_name: document.getElementById('v-bank-name').value, bank_branch: document.getElementById('v-bank-branch').value, bank_acc: document.getElementById('v-acc-no').value };
     if(editId) { await updateDoc(doc(db, "vendors", editId), vendorData); alert("Vendor Updated!"); } 
     else { vendorData.custom_id = generateCustomID('VEN'); await setDoc(doc(collection(db, "vendors")), vendorData); alert("Vendor Added!"); }
     e.target.reset(); bootstrap.Modal.getInstance(document.getElementById('vendorModal')).hide();
@@ -298,69 +311,42 @@ document.getElementById('site-form').addEventListener('submit', async (e) => {
 
 document.getElementById('bill-form').addEventListener('submit', async (e) => {
     e.preventDefault(); const editId = document.getElementById('edit-bill-id').value; const vId = document.getElementById('b-vendor').value; const bNo = document.getElementById('b-number').value;
-    
-    if(!editId || (editId && allBillsList.find(b => b.id === editId).bill_number !== bNo)) {
-        if(allBillsList.some(b => b.vendor_id === vId && b.bill_number.toLowerCase() === bNo.toLowerCase())) return alert("Error: This Bill Number already exists for this vendor!");
-    }
-    
+    if(!editId || (editId && allBillsList.find(b => b.id === editId).bill_number !== bNo)) { if(allBillsList.some(b => b.vendor_id === vId && b.bill_number.toLowerCase() === bNo.toLowerCase())) return alert("Error: This Bill Number already exists for this vendor!"); }
     const btn = document.getElementById('b-submit-btn'); const fileInput = document.getElementById('b-file'); let imageUrl = null;
-    if(fileInput.files.length > 0) {
-        btn.innerHTML = `Uploading...`; btn.disabled = true;
-        try { imageUrl = await uploadToImgBB(fileInput.files[0]); } catch (err) { alert("Image Upload Failed!"); btn.innerHTML = `Save Bill`; btn.disabled = false; return; }
-    }
-    
+    if(fileInput.files.length > 0) { btn.innerHTML = `Uploading...`; btn.disabled = true; try { imageUrl = await uploadToImgBB(fileInput.files[0]); } catch (err) { alert("Image Upload Failed!"); btn.innerHTML = `Save Bill`; btn.disabled = false; return; } }
     const type = document.getElementById('b-type').value; const total = parseFloat(document.getElementById('b-amount').value);
     const billData = { vendor_id: vId, site_id: document.getElementById('b-site').value, items_info: document.getElementById('b-items').value, bill_number: bNo, date: document.getElementById('b-date').value, total_amount: total };
     if (imageUrl) billData.attachment_url = imageUrl;
-
-    if(editId) {
-        billData.paid_amount = 0; billData.status = 'PENDING';
-        await updateDoc(doc(db, "bills", editId), billData); alert("Bill Updated!");
-    } else {
-        billData.paid_amount = type === 'CASH' ? total : 0; billData.status = type === 'CASH' ? 'SETTLED' : 'PENDING'; billData.created_at = new Date().toISOString();
-        await setDoc(doc(collection(db, "bills")), billData); alert("Bill Saved!");
-    }
+    if(editId) { billData.paid_amount = 0; billData.status = 'PENDING'; await updateDoc(doc(db, "bills", editId), billData); alert("Bill Updated!"); } 
+    else { billData.paid_amount = type === 'CASH' ? total : 0; billData.status = type === 'CASH' ? 'SETTLED' : 'PENDING'; billData.created_at = new Date().toISOString(); await setDoc(doc(collection(db, "bills")), billData); alert("Bill Saved!"); }
     e.target.reset(); document.getElementById('b-date').value = new Date().toISOString().split('T')[0];
     btn.innerHTML = `Save Bill`; btn.disabled = false; bootstrap.Modal.getInstance(document.getElementById('billModal')).hide();
 });
 
-// Bills Search & Filter
 function applyBillFilters() {
     const searchText = document.getElementById('search-bills').value.toLowerCase(); const statusFilter = document.getElementById('filter-status').value;
     const filtered = allBillsList.filter(b => {
         if(currentBillVendorFilter !== 'ALL' && b.vendor_id !== currentBillVendorFilter) return false;
-
         const matchesSearch = b.bill_number.toLowerCase().includes(searchText) || b.total_amount.toString().includes(searchText);
         let matchesStatus = true;
         if (statusFilter === 'PENDING') matchesStatus = (b.status === 'PENDING' || b.status === 'PARTIAL');
         if (statusFilter === 'SETTLED') matchesStatus = (b.status === 'SETTLED');
         return matchesSearch && matchesStatus;
     });
-    
     const bTable = document.getElementById('b-table'); bTable.innerHTML = '';
     filtered.forEach(d => {
         let statusColor = d.status === 'SETTLED' ? 'success' : (d.status === 'PARTIAL' ? 'info' : 'warning');
         let imgBtn = d.attachment_url ? `<a href="${d.attachment_url}" target="_blank" class="text-primary"><i class="bi bi-image fs-5"></i></a>` : '-';
         let editBtn = (d.paid_amount === 0) ? `<button class="btn btn-sm btn-outline-primary edit-bill-btn me-1" data-id="${d.id}"><i class="bi bi-pencil"></i></button>` : '';
-        bTable.innerHTML += `<tr>
-            <td>${d.date}</td><td class="fw-bold">${d.bill_number}</td><td><span class="badge bg-light text-dark border">${d.items_info || '-'}</span></td>
-            <td>Rs. ${d.total_amount}</td><td class="text-success">Rs. ${d.paid_amount}</td><td><span class="badge bg-${statusColor}">${d.status}</span></td>
-            <td>${imgBtn}</td><td>${editBtn}<button class="btn btn-sm btn-outline-danger del-bill-btn" data-id="${d.id}" data-paid="${d.paid_amount}"><i class="bi bi-trash"></i></button></td>
-        </tr>`;
+        bTable.innerHTML += `<tr><td>${d.date}</td><td class="fw-bold">${d.bill_number}</td><td><span class="badge bg-light text-dark border">${d.items_info || '-'}</span></td>
+            <td>Rs. ${d.total_amount.toLocaleString()}</td><td class="text-success">Rs. ${d.paid_amount.toLocaleString()}</td><td><span class="badge bg-${statusColor}">${d.status}</span></td>
+            <td>${imgBtn}</td><td>${editBtn}<button class="btn btn-sm btn-outline-danger del-bill-btn" data-id="${d.id}" data-paid="${d.paid_amount}"><i class="bi bi-trash"></i></button></td></tr>`;
     });
-
     document.querySelectorAll('.edit-bill-btn').forEach(btn => btn.addEventListener('click', (e) => {
-        const bData = allBillsList.find(b => b.id === e.currentTarget.dataset.id);
-        document.getElementById('edit-bill-id').value = bData.id;
-        ['vendor', 'site', 'items', 'number', 'date', 'amount'].forEach(f => {
-            let domId = `b-${f}`; let dataKey = f === 'vendor' ? 'vendor_id' : (f === 'site' ? 'site_id' : (f === 'items' ? 'items_info' : (f === 'number' ? 'bill_number' : (f === 'amount' ? 'total_amount' : f))));
-            document.getElementById(domId).value = bData[dataKey];
-        });
-        document.getElementById('b-type').value = 'CREDIT';
-        document.getElementById('bill-modal-title').innerText = "Edit Bill Details";
-        new bootstrap.Modal(document.getElementById('billModal')).show();
+        const bData = allBillsList.find(b => b.id === e.currentTarget.dataset.id); document.getElementById('edit-bill-id').value = bData.id;
+        ['vendor', 'site', 'items', 'number', 'date', 'amount'].forEach(f => { let domId = `b-${f}`; let dataKey = f === 'vendor' ? 'vendor_id' : (f === 'site' ? 'site_id' : (f === 'items' ? 'items_info' : (f === 'number' ? 'bill_number' : (f === 'amount' ? 'total_amount' : f)))); document.getElementById(domId).value = bData[dataKey]; });
+        document.getElementById('b-type').value = 'CREDIT'; document.getElementById('bill-modal-title').innerText = "Edit Bill Details"; new bootstrap.Modal(document.getElementById('billModal')).show();
     }));
-
     document.querySelectorAll('.del-bill-btn').forEach(btn => btn.addEventListener('click', async (e) => {
         if(Number(e.currentTarget.dataset.paid) > 0) return alert("Cannot delete! Payments are attached. Reverse payment first.");
         if(confirm("Delete this bill forever?")) await deleteDoc(doc(db, "bills", e.currentTarget.dataset.id));
@@ -370,85 +356,31 @@ document.getElementById('search-bills').addEventListener('input', applyBillFilte
 document.getElementById('filter-status').addEventListener('change', applyBillFilters);
 
 // --- PAYMENT MODAL LOGIC ---
-function calcTotalForPayments() {
-    let tot = 0; document.querySelectorAll('.pay-input').forEach(i => tot += Number(i.value || 0));
-    document.getElementById('p-total-calc').innerText = tot.toLocaleString();
-}
-
-document.getElementById('p-bills-table').addEventListener('change', (e) => {
-    if (e.target.classList.contains('bill-select-cb')) {
-        const inputField = document.getElementById(`pay-input-${e.target.dataset.id}`);
-        inputField.value = e.target.checked ? e.target.dataset.due : ''; calcTotalForPayments();
-    }
-});
-
-document.getElementById('p-bills-table').addEventListener('input', (e) => {
-    if (e.target.classList.contains('pay-input')) {
-        const cb = document.querySelector(`.bill-select-cb[data-id="${e.target.dataset.id}"]`);
-        if(cb) cb.checked = (Number(e.target.value) === Number(cb.dataset.due)); calcTotalForPayments();
-    }
-});
-
-document.getElementById('p-method').addEventListener('change', (e) => {
-    const isCheque = e.target.value.includes('CHEQUE');
-    document.getElementById('cheque-box').style.display = isCheque ? 'block' : 'none';
-    document.getElementById('p-cheque-no').required = isCheque; document.getElementById('p-cheque-date').required = isCheque;
-});
+function calcTotalForPayments() { let tot = 0; document.querySelectorAll('.pay-input').forEach(i => tot += Number(i.value || 0)); document.getElementById('p-total-calc').innerText = tot.toLocaleString(); }
+document.getElementById('p-bills-table').addEventListener('change', (e) => { if (e.target.classList.contains('bill-select-cb')) { document.getElementById(`pay-input-${e.target.dataset.id}`).value = e.target.checked ? e.target.dataset.due : ''; calcTotalForPayments(); }});
+document.getElementById('p-bills-table').addEventListener('input', (e) => { if (e.target.classList.contains('pay-input')) { const cb = document.querySelector(`.bill-select-cb[data-id="${e.target.dataset.id}"]`); if(cb) cb.checked = (Number(e.target.value) === Number(cb.dataset.due)); calcTotalForPayments(); }});
+document.getElementById('p-method').addEventListener('change', (e) => { const isCheque = e.target.value.includes('CHEQUE'); document.getElementById('cheque-box').style.display = isCheque ? 'block' : 'none'; document.getElementById('p-cheque-no').required = isCheque; document.getElementById('p-cheque-date').required = isCheque; });
 
 document.getElementById('p-vendor').addEventListener('change', (e) => {
     const vId = e.target.value; const pbTable = document.getElementById('p-bills-table');
     if(!vId) { document.getElementById('pending-bills-container').style.display = 'none'; document.getElementById('payment-form').style.display = 'none'; return; }
-    
-    pbTable.innerHTML = '';
-    const pendingBills = allBillsList.filter(b => b.vendor_id === vId && b.status !== 'SETTLED');
+    pbTable.innerHTML = ''; const pendingBills = allBillsList.filter(b => b.vendor_id === vId && b.status !== 'SETTLED');
     if(pendingBills.length === 0) { pbTable.innerHTML = '<tr><td colspan="4" class="text-center text-danger">No pending bills for this vendor.</td></tr>'; } 
-    else {
-        pendingBills.forEach(d => {
-            let due = d.total_amount - d.paid_amount;
-            pbTable.innerHTML += `<tr>
-                <td class="text-center align-middle"><input type="checkbox" class="form-check-input bill-select-cb" style="width: 20px; height: 20px; cursor: pointer;" data-id="${d.id}" data-due="${due}"></td>
-                <td class="fw-bold align-middle">${d.bill_number} <br><span class="badge bg-secondary">${d.items_info || '-'}</span></td>
-                <td class="text-danger fw-bold align-middle">Rs. ${due}</td>
-                <td class="align-middle"><input type="number" class="form-control pay-input border-primary" id="pay-input-${d.id}" data-id="${d.id}" max="${due}" min="0" placeholder="0"></td>
-            </tr>`;
-        });
-    }
-    document.getElementById('pending-bills-container').style.display = 'block'; document.getElementById('payment-form').style.display = 'flex';
-    calcTotalForPayments(); 
+    else { pendingBills.forEach(d => { let due = d.total_amount - d.paid_amount; pbTable.innerHTML += `<tr><td class="text-center align-middle"><input type="checkbox" class="form-check-input bill-select-cb" style="width: 20px; height: 20px; cursor: pointer;" data-id="${d.id}" data-due="${due}"></td><td class="fw-bold align-middle">${d.bill_number} <br><span class="badge bg-secondary">${d.items_info || '-'}</span></td><td class="text-danger fw-bold align-middle">Rs. ${due}</td><td class="align-middle"><input type="number" class="form-control pay-input border-primary" id="pay-input-${d.id}" data-id="${d.id}" max="${due}" min="0" placeholder="0"></td></tr>`; }); }
+    document.getElementById('pending-bills-container').style.display = 'block'; document.getElementById('payment-form').style.display = 'flex'; calcTotalForPayments(); 
 });
 
 document.getElementById('payment-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    let allocations = []; let totalPayment = 0;
-    document.querySelectorAll('.pay-input').forEach(input => {
-        const amt = Number(input.value); if(amt > 0) { allocations.push({ bill_id: input.dataset.id, amount: amt }); totalPayment += amt; }
-    });
+    e.preventDefault(); let allocations = []; let totalPayment = 0;
+    document.querySelectorAll('.pay-input').forEach(input => { const amt = Number(input.value); if(amt > 0) { allocations.push({ bill_id: input.dataset.id, amount: amt }); totalPayment += amt; }});
     if(totalPayment <= 0) return alert("Select or enter payment amount!");
-
     const btn = document.getElementById('p-submit-btn'); const fileInput = document.getElementById('p-file'); let imageUrl = null;
-    if(fileInput.files.length > 0) {
-        btn.innerHTML = `Uploading...`; btn.disabled = true;
-        try { imageUrl = await uploadToImgBB(fileInput.files[0]); } catch (err) { alert("Slip Upload Failed!"); btn.innerHTML = `Confirm`; btn.disabled = false; return; }
-    }
-
+    if(fileInput.files.length > 0) { btn.innerHTML = `Uploading...`; btn.disabled = true; try { imageUrl = await uploadToImgBB(fileInput.files[0]); } catch (err) { alert("Slip Upload Failed!"); btn.innerHTML = `Confirm`; btn.disabled = false; return; } }
     const batch = writeBatch(db);
-    allocations.forEach(alloc => {
-        const bill = allBillsList.find(b => b.id === alloc.bill_id); const newPaid = bill.paid_amount + alloc.amount;
-        batch.update(doc(db, "bills", alloc.bill_id), { paid_amount: newPaid, status: newPaid >= bill.total_amount ? "SETTLED" : "PARTIAL" });
-    });
-
+    allocations.forEach(alloc => { const bill = allBillsList.find(b => b.id === alloc.bill_id); const newPaid = bill.paid_amount + alloc.amount; batch.update(doc(db, "bills", alloc.bill_id), { paid_amount: newPaid, status: newPaid >= bill.total_amount ? "SETTLED" : "PARTIAL" }); });
     const isCheque = document.getElementById('p-method').value.includes('CHEQUE');
-    batch.set(doc(collection(db, "payments")), {
-        payment_id: generateCustomID('PAY'), vendor_id: document.getElementById('p-vendor').value, payment_date: document.getElementById('p-date').value, 
-        total_amount: totalPayment, method: document.getElementById('p-method').value, cheque_number: isCheque ? document.getElementById('p-cheque-no').value : null,
-        cheque_date: isCheque ? document.getElementById('p-cheque-date').value : null, cheque_status: isCheque ? 'PENDING' : null,
-        attachment_url: imageUrl, allocations: allocations, timestamp: new Date().toISOString()
-    });
-
-    await batch.commit().then(() => {
-        alert("Payment Saved!"); document.getElementById('p-vendor').value = ""; document.getElementById('payment-form').reset();
-        document.getElementById('p-total-calc').innerText = "0"; bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
-    }).catch(err => alert("Error: " + err.message)).finally(() => { btn.innerHTML = `Confirm`; btn.disabled = false; });
+    batch.set(doc(collection(db, "payments")), { payment_id: generateCustomID('PAY'), vendor_id: document.getElementById('p-vendor').value, payment_date: document.getElementById('p-date').value, total_amount: totalPayment, method: document.getElementById('p-method').value, cheque_number: isCheque ? document.getElementById('p-cheque-no').value : null, cheque_date: isCheque ? document.getElementById('p-cheque-date').value : null, cheque_status: isCheque ? 'PENDING' : null, attachment_url: imageUrl, allocations: allocations, timestamp: new Date().toISOString() });
+    await batch.commit().then(() => { alert("Payment Saved!"); document.getElementById('p-vendor').value = ""; document.getElementById('payment-form').reset(); document.getElementById('p-total-calc').innerText = "0"; bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide(); }).catch(err => alert("Error: " + err.message)).finally(() => { btn.innerHTML = `Confirm`; btn.disabled = false; });
 });
 
 // --- CHEQUES LOGIC ---
@@ -458,25 +390,14 @@ function renderChequesTable() {
     if(pendingCheques.length === 0) { cTable.innerHTML = '<tr><td colspan="6" class="text-center text-success">No pending cheques.</td></tr>'; return; }
     pendingCheques.forEach(chk => {
         let imgBtn = chk.attachment_url ? `<a href="${chk.attachment_url}" target="_blank" class="text-primary"><i class="bi bi-image fs-5"></i></a>` : '-';
-        cTable.innerHTML += `<tr>
-            <td>${chk.cheque_date || chk.payment_date}</td><td class="fw-bold text-primary">${chk.cheque_number}</td>
-            <td>${chk.method.replace('_CHEQUE', '')} Bank</td><td class="fw-bold text-danger">Rs. ${chk.total_amount}</td><td>${imgBtn}</td>
-            <td>
-                <button class="btn btn-sm btn-success realize-btn mb-1" data-id="${chk.id}">Realized <i class="bi bi-check"></i></button>
-                <button class="btn btn-sm btn-danger return-btn mb-1" data-id="${chk.id}">Returned <i class="bi bi-x"></i></button>
-            </td>
-        </tr>`;
+        cTable.innerHTML += `<tr><td>${chk.cheque_date || chk.payment_date}</td><td class="fw-bold text-primary">${chk.cheque_number}</td><td>${chk.method.replace('_CHEQUE', '')} Bank</td><td class="fw-bold text-danger">Rs. ${chk.total_amount.toLocaleString()}</td><td>${imgBtn}</td>
+            <td><button class="btn btn-sm btn-success realize-btn mb-1" data-id="${chk.id}">Realized <i class="bi bi-check"></i></button><button class="btn btn-sm btn-danger return-btn mb-1" data-id="${chk.id}">Returned <i class="bi bi-x"></i></button></td></tr>`;
     });
-    document.querySelectorAll('.realize-btn').forEach(btn => btn.addEventListener('click', async (e) => {
-        if(confirm("Mark cheque as cleared?")) await updateDoc(doc(db, "payments", e.currentTarget.dataset.id), { cheque_status: "REALIZED" });
-    }));
+    document.querySelectorAll('.realize-btn').forEach(btn => btn.addEventListener('click', async (e) => { if(confirm("Mark cheque as cleared?")) await updateDoc(doc(db, "payments", e.currentTarget.dataset.id), { cheque_status: "REALIZED" }); }));
     document.querySelectorAll('.return-btn').forEach(btn => btn.addEventListener('click', async (e) => {
         if(confirm("Reverse this payment and mark cheque as returned?")) {
             const payId = e.currentTarget.dataset.id; const payDoc = allPaymentsList.find(p => p.id === payId); const batch = writeBatch(db);
-            payDoc.allocations.forEach(alloc => {
-                const bill = allBillsList.find(b => b.id === alloc.bill_id);
-                if(bill) { let newPaid = bill.paid_amount - alloc.amount; batch.update(doc(db, "bills", bill.id), { paid_amount: newPaid, status: newPaid <= 0 ? 'PENDING' : 'PARTIAL' }); }
-            });
+            payDoc.allocations.forEach(alloc => { const bill = allBillsList.find(b => b.id === alloc.bill_id); if(bill) { let newPaid = bill.paid_amount - alloc.amount; batch.update(doc(db, "bills", bill.id), { paid_amount: newPaid, status: newPaid <= 0 ? 'PENDING' : 'PARTIAL' }); } });
             batch.update(doc(db, "payments", payId), { cheque_status: "RETURNED" }); await batch.commit(); alert("Cheque returned & bills reverted.");
         }
     }));
@@ -484,25 +405,10 @@ function renderChequesTable() {
 
 // --- LORRY FORM SUBMIT ---
 document.getElementById('lorry-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('l-submit-btn');
-    const fileInput = document.getElementById('l-file');
-    const type = document.getElementById('l-type').value;
-
-    let imageUrl = null;
-    if(fileInput.files.length > 0) {
-        btn.innerHTML = `Uploading...`; btn.disabled = true;
-        try { imageUrl = await uploadToImgBB(fileInput.files[0]); } 
-        catch (err) { alert("Image Upload Failed!"); btn.innerHTML = `Save Record`; btn.disabled = false; return; }
-    }
-
-    await setDoc(doc(collection(db, "lorry_cash")), {
-        type: type, date: document.getElementById('l-date').value, description: document.getElementById('l-desc').value,
-        amount: parseFloat(document.getElementById('l-amount').value), attachment_url: imageUrl, timestamp: new Date().toISOString()
-    });
-
-    alert("Record Saved!"); e.target.reset(); document.getElementById('l-date').value = new Date().toISOString().split('T')[0];
-    btn.innerHTML = `Save Record`; btn.disabled = false;
+    e.preventDefault(); const btn = document.getElementById('l-submit-btn'); const fileInput = document.getElementById('l-file'); const type = document.getElementById('l-type').value;
+    let imageUrl = null; if(fileInput.files.length > 0) { btn.innerHTML = `Uploading...`; btn.disabled = true; try { imageUrl = await uploadToImgBB(fileInput.files[0]); } catch (err) { alert("Image Upload Failed!"); btn.innerHTML = `Save Record`; btn.disabled = false; return; } }
+    await setDoc(doc(collection(db, "lorry_cash")), { type: type, date: document.getElementById('l-date').value, description: document.getElementById('l-desc').value, amount: parseFloat(document.getElementById('l-amount').value), attachment_url: imageUrl, timestamp: new Date().toISOString() });
+    alert("Record Saved!"); e.target.reset(); document.getElementById('l-date').value = new Date().toISOString().split('T')[0]; btn.innerHTML = `Save Record`; btn.disabled = false;
 });
 
 // --- REPORTS ---
@@ -513,64 +419,33 @@ document.getElementById('report-type').addEventListener('change', (e) => {
 });
 
 document.getElementById('generate-rep-btn').addEventListener('click', () => {
-    const repType = document.getElementById('report-type').value;
-    const startDt = document.getElementById('rep-start').value; const endDt = document.getElementById('rep-end').value;
-    
+    const repType = document.getElementById('report-type').value; const startDt = document.getElementById('rep-start').value; const endDt = document.getElementById('rep-end').value;
     if(repType === 'SITE') {
         const sId = document.getElementById('report-site').value; if(!sId) return alert("Select a site!");
-        document.getElementById('report-site-results').style.display = 'block';
-        let totalCost = 0; const rTable = document.getElementById('report-site-table'); rTable.innerHTML = '';
-        allBillsList.filter(b => b.site_id === sId).forEach(bill => {
-            if(startDt && bill.date < startDt) return;
-            if(endDt && bill.date > endDt) return;
-            totalCost += bill.total_amount;
-            rTable.innerHTML += `<tr><td>${bill.date}</td><td>${bill.bill_number}</td><td>${bill.items_info || '-'}</td><td>Rs. ${bill.total_amount}</td></tr>`;
-        });
+        document.getElementById('report-site-results').style.display = 'block'; let totalCost = 0; const rTable = document.getElementById('report-site-table'); rTable.innerHTML = '';
+        allBillsList.filter(b => b.site_id === sId).forEach(bill => { if(startDt && bill.date < startDt) return; if(endDt && bill.date > endDt) return; totalCost += bill.total_amount; rTable.innerHTML += `<tr><td>${bill.date}</td><td>${bill.bill_number}</td><td>${bill.items_info || '-'}</td><td>Rs. ${bill.total_amount.toLocaleString()}</td></tr>`; });
         document.getElementById('rep-tot').innerText = totalCost.toLocaleString(undefined, {minimumFractionDigits: 2});
     } else {
         const vId = document.getElementById('report-vendor').value; if(!vId) return alert("Select a vendor!");
-        document.getElementById('report-vendor-results').style.display = 'block';
-        let ledgerData = []; let bfBalance = 0;
-        
+        document.getElementById('report-vendor-results').style.display = 'block'; let ledgerData = []; let bfBalance = 0;
         allBillsList.filter(b => b.vendor_id === vId).forEach(b => {
-            if(startDt && b.date < startDt) { bfBalance += b.total_amount; return; }
-            if(endDt && b.date > endDt) return;
-            let img = b.attachment_url ? `<a href="${b.attachment_url}" target="_blank"><i class="bi bi-image"></i></a>` : '-';
-            ledgerData.push({ date: b.date, ref: b.bill_number, desc: `Bill - ${b.items_info || ''}`, credit_bill: b.total_amount, debit_pay: 0, attach: img });
+            if(startDt && b.date < startDt) { bfBalance += b.total_amount; return; } if(endDt && b.date > endDt) return;
+            let img = b.attachment_url ? `<a href="${b.attachment_url}" target="_blank"><i class="bi bi-image"></i></a>` : '-'; ledgerData.push({ date: b.date, ref: b.bill_number, desc: `Bill - ${b.items_info || ''}`, credit_bill: b.total_amount, debit_pay: 0, attach: img });
         });
-        
         allPaymentsList.filter(p => p.vendor_id === vId && p.cheque_status !== 'RETURNED').forEach(p => {
-            if(startDt && p.payment_date < startDt) { bfBalance -= p.total_amount; return; }
-            if(endDt && p.payment_date > endDt) return;
-            let img = p.attachment_url ? `<a href="${p.attachment_url}" target="_blank"><i class="bi bi-image"></i></a>` : '-';
-            ledgerData.push({ date: p.payment_date, ref: p.payment_id, desc: `Payment - ${p.method.replace('_', ' ')}`, credit_bill: 0, debit_pay: p.total_amount, attach: img });
+            if(startDt && p.payment_date < startDt) { bfBalance -= p.total_amount; return; } if(endDt && p.payment_date > endDt) return;
+            let img = p.attachment_url ? `<a href="${p.attachment_url}" target="_blank"><i class="bi bi-image"></i></a>` : '-'; ledgerData.push({ date: p.payment_date, ref: p.payment_id, desc: `Payment - ${p.method.replace('_', ' ')}`, credit_bill: 0, debit_pay: p.total_amount, attach: img });
         });
-        
-        ledgerData.sort((a, b) => new Date(a.date) - new Date(b.date));
-        const lTable = document.getElementById('report-vendor-table'); lTable.innerHTML = '';
-        let runningBalance = bfBalance;
-        
+        ledgerData.sort((a, b) => new Date(a.date) - new Date(b.date)); const lTable = document.getElementById('report-vendor-table'); lTable.innerHTML = ''; let runningBalance = bfBalance;
         if(startDt) { lTable.innerHTML += `<tr class="table-warning"><td colspan="3" class="fw-bold">Brought Forward (B/F) Balance</td><td>-</td><td>-</td><td class="fw-bold text-danger">${bfBalance.toLocaleString()}</td><td>-</td></tr>`; }
-        
-        ledgerData.forEach(item => {
-            runningBalance += (item.credit_bill - item.debit_pay);
-            lTable.innerHTML += `<tr><td>${item.date}</td><td>${item.ref}</td><td>${item.desc}</td><td class="ledger-credit">${item.credit_bill > 0 ? item.credit_bill.toLocaleString() : '-'}</td><td class="ledger-debit">${item.debit_pay > 0 ? item.debit_pay.toLocaleString() : '-'}</td><td class="fw-bold">${runningBalance.toLocaleString()}</td><td class="text-center">${item.attach}</td></tr>`;
-        });
+        ledgerData.forEach(item => { runningBalance += (item.credit_bill - item.debit_pay); lTable.innerHTML += `<tr><td>${item.date}</td><td>${item.ref}</td><td>${item.desc}</td><td class="ledger-credit">${item.credit_bill > 0 ? item.credit_bill.toLocaleString() : '-'}</td><td class="ledger-debit">${item.debit_pay > 0 ? item.debit_pay.toLocaleString() : '-'}</td><td class="fw-bold">${runningBalance.toLocaleString()}</td><td class="text-center">${item.attach}</td></tr>`; });
         document.getElementById('ledger-balance').innerText = runningBalance.toLocaleString(undefined, {minimumFractionDigits: 2});
     }
 });
 
 document.getElementById('export-btn').addEventListener('click', () => {
-    const isVendor = document.getElementById('report-type').value === 'VENDOR';
-    const tableId = isVendor ? "#report-table-vendor-export" : "#report-table-site-export";
-    let csv = []; const rows = document.querySelectorAll(`${tableId} tr`);
-    if(rows.length === 0) return alert("No data to export!");
-    for (let i = 0; i < rows.length; i++) {
-        let row = [], cols = rows[i].querySelectorAll("td, th");
-        let limit = isVendor ? cols.length - 1 : cols.length;
-        for (let j = 0; j < limit; j++) row.push(cols[j].innerText.replace(/,/g, ''));
-        csv.push(row.join(","));
-    }
-    const a = document.createElement("a"); a.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv.join("\n"));
-    a.target = '_blank'; a.download = `Niwasa_${isVendor ? 'Vendor_Ledger' : 'Site_Report'}.csv`; a.click();
+    const isVendor = document.getElementById('report-type').value === 'VENDOR'; const tableId = isVendor ? "#report-table-vendor-export" : "#report-table-site-export";
+    let csv = []; const rows = document.querySelectorAll(`${tableId} tr`); if(rows.length === 0) return alert("No data to export!");
+    for (let i = 0; i < rows.length; i++) { let row = [], cols = rows[i].querySelectorAll("td, th"); let limit = isVendor ? cols.length - 1 : cols.length; for (let j = 0; j < limit; j++) row.push(cols[j].innerText.replace(/,/g, '')); csv.push(row.join(",")); }
+    const a = document.createElement("a"); a.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv.join("\n")); a.target = '_blank'; a.download = `Niwasa_${isVendor ? 'Vendor_Ledger' : 'Site_Report'}.csv`; a.click();
 });
