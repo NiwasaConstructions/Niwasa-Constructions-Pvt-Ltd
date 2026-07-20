@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Niwasa Constructions ERP</title>
+    <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
@@ -48,6 +49,7 @@
 </head>
 <body>
 
+    <!-- Login Section -->
     <div id="login-section" class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-4">
@@ -64,6 +66,7 @@
         </div>
     </div>
 
+    <!-- Dashboard Section -->
     <div id="dashboard-section" class="container-fluid mt-3 px-4" style="display: none;">
         
         <div class="d-flex justify-content-between align-items-center brand-header">
@@ -75,6 +78,7 @@
         </div>
         
         <div class="row">
+            <!-- Sidebar -->
             <div class="col-md-2 mb-3">
                 <div class="sidebar shadow-sm">
                     <a class="nav-link active" data-target="dashboard"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
@@ -88,8 +92,10 @@
                 </div>
             </div>
             
+            <!-- Main Content Area -->
             <div class="col-md-10">
                 
+                <!-- 0. DASHBOARD -->
                 <div id="section-dashboard" class="app-section active">
                     <div class="row mb-4">
                         <div class="col-md-3">
@@ -137,6 +143,7 @@
                     </div>
                 </div>
 
+                <!-- 1. VENDORS SECTION -->
                 <div id="section-vendors" class="app-section">
                     <div class="card">
                         <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #1e3a5f;">
@@ -158,6 +165,7 @@
                     </div>
                 </div>
 
+                <!-- 2. SITES SECTION -->
                 <div id="section-sites" class="app-section">
                     <div class="card">
                         <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #1e3a5f;">
@@ -179,6 +187,7 @@
                     </div>
                 </div>
 
+                <!-- 3. BILLS SECTION -->
                 <div id="section-bills" class="app-section">
                     <div class="card">
                         <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #1e3a5f;">
@@ -212,6 +221,7 @@
                     </div>
                 </div>
 
+                <!-- 4. PAYMENTS SECTION -->
                 <div id="section-payments" class="app-section">
                     <div class="card border-success">
                         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
@@ -233,6 +243,7 @@
                     </div>
                 </div>
 
+                <!-- 5. CHEQUES SECTION -->
                 <div id="section-cheques" class="app-section">
                     <div class="card border-warning">
                         <div class="card-header bg-warning text-dark"><i class="bi bi-bank"></i> Unrealized Cheques Management</div>
@@ -251,6 +262,7 @@
                     </div>
                 </div>
 
+                <!-- 7. LORRY PETTY CASH SECTION -->
                 <div id="section-lorry" class="app-section">
                     <div class="card border-info">
                         <div class="card-header bg-info text-dark"><i class="bi bi-truck"></i> Lorry Petty Cash Management</div>
@@ -287,6 +299,7 @@
                     </div>
                 </div>
 
+                <!-- 8. REPORTS SECTION -->
                 <div id="section-reports" class="app-section">
                     <div class="card border-info">
                         <div class="card-header bg-info text-dark d-flex justify-content-between align-items-center">
@@ -332,6 +345,9 @@
         </div>
     </div>
 
+    <!-- ================= MODALS ================= -->
+
+    <!-- Dashboard Breakdown Modal -->
     <div class="modal fade" id="dashboardBreakdownModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0">
@@ -351,6 +367,7 @@
         </div>
     </div>
 
+    <!-- Vendor Modal -->
     <div class="modal fade" id="vendorModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -373,6 +390,7 @@
         </div>
     </div>
 
+    <!-- Site Modal -->
     <div class="modal fade" id="siteModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -385,6 +403,7 @@
         </div>
     </div>
 
+    <!-- Bill Modal -->
     <div class="modal fade" id="billModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -393,7 +412,8 @@
                     <div class="modal-header bg-danger text-white"><h5 class="modal-title" id="bill-modal-title">Add New Bill</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                     <div class="modal-body row g-3">
                         <div class="col-md-6"><label>Select Vendor</label><select id="b-vendor" class="form-select vendor-dropdown" required><option value="">Select...</option></select></div>
-                        <div class="col-md-6"><label>Select Site (Ongoing only)</label><select id="b-site" class="form-select active-site-dropdown" required><option value="">Select...</option></select></div>
+                        <!-- Site is now Optional and label updated -->
+                        <div class="col-md-6"><label>Select Site (Optional)</label><select id="b-site" class="form-select active-site-dropdown"><option value="">Select...</option></select></div>
                         <div class="col-md-6"><label>Items/Remarks</label><input type="text" id="b-items" class="form-control" placeholder="e.g: Cement 50, Steel" required></div>
                         <div class="col-md-6"><label>Bill Number</label><input type="text" id="b-number" class="form-control" required></div>
                         <div class="col-md-4"><label>Date</label><input type="date" id="b-date" class="form-control" required></div>
@@ -407,6 +427,7 @@
         </div>
     </div>
 
+    <!-- Payment Modal -->
     <div class="modal fade" id="paymentModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content border-success">
@@ -451,6 +472,7 @@
         </div>
     </div>
 
+    <!-- Payment Details View Modal -->
     <div class="modal fade" id="paymentDetailsModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-info">
@@ -473,6 +495,7 @@
         </div>
     </div>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="app.js"></script>
 </body>
